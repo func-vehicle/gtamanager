@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Website by func_vehicle. Copyright 2019 -->
+
+<head>
+	<title>GTA V Business Manager</title>
+	<meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<link rel="stylesheet" href="css/html5reset.css" type="text/css" media="screen"/>
+	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans" type="text/css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script src="code.js"></script>
+</head>
+
+<body>
+	<div id="wrapper">
+		<div id="mapscreen" class="col">
+			<img id="bg" src="img/bg.jpg" draggable="false"/>
+			<img id="bunker_map" src="img/bunker.png" class="map_icon"/>
+			<img id="coke_map" src="img/coke.png" class="map_icon"/>
+			<img id="meth_map" src="img/meth.png" class="map_icon"/>
+			<img id="cash_map" src="img/cash.png" class="map_icon"/>
+			<img id="weed_map" src="img/weed.png" class="map_icon"/>
+			<img id="forgery_map" src="img/forgery.png" class="map_icon"/>
+			<img id="nightclub_map" src="img/nightclub.png" class="map_icon"/>
+			<img id="importExport_map" src="img/import.png" class="map_icon"/>
+			<img id="wheel_map" src="img/wheel.png" class="map_icon"/>
+			<div id="mini_notif">
+				<p>The cooldown manager is paused.</p>
+			</div>
+			<div id="options" class="fsz">
+				<button class="button toggle start green">Start</button>
+				<button class="button audio red">Sound</button>
+				<button class="button setup red">Setup</button>
+			</div>
+			<div id="overlay"></div>
+			<div id="notification">
+				<div id="updateNotice" class="main">
+					<div class="heading">
+						<h1>Update</h1>
+					</div>
+					<div class="main">
+						<p>The cooldown manager has been updated. Your data has been converted to the new
+						format. Please report any bugs to func_vehicle.</p>
+					</div>
+					<div class="buttons">
+						<button class="button ok red">OK</button>
+					</div>
+				</div>
+				<div id="pauseNotice" class="main">
+					<div class="heading">
+						<h1>Notice</h1>
+					</div>
+					<div class="main">
+						<p>The cooldown manager is currently paused. It should be unpaused at all times
+						when you are in free roam / contact missions in order to be accurate.</p>
+					</div>
+					<div class="buttons fsz">
+						<button class="button ok red">OK</button>
+					</div>
+				</div>
+				<div id="mainSetup" class="setupGUI">
+					<div class="heading">
+						<h1>Setup</h1>
+					</div>
+					<div class="main">
+						<table>
+							<tr class="hideUnowned">
+								<td>Hide unowned:</td>
+								<td class="onechoice fsz">
+									<button class="button green" data-value="1">Yes</button>
+									<button class="button red" data-value="0">No</button>
+								</td>
+							</tr>
+							<tr class="audioFreq">
+								<td>Audio interval:</td>
+								<td class="incDecButtons fsz">
+									<button class="fa fa-minus button minus"></button>
+									<input type="number" class="range_enforced integer_only" name="quantity" value="1" min="1" max="60"/>
+									<button class="fa fa-plus button plus"></button>
+								</td>
+							</tr>
+							<tr class="audioVolume">
+								<td>Audio volume:</td>
+								<td class="onechoice fsz">
+									<input type="range" min="0" max="100" value="0">
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="buttons fsz">
+						<button class="button reset red">Reset Everything</button>
+						<button class="button cancel red">Cancel</button>
+						<button class="button apply red">Apply</button>
+					</div>
+				</div>
+				<div id="resetWarning">
+					<div class="heading">
+						<h1>Warning</h1>
+					</div>
+					<div class="main">
+						<p>This will reset everything! Are you sure you want to continue?</p>
+					</div>
+					<div class="buttons fsz">
+						<button class="button cancel red">Cancel</button>
+						<button class="button reset red">Reset</button>
+					</div>
+				</div>
+				<div id="nightclubGUI">
+					<div class="heading">
+						<h1>Nightclub Manager</h1>
+					</div>
+					<div class="main">
+						<table>
+							<tr>
+								<th>Product Name</th>
+								<th>Stock</th>
+								<th>Sell</th>
+							</tr>
+							<tr class="cargo">
+								<td>Cargo and Shipments</td>
+								<td></td>
+								<td class="incDecButtons">
+									<button class="fa fa-minus button minus"></button>
+									<input type="number" class="range_enforced integer_only" name="quantity" value="0" min="0" max="50"/>
+									<button class="fa fa-plus button plus"></button>
+								</td>
+							</tr>
+							<tr class="sporting">
+								<td>Sporting Goods</td>
+								<td></td>
+								<td class="incDecButtons">
+									<button class="fa fa-minus button minus"></button>
+									<input type="number" class="range_enforced integer_only" name="quantity" value="0" min="0" max="100"/>
+									<button class="fa fa-plus button plus"></button>
+								</td>
+							</tr>
+							<tr class="imports">
+								<td>South American Imports</td>
+								<td></td>
+								<td class="incDecButtons">
+									<button class="fa fa-minus button minus"></button>
+									<input type="number" class="range_enforced integer_only" name="quantity" value="0" min="0" max="10"/>
+									<button class="fa fa-plus button plus"></button>
+								</td>
+							</tr>
+							<tr class="pharma">
+								<td>Pharmaceutical Research</td>
+								<td></td>
+								<td class="incDecButtons">
+									<button class="fa fa-minus button minus"></button>
+									<input type="number" class="range_enforced integer_only" name="quantity" value="0" min="0" max="20"/>
+									<button class="fa fa-plus button plus"></button>
+								</td>
+							</tr>
+							<tr class="creation">
+								<td>Cash Creation</td>
+								<td></td>
+								<td class="incDecButtons fsz">
+									<button class="fa fa-minus button minus"></button>
+									<input type="number" class="range_enforced integer_only" name="quantity" value="0" min="0" max="40"/>
+									<button class="fa fa-plus button plus"></button>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="buttons fsz">
+						<button class="button sellsome red">Sell Selected</button>
+						<button class="button sell red">Sell All</button>
+						<button class="button ok red">Close</button>
+					</div>
+				</div>
+				<div id="bunkerSetupGUI" class="setupGUI bunker">
+					<div class="heading">
+						<h1>Bunker Setup</h1>
+					</div>
+					<div class="main">
+						<table>
+							<tr class="own">
+								<td>Owned:</td>
+								<td class="onechoice fsz">
+									<button class="button green" data-value="1">Yes</button>
+									<button class="button red" data-value="0">No</button>
+								</td>
+							</tr>
+							<tr class="position">
+								<td>Map location:</td>
+								<td class="fsz">
+									<button class="button blue">Set Location</button>
+								</td>
+							</tr>
+							<tr class="hide_research">
+								<td>Hide research:</td>
+								<td class="onechoice fsz">
+									<button class="button green">Yes</button>
+									<button class="button red">No</button>
+								</td>
+							</tr>
+							<tr class="mode">
+								<td>Bunker mode:</td>
+								<td class="onechoice fsz">
+									<button class="button orange" data-value="0">Manufacturing</button>
+									<button class="button blue" data-value="1">Both</button>
+									<button class="button green" data-value="2">Researching</button><br/>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="buttons fsz">
+						<button class="button cancel red">Cancel</button>
+						<button class="button apply red">Apply</button>
+					</div>
+				</div>
+				<div id="mcbusinessSetupGUI" class="setupGUI">
+					<div class="heading">
+						<h1>MCBUSINESS Setup</h1>
+					</div>
+					<div class="main">
+						<table>
+							<tr class="own">
+								<td>Owned:</td>
+								<td class="onechoice fsz">
+									<button class="button green" data-value="1">Yes</button>
+									<button class="button red" data-value="0">No</button>
+								</td>
+							</tr>
+							<tr class="position">
+								<td>Map location:</td>
+								<td class="fsz">
+									<button class="button blue">Set Location</button>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="buttons fsz">
+						<button class="button cancel red">Cancel</button>
+						<button class="button apply red">Apply</button>
+					</div>
+				</div>
+				<div id="nightclubSetupGUI" class="setupGUI nightclub">
+					<div class="heading">
+						<h1>Nightclub Setup</h1>
+					</div>
+					<div class="main">
+						<table>
+							<tr class="own">
+								<td>Owned:</td>
+								<td class="onechoice fsz">
+									<button class="button green" data-value="1">Yes</button>
+									<button class="button red" data-value="0">No</button>
+								</td>
+							</tr>
+							<tr class="position">
+								<td>Map location:</td>
+								<td class="fsz">
+									<button class="button blue">Set Location</button>
+								</td>
+							</tr>
+							<tr class="sidebar">
+								<td>Sidebar:</td>
+								<td class="onechoice fsz">
+									<button class="button green" data-value="1">Show all</button>
+									<button class="button orange" data-value="0">Show produced</button>
+								</td>
+							</tr>
+							<tr class="producing">
+								<td>Producing:</td>
+								<td class="indivchoice fsz">
+									<button class="button blue" data-value="cargo">Cargo and Shipments</button>
+									<button class="button blue" data-value="sporting">Sporting Goods</button>
+									<button class="button blue" data-value="imports">South American Imports</button>
+									<button class="button blue" data-value="pharma">Pharmaceutical Research</button>
+									<button class="button blue" data-value="creation">Cash Creation</button>
+									<button class="button blue" data-value="organic">Organic Produce</button>
+									<button class="button blue" data-value="copying">Printing and Copying</button>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="buttons fsz">
+						<button class="button cancel red">Cancel</button>
+						<button class="button apply red">Apply</button>
+					</div>
+				</div>
+				<div id="importExportSetupGUI" class="setupGUI importExport">
+					<div class="heading">
+						<h1>Import / Export Setup</h1>
+					</div>
+					<div class="main">
+						<table>
+							<tr class="own">
+								<td>Owned:</td>
+								<td class="onechoice fsz">
+									<button class="button green" data-value="1">Yes</button>
+									<button class="button red" data-value="0">No</button>
+								</td>
+							</tr>
+							<tr class="position">
+								<td>Map location:</td>
+								<td class="fsz">
+									<button class="button blue">Set Location</button>
+								</td>
+							</tr>
+							<tr class="highEndCars">
+								<td>High-end cars:</td>
+								<td class="incDecButtons fsz">
+									<button class="fa fa-minus button minus"></button>
+									<input type="number" class="range_enforced" name="quantity" value="0" min="0" max="20"/>
+									<button class="fa fa-plus button plus"></button>
+								</td>
+							</tr>
+							<tr class="resetCooldown">
+								<td>Cooldown:</td>
+								<td class="fsz">
+									<button class="button blue">Reset</button>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="buttons fsz">
+						<button class="button cancel red">Cancel</button>
+						<button class="button apply red">Apply</button>
+					</div>
+				</div>
+				<div id="wheelSetupGUI" class="setupGUI wheel">
+					<div class="heading">
+						<h1>Lucky Wheel Setup</h1>
+					</div>
+					<div class="main">
+						<table>
+							<tr class="resetCooldown">
+								<td>Cooldown:</td>
+								<td class="fsz">
+									<button class="button blue">Reset</button>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="buttons fsz">
+						<button class="button cancel red">Cancel</button>
+						<button class="button apply red">Apply</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="infotab" class="col">
+			<div id="activeBusinesses">
+				<div id="bunker" class="information">
+					<div class="business_heading clearfix">
+						<img src="img/bunker.png" class="icon"/>
+						<h1>Bunker</h1>
+						<button class="fa fa-cog button setup"></button>
+					</div>
+					<div class="content">
+						<div class="progress_bar product">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="progress_bar research">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="progress_bar supplies">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="fsz">
+							<button class="button supplies green">Resupply</button>
+							<button class="button sell blue">Sell</button>
+						</div>
+					</div>
+				</div>
+				<div id="coke" class="information mcbusiness">
+					<div class="business_heading clearfix">
+						<img src="img/coke.png" class="icon"/>
+						<h1>Cocaine</h1>
+						<button class="fa fa-cog button setup"></button>
+					</div>
+					<div class="content">
+						<div class="progress_bar product">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="progress_bar supplies">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="fsz">
+							<button class="button supplies green">Resupply</button>
+							<button class="button sell blue">Sell</button>
+						</div>
+					</div>
+				</div>
+				<div id="meth" class="information mcbusiness">
+					<div class="business_heading clearfix">
+						<img src="img/meth.png" class="icon"/>
+						<h1>Meth</h1>
+						<button class="fa fa-cog button setup"></button>
+					</div>
+					<div class="content">
+						<div class="progress_bar product">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="progress_bar supplies">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="fsz">
+							<button class="button supplies green">Resupply</button>
+							<button class="button sell blue">Sell</button>
+						</div>
+					</div>
+				</div>
+				<div id="cash" class="information mcbusiness">
+					<div class="business_heading clearfix">
+						<img src="img/cash.png" class="icon"/>
+						<h1>Counterfeit Cash</h1>
+						<button class="fa fa-cog button setup"></button>
+					</div>
+					<div class="content">
+						<div class="progress_bar product">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="progress_bar supplies">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="fsz">
+							<button class="button supplies green">Resupply</button>
+							<button class="button sell blue">Sell</button>
+						</div>
+					</div>
+				</div>
+				<div id="weed" class="information mcbusiness">
+					<div class="business_heading clearfix">
+						<img src="img/weed.png" class="icon"/>
+						<h1>Weed</h1>
+						<button class="fa fa-cog button setup"></button>
+					</div>
+					<div class="content">
+						<div class="progress_bar product">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="progress_bar supplies">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="fsz">
+							<button class="button supplies green">Resupply</button>
+							<button class="button sell blue">Sell</button>
+						</div>
+					</div>
+				</div>
+				<div id="forgery" class="information mcbusiness">
+					<div class="business_heading clearfix">
+						<img src="img/forgery.png" class="icon"/>
+						<h1>Doc. Forgery</h1>
+						<button class="fa fa-cog button setup"></button>
+					</div>
+					<div class="content">
+						<div class="progress_bar product">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="progress_bar supplies">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="fsz">
+							<button class="button supplies green">Resupply</button>
+							<button class="button sell blue">Sell</button>
+						</div>
+					</div>
+				</div>
+				<div id="nightclub" class="information">
+					<div class="business_heading clearfix">
+						<img src="img/nightclub.png" class="icon"/>
+						<h1>Nightclub</h1>
+						<button class="fa fa-cog button setup"></button>
+					</div>
+					<div class="content">
+						<div class="progress_bar cargo">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="progress_bar sporting">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="progress_bar imports">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="progress_bar pharma">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="progress_bar creation">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="progress_bar organic">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<div class="progress_bar copying">
+							<input type="range" class="slider" min="0" max="100" value="0">
+							<div class="bar"></div>
+						</div>
+						<button class="button modify">Modify</button>
+					</div>
+				</div>
+				<div id="importExport" class="information">
+					<div class="business_heading clearfix">
+						<img src="img/import.png" class="icon"/>
+						<h1>Import / Export</h1>
+						<button class="fa fa-cog button setup"></button>
+					</div>
+					<div class="content">
+						<select name="toSell">
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+							<option>4</option>
+						</select>
+						<button class="button sell blue">Sell</button>
+					</div>
+				</div>
+				<div id="wheel" class="information">
+					<div class="business_heading clearfix">
+						<img src="img/wheel.png" class="icon"/>
+						<h1>Lucky Wheel</h1>
+						<button class="fa fa-cog button setup"></button>
+					</div>
+					<div class="content">
+						<button class="button spin">Spin</button>
+					</div>
+				</div>
+				<div id="fees" class="information">
+					<div class="business_heading clearfix">
+						<img src="img/fees.png" class="icon"/>
+						<h1>Daily Fees</h1>
+					</div>
+					<button class="button spin" disabled="true">Not in Session</button>
+				</div>
+			</div>
+			<div id="inactiveBusinesses"></div>
+		</div>
+	</div>
+</body>
+
+</html>
