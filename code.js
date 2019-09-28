@@ -668,10 +668,12 @@ $(document).ready(function() {
 });
 
 function displayPopup(divName) {
-	$("#notification").show();
-	$("#overlay").show();
 	$("#notification > *").hide();
 	$("#"+divName).show();
+	var h = $("#notification").outerHeight();
+	$("#notification").css("top", "calc(50% - "+h/2.0+"px)");
+	$("#notification").show();
+	$("#overlay").show();
 }
 
 function createBackup(business) {
@@ -801,14 +803,6 @@ function redrawBusinessTabs() {
 			}
 		}
 		$("#"+business+" .content").show();
-		if (business == "bunker") {
-			if (userInfo["bunker"]["hide_research"]) {
-				$("#bunker .progress_bar.research").hide();
-			}
-			else {
-				$("#bunker .progress_bar.research").show();
-			}
-		}
 		$("#"+business).appendTo("#activeBusinesses");
 		$("#"+business+" .business_heading").css("margin-bottom", "3px");
 		
@@ -881,14 +875,21 @@ function redrawScreen() {
 	for (var i = 0; i < progressBars.length; i++) {
 		var type = typeRegexp.exec($(progressBars[i]).attr("class"))[1];
 		var business = $(progressBars[i]).parents("div.information").attr("id");
-		if (business == "nightclub") {
+		if (business == "bunker" && type == "research") {
+			if (userInfo["bunker"]["hide_research"]) {
+				$("#bunker .progress_bar.research").hide();
+				continue;
+			}
+			$("#bunker .progress_bar.research").show();
+		}
+		else if (business == "nightclub") {
 			if (userInfo.nightclub.sidebar) {
 				if (!userInfo.nightclub.producing[type]) {
-					$("#"+business+" .progress_bar."+type).hide();
+					$("#nightclub .progress_bar."+type).hide();
 					continue;
 				}
 			}
-			$("#"+business+" .progress_bar."+type).show();
+			$("#nightclub .progress_bar."+type).show();
 		}
 		$("#"+business+" .progress_bar."+type+" .bar").css("width", 100.0*userInfo[business][type]/staticInfo[business]["max"+capitalize(type)]+"%");
 	}

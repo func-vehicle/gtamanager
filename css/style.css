@@ -99,7 +99,7 @@ input[type=range] {
 	height: 30px;
 	background: transparent;	/* Otherwise white in Chrome */
 	border: 0;
-	margin: 0 0 0 -10px;
+	margin-left: -10px;
 }
 input[type=range]::-webkit-slider-thumb {
 	-webkit-appearance: none;
@@ -266,7 +266,6 @@ input[type=range]::-ms-fill-upper {
 	min-height: 200px;
 	top: 50%;
 	left: 50%;
-	margin-top: -100px;
 	margin-left: -300px;
 	display: none;
 }
@@ -453,21 +452,21 @@ button.purple {
 input[type=range].slider {
 	-webkit-appearance: none;  /* Override default CSS styles */
 	appearance: none;
-	width: calc(100% + 14px);
+	width: calc(100% + 12px); /* Full-width */
 	height: 12px;
 	outline: none; /* Remove outline */
 	opacity: 0.0; /* Set transparency (for mouse-over effects on hover) */
 	-webkit-transition: .2s; /* 0.2 seconds transition on hover */
 	transition: opacity .2s;
 	position: absolute;
-	top: -1px;
-	left: -7px;
+	top: -3px;
+	left: -8px;
 	padding: 0;
 	cursor: pointer;
 	margin-left: 0;
 }
 input[type=range].slider:hover {
-	opacity: 0.0; /* Fully shown on mouse-over */
+	opacity: 0; /* Fully shown on mouse-over */
 }
 input[type=range].slider::-webkit-slider-thumb {
 	-webkit-appearance: none; /* Override default look */
