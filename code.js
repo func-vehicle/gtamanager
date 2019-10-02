@@ -9,6 +9,7 @@ var defaultUserInfo = {
 			volume: 1,
 			interval: 3,
 		},
+		progress_bar_style: 0,
 	},
 	bunker: {
 		name: "Bunker",
@@ -257,12 +258,14 @@ $(document).ready(function() {
 			$("#mapscreen #bg").css("max-height", scr_h);
 			$("body").css("overflow-x", "hidden");
 			$("body").css("overflow-y", "hidden");
+			$("body").addClass("hide_scroll");
 		}
 		else {
 			$("#mapscreen #bg").css("max-width", Math.max(scr_w, 620));
 			$("#mapscreen #bg").css("max-height", Math.max(scr_w, 620));
 			$("body").css("overflow-x", "auto");
 			$("body").css("overflow-y", "scroll");
+			$("body").removeClass("hide_scroll");
 		}
 		// Make overlay same size as map
 		map_w = $("#mapscreen #bg").width();
@@ -475,7 +478,6 @@ $(document).ready(function() {
 	
 	$(".setupGUI .resetCooldown button").on("click", function(event) {
 		var gui = $(event.target).parents(".setupGUI").prop("id");
-		console.log(gui);
 		var business = businessRegexp.exec($("#"+gui).prop("class"))[1];
 		if (userInfo[business].hasOwnProperty("cooldown")) {
 			userInfo[business]["cooldown"] = 0;
@@ -505,6 +507,7 @@ $(document).ready(function() {
 	
 	$("#mainSetup .buttons button.apply").on("click", function(event) {
 		userInfo.settings = changeInfo;
+		notifications.lastPlayed = 0;
 		redrawBusinessTabs();
 		redrawScreen();
 		$("#notification").hide();
@@ -531,7 +534,27 @@ $(document).ready(function() {
 	
 	$("#mainSetup .audioVolume input").on("input", function(event) {
 		var value = $(event.target).val();
+		$("#mainSetup .audioVolume span").html(value+"%");
+		changeInfo.audio.enabled = true;
+		if (new Date().getTime() - notifications.lastPlayed > 1000) {
+			notifications.lastPlayed = 0;
+		}
+		playNotification();
 		changeInfo.audio.volume = value/100.0;
+		redrawScreen();
+	});
+	
+	$("#mainSetup .progressBarStyle button").on("click", function(event) {
+		changeInfo.progress_bar_style = parseInt($(event.target).attr("data-value"), 10);
+		redrawScreen();
+	});
+	
+	$("#mainSetup .dataDownload button").on("click", function(event) {
+		var data_href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(userInfo));
+		var dlAnchorElem = document.getElementById("dataDownloadLink");
+		dlAnchorElem.setAttribute("href", data_href);
+		dlAnchorElem.setAttribute("download", "manager_data.json");
+		dlAnchorElem.click();
 		redrawScreen();
 	});
 	
@@ -553,7 +576,7 @@ $(document).ready(function() {
 	// General sliders
 	$(".slider").on("input", function(event) {
 		var value = $(event.target).val();
-		var type = typeRegexp.exec($(event.target).parents(".progress_bar").attr("class"))[1];
+		var type = typeRegexp.exec($(event.target).parents("tr").attr("class"))[1];
 		var business = $(event.target).parents("div.information").attr("id");
 		userInfo[business][type] = (value/100)*staticInfo[business]["max"+capitalize(type)];
 		localStorage.setItem("userInfo", JSON.stringify(userInfo));
@@ -591,6 +614,11 @@ $(document).ready(function() {
 	});
 	
 	// Import / Export
+	$("#importExport button.source").on("click", function() {
+		userInfo.importExport.highend_cars++;
+		redrawScreen();
+	});
+	
 	$("#importExport button.sell").on("click", function() {
 		var tenMin = 600000;
 		var toSell = parseInt($("#importExport select[name='toSell']").val(), 10);
@@ -703,7 +731,7 @@ function timeFormat(timeArray) {
 	if (hours > 0) {
 		s += hours + "H ";
 	}
-	if (minutes > 0) {
+	if (hours > 0 || minutes > 0) {
 		s += minutes + "M ";
 	}
 	s += seconds + "S";
@@ -859,6 +887,12 @@ function redrawScreen() {
 	$("#nightclubSetupGUI .sidebar button[data-value=1]").prop("disabled", !sidebar);
 	$("#nightclubSetupGUI .sidebar button[data-value=0]").prop("disabled", sidebar);
 	
+	var progress_bar_style = changeInfo["progress_bar_style"];
+	$("#mainSetup .progressBarStyle button").eq(0).prop("disabled", progress_bar_style == 0);
+	$("#mainSetup .progressBarStyle button").eq(1).prop("disabled", progress_bar_style == 1);
+	$("#mainSetup .progressBarStyle button").eq(2).prop("disabled", progress_bar_style == 2);
+	$("#mainSetup .progressBarStyle button").eq(3).prop("disabled", progress_bar_style == 3);
+	
 	var products = staticInfo["nightclub"]["products"];
 	for (var i = 0; i < products.length; i++) {
 		var product = products[i];
@@ -873,32 +907,85 @@ function redrawScreen() {
 	// Business sidebar progress bars
 	var progressBars = $(".progress_bar");
 	for (var i = 0; i < progressBars.length; i++) {
-		var type = typeRegexp.exec($(progressBars[i]).attr("class"))[1];
+		var type = typeRegexp.exec($(progressBars[i]).parents("tr").attr("class"))[1];
 		var business = $(progressBars[i]).parents("div.information").attr("id");
 		if (business == "bunker" && type == "research") {
 			if (userInfo["bunker"]["hide_research"]) {
-				$("#bunker .progress_bar.research").hide();
+				$("#bunker tr.research").hide();
 				continue;
 			}
-			$("#bunker .progress_bar.research").show();
+			$("#bunker tr.research").show();
 		}
 		else if (business == "nightclub") {
 			if (userInfo.nightclub.sidebar) {
 				if (!userInfo.nightclub.producing[type]) {
-					$("#nightclub .progress_bar."+type).hide();
+					$("#nightclub tr."+type).hide();
 					continue;
 				}
 			}
-			$("#nightclub .progress_bar."+type).show();
+			$("#nightclub tr."+type).show();
 		}
-		$("#"+business+" .progress_bar."+type+" .bar").css("width", 100.0*userInfo[business][type]/staticInfo[business]["max"+capitalize(type)]+"%");
+		progress_bar_style = userInfo.settings["progress_bar_style"];
+		var percentage = 100.0*userInfo[business][type]/staticInfo[business]["max"+capitalize(type)];
+		$("#"+business+" tr."+type+" .progress_bar .bar").css("width", percentage+"%");
+		if (progress_bar_style == 0) {
+			$("#"+business+" tr."+type).removeClass("big");
+			$("#"+business+" tr."+type+" .progress_bar .fivetick").hide();
+			$("#"+business+" tr."+type+" .progress_bar span").hide();
+		}
+		else if (progress_bar_style == 1) {
+			$("#"+business+" tr."+type).removeClass("big");
+			$("#"+business+" tr."+type+" .progress_bar .fivetick").show();
+			$("#"+business+" tr."+type+" .progress_bar span").hide();
+		}
+		else if (progress_bar_style == 2) {
+			$("#"+business+" tr."+type).addClass("big");
+			$("#"+business+" tr."+type+" .progress_bar .fivetick").hide();
+			$("#"+business+" tr."+type+" .progress_bar span").html(Math.round(percentage)+"%");
+			$("#"+business+" tr."+type+" .progress_bar span").show();
+		}
+		else if (progress_bar_style == 3) {
+			$("#"+business+" tr."+type).addClass("big");
+			$("#"+business+" tr."+type+" .progress_bar .fivetick").hide();
+			var remaining_ms;
+			if (business == "nightclub") {
+				remaining_ms = (1-percentage/100)*staticInfo["nightclub"]["max"+capitalize(type)]*staticInfo["nightclub"]["accrue"+capitalize(type)]*60*1000;
+			}
+			else if (type == "supplies") {
+				remaining_ms = (percentage/100)*staticInfo[business]["max"+capitalize(type)]*60*1000;
+			}
+			else {
+				remaining_ms = (1-percentage/100)*staticInfo[business]["max"+capitalize(type)]*60*1000;
+			}
+			var remaining_string;
+			if (remaining_ms < 1000) {
+				if (type == "supplies") {
+					remaining_string = "None";
+				}
+				else {
+					remaining_string = "Full";
+				}
+			}
+			else {
+				var timeArray = msFormat(remaining_ms);
+				if (timeArray[0] > 0) {
+					remaining_string = timeArray[0] + "+ H";
+				}
+				else if (timeArray[1] > 0) {
+					remaining_string = timeArray[1] + " M";
+				}
+				else {
+					remaining_string = timeArray[2] + " S";
+				}
+			}
+			$("#"+business+" tr."+type+" .progress_bar span").html(remaining_string);
+			$("#"+business+" tr."+type+" .progress_bar span").show();
+		}
 	}
 	
 	// I/E cooldown
 	if (userInfo["importExport"]["cooldown"] <= 0) {
-		var cars = userInfo["importExport"]["highend_cars"];
 		$("#importExport button.sell").attr("disabled", false);
-		$("#importExport button.sell").html("Sell ("+cars+")");
 	}
 	else {
 		$("#importExport button.sell").attr("disabled", true);
@@ -906,6 +993,8 @@ function redrawScreen() {
 		var s = timeFormat(t);
 		$("#importExport button.sell").html(s);
 	}
+	var highend_cars = userInfo["importExport"]["highend_cars"];
+	$("#importExport button.source").html("Source ("+highend_cars+")");
 	
 	// Wheel cooldown
 	if (new Date().getTime() - userInfo["wheel"]["timestamp"] > 86400000) {

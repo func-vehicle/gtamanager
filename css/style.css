@@ -20,7 +20,7 @@ body {
 	scrollbar-width: thin;
     -ms-overflow-style: none;	/* IE 10+ */
 }
-body::-webkit-scrollbar {		/* WebKit */
+body.hide_scroll::-webkit-scrollbar {		/* WebKit */
     width: 0;
     height: 0;
 }
@@ -62,15 +62,37 @@ body::-webkit-scrollbar {		/* WebKit */
 	display: inline-block;
 	font-size: 16px;
 	cursor: pointer;
+	outline: none;
 }
 .button:last-child {
 	margin-right: 0;
+}
+.button:hover {
+	opacity: 0.90;
+}
+.button:active {
+	opacity: 0.70;
 }
 .button:disabled {
 	opacity: 0.60;
 	cursor: unset;
 }
-/* General */
+button.green {
+	background-color: #109600;
+}
+button.blue {
+	background-color: #1F9BDB;
+}
+button.red {
+	background-color: #CC212C;
+}
+button.orange {
+	background-color: #FF6421;
+}
+button.purple {
+	background-color: #9B32A8;
+}
+/* General input */
 input {
     border: 1px solid #FFF;
 	color: #FFF;
@@ -95,11 +117,12 @@ input[type=number] {
 /* Slider input: Hide default */
 input[type=range] {
 	-webkit-appearance: none;	/* Hides the slider so that custom slider can be made */
-	width: 128px;				/* Specific width is required for Firefox. */
+	width: 110px;				/* Specific width is required for Firefox. */
 	height: 30px;
 	background: transparent;	/* Otherwise white in Chrome */
 	border: 0;
-	margin-left: -10px;
+	margin: 0;
+	padding: 5px 0;
 }
 input[type=range]::-webkit-slider-thumb {
 	-webkit-appearance: none;
@@ -309,6 +332,14 @@ input[type=range]::-ms-fill-upper {
 #notification .buttons .button {
 	min-width: 100px;
 }
+#mainSetup .audioFreq span {
+	vertical-align: top;
+	margin: 5px 0 0 8px;
+	display: inline-block;
+}
+#mainSetup .audioVolume span {
+	margin-left: 8px;
+}
 #nightclubGUI th, #nightclubGUI td {
 	text-align: left;
 }
@@ -356,21 +387,6 @@ input[type=range]::-ms-fill-upper {
 	margin-left: 8px;
 	margin-right: 8px;
 	width: calc(100% - 16px);
-}
-button.green {
-	background-color: #109600;
-}
-button.blue {
-	background-color: #1F9BDB;
-}
-button.red {
-	background-color: #CC212C;
-}
-button.orange {
-	background-color: #FF6421;
-}
-button.purple {
-	background-color: #9B32A8;
 }
 .onechoice .button {
 	opacity: 0.60;
@@ -442,31 +458,63 @@ button.purple {
 	padding: 2px 6px 3px 6px;
 	float: right;
 }
+#infotab td  {
+	padding-bottom: 5px;
+	vertical-align: top;
+}
+#infotab td:first-child {
+	width: 60px;
+}
+#infotab td > span {
+	display: block;
+	line-height: 1em;
+	font-size: 0.8em;
+}
 .progress_bar {
 	border: 1px solid black;
 	width: 125px;
 	height: 12px;
-	margin-bottom: 5px;
 	position: relative;
+	line-height: 1em;
+}
+.progress_bar .fivetick {
+	top: -3px;
+	left: -1px;
+	position: absolute;
+	width: 125px;
+	height: 12px;
+}
+.progress_bar .fivetick div {
+	display: inline-block;
+	width: 20%;
+	height: 100%;
+	border: 1px solid #000;
+	border-left: 0;
+}
+.big .progress_bar, .big .progress_bar input[type=range].slider {
+	height: 18px;
+}
+.big td:first-child span {
+	margin-top: 3px;
 }
 input[type=range].slider {
 	-webkit-appearance: none;  /* Override default CSS styles */
 	appearance: none;
-	width: calc(100% + 12px); /* Full-width */
+	width: calc(100% + 12px);
 	height: 12px;
-	outline: none; /* Remove outline */
+	outline: none;
 	opacity: 0.0; /* Set transparency (for mouse-over effects on hover) */
-	-webkit-transition: .2s; /* 0.2 seconds transition on hover */
+	-webkit-transition: .2s;
 	transition: opacity .2s;
 	position: absolute;
-	top: -3px;
-	left: -8px;
+	top: -1px;
+	left: -6px;
 	padding: 0;
 	cursor: pointer;
 	margin-left: 0;
 }
 input[type=range].slider:hover {
-	opacity: 0; /* Fully shown on mouse-over */
+	opacity: 0.0; /* 1.0 for debug */
 }
 input[type=range].slider::-webkit-slider-thumb {
 	-webkit-appearance: none; /* Override default look */
@@ -486,6 +534,24 @@ input[type=range].slider::-moz-range-thumb {
 	width: 0%;
 	height: 100%;
 }
+.progress_bar span {
+	line-height: 1em;
+	font-size: 0.9em;
+	pointer-events: none;
+	color: #FFF;
+	width: auto;
+	height: 14px;
+	position: absolute;
+	top: 1px;
+	left: 50%;
+	border-radius: 2px;
+	transform: translate(-50%, 0);
+	white-space: nowrap;
+	text-align: center;
+	padding: 0 4px;
+	background-color: rgba(0, 0, 0, 0.25);
+	text-shadow: -0.1em 0 black, 0 -0.1em black, 0.1em 0 black, 0 0.1em black;
+}
 .product .bar {
 	background-color: #5BB3E1;
 }
@@ -496,12 +562,10 @@ input[type=range].slider::-moz-range-thumb {
 	background-color: #FA8452;
 }
 #nightclub .bar {
-	background-color: #bf45ff;
+	background-color: #C963FF;
 }
-.button.spin, .button.modify {
-	background-color: #9B32A8;
-}
-#importExport .content {
+#importExport .content div:last-child {
+	margin-top: 5px;
 	display: inline-flex;
 }
 select {	
