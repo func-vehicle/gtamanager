@@ -31,7 +31,7 @@
 			<img id="importExport_map" src="img/import.png" class="map_icon"/>
 			<img id="wheel_map" src="img/wheel.png" class="map_icon"/>
 			<div id="mini_notif">
-				<p>The cooldown manager is paused.</p>
+				<p>The business manager is paused.</p>
 			</div>
 			<div id="options" class="fsz">
 				<button class="button toggle start green">Start</button>
@@ -45,7 +45,7 @@
 						<h1>Update</h1>
 					</div>
 					<div class="main">
-						<p>The cooldown manager has been updated. Your data has been converted to the new
+						<p>The business manager has been updated. Your data has been converted to the new
 						format. Please report any bugs to func_vehicle.</p>
 					</div>
 					<div class="buttons">
@@ -57,7 +57,7 @@
 						<h1>Notice</h1>
 					</div>
 					<div class="main">
-						<p>The cooldown manager is currently paused. It should be unpaused at all times
+						<p>The business manager is currently paused. It should be unpaused at all times
 						when you are in free roam / contact missions in order to be accurate.</p>
 					</div>
 					<div class="buttons fsz">
@@ -79,16 +79,36 @@
 							</tr>
 							<tr class="audioFreq">
 								<td>Audio interval:</td>
-								<td class="incDecButtons fsz">
-									<button class="fa fa-minus button minus"></button>
-									<input type="number" class="range_enforced integer_only" name="quantity" value="1" min="1" max="60"/>
-									<button class="fa fa-plus button plus"></button>
+								<td class="incDecButtons">
+									<button class="fa fa-minus button minus"></button><!--
+									--><input type="number" class="range_enforced integer_only" name="quantity" value="1" min="1" max="60"/><!--
+									--><button class="fa fa-plus button plus"></button><!--
+									--><span>minutes</span>
 								</td>
 							</tr>
 							<tr class="audioVolume">
 								<td>Audio volume:</td>
+								<td class="onechoice">
+									<input type="range" min="0" max="100" value="0"><!--
+									--><span>100%</span>
+								</td>
+							</tr>
+							<tr class="progressBarStyle">
+								<td>Progress style:</td>
 								<td class="onechoice fsz">
-									<input type="range" min="0" max="100" value="0">
+									<button class="button blue" data-value="0">Compact</button>
+									<button class="button blue" data-value="1">5-tick</button>
+									<button class="button blue" data-value="2">Percentage</button>
+									<button class="button blue" data-value="3">Time Remaining</button>
+								</td>
+							</tr>
+							<tr class="dataDownload">
+								<td>Data:</td>
+								<td class="fsz">
+									<button class="button orange" data-value="0">Download</button>
+									<button class="button orange" data-value="1">Load from file</button>
+									<a id="dataDownloadLink" style="display: none;"></a>
+									<input id="fileInput" type="file" accept=".json, application/json" style="display: none;"/>
 								</td>
 							</tr>
 						</table>
@@ -375,18 +395,41 @@
 						<button class="fa fa-cog button setup"></button>
 					</div>
 					<div class="content">
-						<div class="progress_bar product">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
-						<div class="progress_bar research">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
-						<div class="progress_bar supplies">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
+						<table>
+							<tr class="product">
+								<td><span>Product</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="research">
+								<td><span>Research</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="supplies">
+								<td><span>Supplies</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+						</table>
 						<div class="fsz">
 							<button class="button supplies green">Resupply</button>
 							<button class="button sell blue">Sell</button>
@@ -400,14 +443,30 @@
 						<button class="fa fa-cog button setup"></button>
 					</div>
 					<div class="content">
-						<div class="progress_bar product">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
-						<div class="progress_bar supplies">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
+						<table>
+							<tr class="product">
+								<td><span>Product</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="supplies">
+								<td><span>Supplies</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+						</table>
 						<div class="fsz">
 							<button class="button supplies green">Resupply</button>
 							<button class="button sell blue">Sell</button>
@@ -421,14 +480,30 @@
 						<button class="fa fa-cog button setup"></button>
 					</div>
 					<div class="content">
-						<div class="progress_bar product">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
-						<div class="progress_bar supplies">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
+						<table>
+							<tr class="product">
+								<td><span>Product</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="supplies">
+								<td><span>Supplies</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+						</table>
 						<div class="fsz">
 							<button class="button supplies green">Resupply</button>
 							<button class="button sell blue">Sell</button>
@@ -442,14 +517,30 @@
 						<button class="fa fa-cog button setup"></button>
 					</div>
 					<div class="content">
-						<div class="progress_bar product">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
-						<div class="progress_bar supplies">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
+						<table>
+							<tr class="product">
+								<td><span>Product</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="supplies">
+								<td><span>Supplies</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+						</table>
 						<div class="fsz">
 							<button class="button supplies green">Resupply</button>
 							<button class="button sell blue">Sell</button>
@@ -463,14 +554,30 @@
 						<button class="fa fa-cog button setup"></button>
 					</div>
 					<div class="content">
-						<div class="progress_bar product">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
-						<div class="progress_bar supplies">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
+						<table>
+							<tr class="product">
+								<td><span>Product</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="supplies">
+								<td><span>Supplies</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+						</table>
 						<div class="fsz">
 							<button class="button supplies green">Resupply</button>
 							<button class="button sell blue">Sell</button>
@@ -484,14 +591,30 @@
 						<button class="fa fa-cog button setup"></button>
 					</div>
 					<div class="content">
-						<div class="progress_bar product">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
-						<div class="progress_bar supplies">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
+						<table>
+							<tr class="product">
+								<td><span>Product</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="supplies">
+								<td><span>Supplies</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+						</table>
 						<div class="fsz">
 							<button class="button supplies green">Resupply</button>
 							<button class="button sell blue">Sell</button>
@@ -505,35 +628,85 @@
 						<button class="fa fa-cog button setup"></button>
 					</div>
 					<div class="content">
-						<div class="progress_bar cargo">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
-						<div class="progress_bar sporting">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
-						<div class="progress_bar imports">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
-						<div class="progress_bar pharma">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
-						<div class="progress_bar creation">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
-						<div class="progress_bar organic">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
-						<div class="progress_bar copying">
-							<input type="range" class="slider" min="0" max="100" value="0">
-							<div class="bar"></div>
-						</div>
-						<button class="button modify">Modify</button>
+						<table>
+							<tr class="cargo">
+								<td><span>Cargo</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="sporting">
+								<td><span>Sporting</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							<tr class="imports">
+								<td><span>Imports</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="pharma">
+								<td><span>Pharma</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="creation">
+								<td><span>Cash</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="organic">
+								<td><span>Organic</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="copying">
+								<td><span>Copying</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+						</table>
+						<button class="button modify purple">Modify</button>
 					</div>
 				</div>
 				<div id="importExport" class="information">
@@ -543,13 +716,19 @@
 						<button class="fa fa-cog button setup"></button>
 					</div>
 					<div class="content">
-						<select name="toSell">
-							<option>1</option>
-							<option>2</option>
-							<option>3</option>
-							<option>4</option>
-						</select>
-						<button class="button sell blue">Sell</button>
+						<div class="fsz">
+							<button class="button source green">Source (0)</button>
+							<!--<button class="button modify purple">View</button>-->
+						</div>
+						<div>
+							<select name="toSell">
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+							</select>
+							<button class="button sell blue">Sell</button>
+						</div>
 					</div>
 				</div>
 				<div id="wheel" class="information">
@@ -559,7 +738,7 @@
 						<button class="fa fa-cog button setup"></button>
 					</div>
 					<div class="content">
-						<button class="button spin">Spin</button>
+						<button class="button spin purple">Spin</button>
 					</div>
 				</div>
 				<div id="fees" class="information">
@@ -567,7 +746,7 @@
 						<img src="img/fees.png" class="icon"/>
 						<h1>Daily Fees</h1>
 					</div>
-					<button class="button spin" disabled="true">Not in Session</button>
+					<button class="button purple" disabled="true">Not in Session</button>
 				</div>
 			</div>
 			<div id="inactiveBusinesses"></div>
