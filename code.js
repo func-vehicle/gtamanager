@@ -1,7 +1,7 @@
 var userInfo;
 
 var defaultUserInfo = {
-	version: "1.2.0",
+	version: "1.3.0",
 	settings: {
 		hide_unowned: false,
 		audio: {
@@ -223,6 +223,10 @@ function update() {
 		userInfo.nightclub.producing.organic = defaultUserInfo.nightclub.producing.organic;
 		userInfo.nightclub.producing.copying = defaultUserInfo.nightclub.producing.copying;
 		userInfo.version = "1.2.0";
+	}
+	if (userInfo.version == "1.2.0") {
+		userInfo.settings.progress_bar_style = defaultUserInfo.settings.progress_bar_style;
+		userInfo.version = "1.3.0";
 	}
 }
 
@@ -630,7 +634,7 @@ $(document).ready(function() {
 	
 	// Import / Export
 	$("#importExport button.source").on("click", function() {
-		userInfo.importExport.highend_cars++;
+		userInfo.importExport.highend_cars = Math.min(userInfo.importExport.highend_cars + 1, 20);
 		redrawScreen();
 	});
 	
