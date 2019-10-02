@@ -236,16 +236,12 @@ $(document).ready(function() {
 		displayPopup("pauseNotice");
 	}
 	
-	redrawScreen();
-	
-	redrawBusinessTabs();
-	
 	$(window).resize(function() {
 		var scr_w, scr_h, map_w, map_h;
 		// Resize map
-		scr_w = Math.min(window.innerWidth, document.body.clientWidth);
-		scr_h = Math.min(window.innerHeight, document.body.clientHeight);
-		if (scr_w > 840 && scr_h > 630) {
+		scr_w = document.body.clientWidth;
+		scr_h = document.body.clientHeight;
+		if (scr_w > 840 && scr_h > 620) {
 			var infotab = document.getElementById("infotab");
 			var hasVerticalScrollbar = infotab.scrollHeight > infotab.clientHeight;
 			var scrollBarWidth = 0;
@@ -549,13 +545,32 @@ $(document).ready(function() {
 		redrawScreen();
 	});
 	
-	$("#mainSetup .dataDownload button").on("click", function(event) {
+	$("#mainSetup .dataDownload button[data-value=0]").on("click", function(event) {
 		var data_href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(userInfo));
 		var dlAnchorElem = document.getElementById("dataDownloadLink");
 		dlAnchorElem.setAttribute("href", data_href);
 		dlAnchorElem.setAttribute("download", "manager_data.json");
 		dlAnchorElem.click();
 		redrawScreen();
+	});
+	
+	$("#mainSetup .dataDownload button[data-value=1]").on("click", function(event) {
+		$("#fileInput").trigger("click");
+	});
+	$("#mainSetup .dataDownload input").on("change", function(event) {
+		var reader = new FileReader();
+		var file = this.files[0];
+		if (file.name.split('.').pop() != "json") {
+			console.log("Invalid file type!");
+			return;
+		}
+		reader.onload = function(e) {
+			userInfo = JSON.parse(reader.result);
+			localStorage.setItem("userInfo", JSON.stringify(userInfo));
+			window.onbeforeunload = null;
+			window.location.reload(false);
+		}
+		reader.readAsText(file);
 	});
 	
 	// Reset
@@ -693,6 +708,9 @@ $(document).ready(function() {
 		displayPopup("mainSetup");
 		redrawScreen();
 	});
+	
+	redrawScreen();
+	redrawBusinessTabs();
 });
 
 function displayPopup(divName) {
