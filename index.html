@@ -15,21 +15,32 @@
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script src="code.js"></script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-76620963-2"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-76620963-2');
+	</script>
+
 </head>
 
 <body>
 	<div id="wrapper">
 		<div id="mapscreen" class="col">
+			<audio id="notification_ding" src="sfx/chime.mp3"></audio>
 			<img id="bg" src="img/bg.jpg" draggable="false"/>
-			<img id="bunker_map" src="img/bunker.png" class="map_icon"/>
-			<img id="coke_map" src="img/coke.png" class="map_icon"/>
-			<img id="meth_map" src="img/meth.png" class="map_icon"/>
-			<img id="cash_map" src="img/cash.png" class="map_icon"/>
-			<img id="weed_map" src="img/weed.png" class="map_icon"/>
-			<img id="forgery_map" src="img/forgery.png" class="map_icon"/>
-			<img id="nightclub_map" src="img/nightclub.png" class="map_icon"/>
+			<img id="bunker_map" src="img/bunker.png" class="map_icon clickable"/>
+			<img id="coke_map" src="img/coke.png" class="map_icon clickable"/>
+			<img id="meth_map" src="img/meth.png" class="map_icon clickable"/>
+			<img id="cash_map" src="img/cash.png" class="map_icon clickable"/>
+			<img id="weed_map" src="img/weed.png" class="map_icon clickable"/>
+			<img id="forgery_map" src="img/forgery.png" class="map_icon clickable"/>
+			<img id="nightclub_map" src="img/nightclub.png" class="map_icon clickable"/>
 			<img id="importExport_map" src="img/import.png" class="map_icon"/>
-			<img id="wheel_map" src="img/wheel.png" class="map_icon"/>
+			<img id="wheel_map" src="img/wheel.png" class="map_icon clickable"/>
 			<div id="mini_notif">
 				<p>The business manager is paused.</p>
 			</div>
@@ -40,19 +51,34 @@
 			</div>
 			<div id="overlay"></div>
 			<div id="notification">
-				<div id="updateNotice" class="main">
+				<div id="updateNotice">
 					<div class="heading">
-						<h1>Update</h1>
+						<h1>Patch Notes</h1>
 					</div>
 					<div class="main">
-						<p>The business manager has been updated. Your data has been converted to the new
-						format. Please report any bugs to func_vehicle.</p>
+						<h1>Version 1.4.0</h1>
+						<div class="indent">
+							<h2>New features</h2>
+							<ul>
+								<li>Businesses can now be individually muted by clicking on their map icon.</li>
+								<li>The Lucky Wheel can now be hidden via its setup.</li>
+								<li>Added button to view these patch notes again to the main setup.</li>
+							</ul>
+							<h2>Fixes</h2>
+							<ul>
+								<li>Bunker research bar should now be calculated correctly.
+									<ul><li>Projected times with time remaining bar style may still be incorrect for bunker research.</li></ul>
+								</li>
+								<li>Increased contrast of progress bar text (for percentage and time remaining styles).</li>
+								<li>Potential fix for notification sound not playing on some browsers.</li>
+							</ul>
+						</div>
 					</div>
 					<div class="buttons">
 						<button class="button ok red">OK</button>
 					</div>
 				</div>
-				<div id="pauseNotice" class="main">
+				<div id="pauseNotice">
 					<div class="heading">
 						<h1>Notice</h1>
 					</div>
@@ -109,6 +135,12 @@
 									<button class="button orange" data-value="1">Load from file</button>
 									<a id="dataDownloadLink" style="display: none;"></a>
 									<input id="fileInput" type="file" accept=".json, application/json" style="display: none;"/>
+								</td>
+							</tr>
+							<tr class="about">
+								<td>About:</td>
+								<td class="fsz">
+									<button class="button orange" data-value="0">Patch notes</button>
 								</td>
 							</tr>
 						</table>
@@ -371,6 +403,13 @@
 					</div>
 					<div class="main">
 						<table>
+							<tr class="own">
+								<td>Display:</td>
+								<td class="onechoice fsz">
+									<button class="button green" data-value="1">Yes</button>
+									<button class="button red" data-value="0">No</button>
+								</td>
+							</tr>
 							<tr class="resetCooldown">
 								<td>Cooldown:</td>
 								<td class="fsz">
