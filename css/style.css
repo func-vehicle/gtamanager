@@ -238,6 +238,17 @@ input[type=range]::-ms-fill-upper {
 	-webkit-filter: invert(40%) grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(400%) contrast(2);
 	filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8);
 }
+.map_icon.clickable {
+	cursor: pointer;
+}
+.map_icon_mute {
+	width: 24px;
+	height: 24px;
+	margin-top: -12px;
+	margin-left: -12px;
+	position: absolute;
+	pointer-events: none;
+}
 #mini_notif {
 	background-color: #000;
 	border: 1px solid #CC212C;
@@ -310,10 +321,35 @@ input[type=range]::-ms-fill-upper {
 }
 #notification .main {
 	flex: 1;
-	overflow: auto;
+}
+#notification .main {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+#notification .main h1 {
+	padding-top: 3px;
+	font-size: 1.3em;
+	color: #FFF;
+}
+#notification .indent {
+	padding-left: 10px;
+}
+#notification h2 {
+	font-size: 1.2em;
+	padding-top: 5px;
+	color: #FFF;
 }
 #notification p {
-	padding: 5px;
+	padding-top: 5px;
+	color: #FFF;
+	font-size: 1em;
+}
+#notification ul {
+	margin-left: 30px;
+	color: #FFF;
+}
+#notification li {
+	padding: 5px 0 0 0;
 	color: #FFF;
 	font-size: 1em;
 }
@@ -376,17 +412,12 @@ input[type=range]::-ms-fill-upper {
 .setupGUI label {
 	color: #FFF;
 }
-.setupGUI table {
-	margin-left: 8px;
-}
 .setupGUI tr td:first-child {
 	text-align: right;
 	min-width: 100px;
 }
 #nightclubGUI table {
-	margin-left: 8px;
-	margin-right: 8px;
-	width: calc(100% - 16px);
+	width: 100%;
 }
 .onechoice .button {
 	opacity: 0.60;
@@ -395,7 +426,7 @@ input[type=range]::-ms-fill-upper {
 	opacity: 1;
 }
 #nightclubSetupGUI td:first-child {
-	width: 115px;
+	width: 112px;
 }
 #nightclubSetupGUI .producing .button {
 	margin-bottom: 5px;
@@ -549,7 +580,7 @@ input[type=range].slider::-moz-range-thumb {
 	white-space: nowrap;
 	text-align: center;
 	padding: 0 4px;
-	background-color: rgba(0, 0, 0, 0.25);
+	background-color: rgba(0, 0, 0, 0.5);
 	text-shadow: -0.1em 0 black, 0 -0.1em black, 0.1em 0 black, 0 0.1em black;
 }
 .product .bar {

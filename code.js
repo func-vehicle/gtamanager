@@ -1,7 +1,7 @@
 var userInfo;
 
 var defaultUserInfo = {
-	version: "1.3.0",
+	version: "1.4.0",
 	settings: {
 		hide_unowned: false,
 		audio: {
@@ -14,6 +14,7 @@ var defaultUserInfo = {
 	bunker: {
 		name: "Bunker",
 		owned: false,
+		muted: false,
 		product: 0,
 		research: 0,
 		supplies: 0,
@@ -27,6 +28,7 @@ var defaultUserInfo = {
 	coke: {
 		name: "Cocaine",
 		owned: false,
+		muted: false,
 		product: 0,
 		supplies: 0,
 		map_position: {
@@ -37,6 +39,7 @@ var defaultUserInfo = {
 	meth: {
 		name: "Meth",
 		owned: false,
+		muted: false,
 		product: 0,
 		supplies: 0,
 		map_position: {
@@ -47,6 +50,7 @@ var defaultUserInfo = {
 	cash: {
 		name: "Counterfeit Cash",
 		owned: false,
+		muted: false,
 		product: 0,
 		supplies: 0,
 		map_position: {
@@ -57,6 +61,7 @@ var defaultUserInfo = {
 	weed: {
 		name: "Weed",
 		owned: false,
+		muted: false,
 		product: 0,
 		supplies: 0,
 		map_position: {
@@ -67,6 +72,7 @@ var defaultUserInfo = {
 	forgery: {
 		name: "Document Forgery",
 		owned: false,
+		muted: false,
 		product: 0,
 		supplies: 0,
 		map_position: {
@@ -77,6 +83,7 @@ var defaultUserInfo = {
 	nightclub: {
 		name: "Nightclub",
 		owned: false,
+		muted: false,
 		sidebar: true,
 		cargo: 0,
 		sporting: 0,
@@ -111,6 +118,8 @@ var defaultUserInfo = {
 	},
 	wheel: {
 		name: "Lucky Wheel",
+		owned: true,
+		muted: false,
 		timestamp: 0,
 		map_position: {
 			x: 53.89,
@@ -140,7 +149,7 @@ var staticInfo = {
 	mcbusinesses: ["coke", "meth", "cash", "weed", "forgery"],
 	bunker: {
 		maxProduct: 750,
-		maxResearch: 750,
+		maxResearch: 210,
 		maxSupplies: 150,
 	},
 	coke: {
@@ -228,6 +237,18 @@ function update() {
 		userInfo.settings.progress_bar_style = defaultUserInfo.settings.progress_bar_style;
 		userInfo.version = "1.3.0";
 	}
+	if (userInfo.version == "1.3.0") {
+		userInfo.bunker.muted = false;
+		userInfo.coke.muted = false;
+		userInfo.meth.muted = false;
+		userInfo.cash.muted = false;
+		userInfo.weed.muted = false;
+		userInfo.forgery.muted = false;
+		userInfo.nightclub.muted = false;
+		userInfo.wheel.muted = false;
+		userInfo.wheel.owned = true;
+		userInfo.version = "1.4.0";
+	}
 }
 
 $(document).ready(function() {
@@ -275,6 +296,15 @@ $(document).ready(function() {
 	});
 	window.dispatchEvent(new Event("resize"));
 	
+	function muteBusiness(event) {
+		var business = businessRegexp.exec($(event.target).attr("id"))[1];
+		if (userInfo[business].hasOwnProperty("muted")) {
+			userInfo[business].muted = !userInfo[business].muted;
+		}
+		redrawBusinessTabs();
+	}
+	$("#mapscreen .map_icon").on("click", muteBusiness);
+	
 	// General notification settings
 	$("#notification button.ok").on("click", function(event) {
 		$("#notification").hide();
@@ -289,13 +319,14 @@ $(document).ready(function() {
 		$("#overlay").hide();
 	});
 	
+	// General input field settings
 	$(".incDecButtons button.minus").on("click", function(event) {
 		var inputField = $(event.target).siblings("input")
 		inputField.val(function(i, oldval) {
 			var minVal = parseInt($(this).attr("min"), 10);
 			return Math.max(parseInt(oldval, 10) - 1, minVal);
 		});
-		inputField.trigger("input");
+		inputField.trigger("keyup");
 	});
 	
 	$(".incDecButtons button.plus").on("click", function(event) {
@@ -304,10 +335,18 @@ $(document).ready(function() {
 			var maxVal = parseInt($(this).attr("max"), 10);
 			return Math.min(parseInt(oldval, 10) + 1, maxVal);
 		});
-		inputField.trigger("input");
+		inputField.trigger("keyup");
 	});
 	
-	$(".range_enforced").on("input", function(event) {
+	$(".integer_only").on("keyup", function(event) {
+		var current = Math.round(parseInt($(this).val(), 10));
+		if (isNaN(current)) {
+			return;
+		}
+		$(this).val(current);
+	});
+	
+	$(".range_enforced").on("keyup", function(event) {
 		var minVal = parseInt($(this).attr("min"), 10);
 		var maxVal = parseInt($(this).attr("max"), 10);
 		var current = parseInt($(this).val(), 10);
@@ -316,14 +355,6 @@ $(document).ready(function() {
 		}
 		if (current > maxVal) { $(this).val(maxVal); var changed = true; }
 		if (current < minVal) { $(this).val(minVal); var changed = true; }
-	});
-	
-	$(".integer_only").on("input", function(event) {
-		var current = Math.round(parseFloat($(this).val()));
-		if (isNaN(current)) {
-			return;
-		}
-		$(this).val(current);
 	});
 	
 	// Nightclub Manager buttons
@@ -375,9 +406,11 @@ $(document).ready(function() {
 			$("#"+business+"_map").css("top", userInfo[business].map_position.y+"%");
 			$("#"+business+"_map").css("left", userInfo[business].map_position.x+"%");
 			$("#"+business+"_map").show();
+			$("#"+business+"_mute").show();
 		}
 		else {
 			$("#"+business+"_map").hide();
+			$("#"+business+"_mute").hide();
 		}
 		
 		redrawScreen();
@@ -386,6 +419,7 @@ $(document).ready(function() {
 	$(".setupGUI .position button").on("click", function(event) {
 		var business = businessRegexp.exec($(event.target).parents(".setupGUI").attr("class"))[1];
 		var toMove = $("#"+business+"_map");
+		var toMoveMute = $("#"+business+"_mute");
 		var outerDiv = $("#mapscreen");
 		var outDim = outerDiv.offset();
 		outDim.right = (outDim.left + outerDiv.width() - 15);
@@ -395,6 +429,7 @@ $(document).ready(function() {
 		
 		$("#notification").hide();
 		$("#overlay").hide();
+		$("#mapscreen .map_icon").off("click");
 		
 		$(document).on("mousemove", function(e) {
 			var x = (e.clientX);
@@ -405,6 +440,10 @@ $(document).ready(function() {
 				toMove.css({
 				   left: e.pageX,
 				   top:  e.pageY,
+				});
+				toMoveMute.css({
+				   left: e.pageX + 8,
+				   top:  e.pageY - 8,
 				});
 			}
 		});
@@ -429,6 +468,7 @@ $(document).ready(function() {
 			$(document).off("mousemove");
 			$("#notification").show();
 			$("#overlay").show();
+			$("#mapscreen .map_icon").on("click", muteBusiness);
 		});
 	});
 	
@@ -575,6 +615,11 @@ $(document).ready(function() {
 			window.location.reload(false);
 		}
 		reader.readAsText(file);
+	});
+	
+	$("#mainSetup .about button").on("click", function(event) {
+		displayPopup("updateNotice");
+		redrawScreen();
 	});
 	
 	// Reset
@@ -775,7 +820,7 @@ function tick() {
 			else if (userInfo["bunker"]["mode"] == 2) {
 				if (userInfo["bunker"]["research"] < staticInfo["bunker"]["maxResearch"]) {
 					userInfo["bunker"]["research"] += 1/60;
-					userInfo["bunker"]["supplies"] -= 1/60;
+					userInfo["bunker"]["supplies"] -= 1/60 * 150/350;
 				}
 			}
 			// Both
@@ -786,7 +831,7 @@ function tick() {
 				}
 				if (userInfo["bunker"]["research"] < staticInfo["bunker"]["maxResearch"]) {
 					userInfo["bunker"]["research"] += 1/120;
-					userInfo["bunker"]["supplies"] -= 1/120;
+					userInfo["bunker"]["supplies"] -= 1/120 * 150/350;
 				}
 				
 			}
@@ -860,9 +905,25 @@ function redrawBusinessTabs() {
 		if (!userInfo[business].hasOwnProperty("map_position")) {
 			continue;
 		}
-		$("#"+business+"_map").css("top", userInfo[business].map_position.y+"%");
-		$("#"+business+"_map").css("left", userInfo[business].map_position.x+"%");
+		var x = userInfo[business].map_position.x;
+		var y = userInfo[business].map_position.y;
+		$("#"+business+"_map").css("top", y+"%");
+		$("#"+business+"_map").css("left", x+"%");
 		$("#"+business+"_map").show();
+		if (userInfo[business].hasOwnProperty("muted")) {
+			if (userInfo[business].muted) {
+				if ($("#"+business+"_mute").length == 0) {
+					var img = $("<img id='"+business+"_mute' class='map_icon_mute'>");
+					img.attr("src", "img/muted.png");
+					img.insertAfter("#"+business+"_map");
+					img.css("top", "calc("+y+"% - 8px");
+					img.css("left", "calc("+x+"% + 8px");
+				}
+			}
+			else {
+				$("#"+business+"_mute").remove();
+			}
+		}
 	}
 	$("#fees").appendTo("#activeBusinesses");
 	
@@ -975,6 +1036,9 @@ function redrawScreen() {
 			}
 			else if (type == "supplies") {
 				remaining_ms = (percentage/100)*staticInfo[business]["max"+capitalize(type)]*60*1000;
+				if (business == "bunker" && userInfo.bunker.mode == 2) {
+					remaining_ms *= 350/150;
+				}
 			}
 			else {
 				remaining_ms = (1-percentage/100)*staticInfo[business]["max"+capitalize(type)]*60*1000;
@@ -1070,15 +1134,15 @@ function notify() {
 	if (userInfo.bunker.owned) {
 		if (userInfo.bunker.product >= staticInfo.bunker.maxProduct && (userInfo.bunker.mode == 0 || userInfo.bunker.mode == 1)) {
 			flashIcon("bunker");
-			playNotification();
+			playNotification("bunker");
 		}
 		else if (userInfo.bunker.research >= staticInfo.bunker.maxResearch && (userInfo.bunker.mode == 2 || userInfo.bunker.mode == 1)) {
 			flashIcon("bunker");
-			playNotification();
+			playNotification("bunker");
 		}
 		else if (userInfo.bunker.supplies <= 0) {
 			flashIcon("bunker");
-			playNotification();
+			playNotification("bunker");
 		}
 		else {
 			flashIcon("bunker", false);
@@ -1091,11 +1155,11 @@ function notify() {
 		if (userInfo[business].owned) {
 			if (userInfo[business].product >= staticInfo[business].maxProduct) {
 				flashIcon(business);
-				playNotification();
+				playNotification(business);
 			}
 			else if (userInfo[business].supplies <= 0) {
 				flashIcon(business);
-				playNotification();
+				playNotification(business);
 			}
 			else {
 				flashIcon(business, false);
@@ -1112,7 +1176,7 @@ function notify() {
 			if (userInfo.nightclub[product] >= staticInfo.nightclub["max"+capitalize(product)]) {
 				flashed = true;
 				flashIcon("nightclub");
-				playNotification();
+				playNotification("nightclub");
 			}
 		}
 	}
@@ -1123,7 +1187,7 @@ function notify() {
 	// Wheel
 	if (new Date().getTime() - userInfo["wheel"]["timestamp"] > 86400000) {
 		flashIcon("wheel");
-		playNotification();
+		playNotification("wheel");
 	}
 	else {
 		flashIcon("wheel", false);
@@ -1144,12 +1208,16 @@ function flashIcon(business, enable = true) {
 	}
 }
 
-function playNotification() {
-	if (!userInfo.settings.audio.enabled) {
-		return;
+function playNotification(business) {
+	if (business != null) {
+		if (!userInfo.settings.audio.enabled || userInfo[business].muted) {
+			return;
+		}
 	}
 	if (new Date().getTime() - notifications.lastPlayed > 60000*userInfo.settings.audio.interval) {
-		var audio = new Audio("sfx/chime.mp3");
+		var audio = $("audio#notification_ding")[0]
+		audio.pause();
+		audio.currentTime = 0;
 		audio.volume = userInfo.settings.audio.volume;
 		audio.play();
 		notifications.lastPlayed = new Date().getTime();
