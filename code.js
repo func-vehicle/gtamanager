@@ -266,11 +266,21 @@ $(document).ready(function() {
 		// Resize map
 		scr_w = document.body.clientWidth;
 		scr_h = document.body.clientHeight;
-
 		if (scr_w > 600) {
 			$("body").removeClass("mobile");
 			$("body").addClass("desktop");
-			$("#mapscreen #bg").css("max-width", scr_w - 220);
+			var infotab = document.getElementById("infotab");
+			var hasVerticalScrollbar = infotab.scrollHeight > infotab.clientHeight;
+			var scrollBarWidth = 0;
+			if (hasVerticalScrollbar) {
+				var scrollBarWidth = infotab.offsetWidth - infotab.clientWidth;
+			}
+			$("#infotab").css("width", 210 + scrollBarWidth);
+			var infotab_w = $("#infotab").outerWidth();
+			$("#mapscreen #bg").css("max-width", scr_w - infotab_w);
+			console.log(scrollBarWidth);
+			console.log(scr_w);
+			console.log(infotab_w);
 		} else {
 			$("body").removeClass("desktop");
 			$("body").addClass("mobile");
