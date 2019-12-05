@@ -269,18 +269,7 @@ $(document).ready(function() {
 		if (scr_w > 600) {
 			$("body").removeClass("mobile");
 			$("body").addClass("desktop");
-			var infotab = document.getElementById("infotab");
-			var hasVerticalScrollbar = infotab.scrollHeight > infotab.clientHeight;
-			var scrollBarWidth = 0;
-			if (hasVerticalScrollbar) {
-				scrollBarWidth = infotab.offsetWidth - infotab.clientWidth;
-			}
-			$("#infotab").css("width", 220 + scrollBarWidth + "px");
-			var infotab_w = $("#infotab").outerWidth();
-			$("#mapscreen #bg").css("max-width", scr_w - infotab_w);
-			console.log("Scroll bar width: "+scrollBarWidth);
-			console.log("Screen width: "+scr_w);
-			console.log("Info tab width: "+infotab_w);
+			$("#mapscreen #bg").css("max-width", scr_w - 220);
 		} else {
 			$("body").removeClass("desktop");
 			$("body").addClass("mobile");
