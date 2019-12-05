@@ -266,7 +266,6 @@ $(document).ready(function() {
 		// Resize map
 		scr_w = document.body.clientWidth;
 		scr_h = document.body.clientHeight;
-
 		if (scr_w > 600) {
 			$("body").removeClass("mobile");
 			$("body").addClass("desktop");
