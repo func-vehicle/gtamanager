@@ -220,17 +220,17 @@ input[type=range]::-ms-fill-upper {
 
 /* WRAPPER */
 #wrapper {
-	display: flex;
+	/*display: flex;*/
 	max-width: 100%;
 }
 
 .desktop #wrapper {
 	max-height: 100%;
-	flex-direction: row;
+	/*flex-direction: row;*/
 }
 
 .mobile #wrapper {
-	flex-direction: column;
+	/*flex-direction: column;*/
 }
 
 /* MAP */
@@ -503,6 +503,9 @@ input[type=range]::-ms-fill-upper {
     .information:last-child {
         margin-bottom: 5px;
     }
+}
+.business-section {
+	width: 100%;
 }
 #inactiveBusinesses {
 	margin-top: 5px;

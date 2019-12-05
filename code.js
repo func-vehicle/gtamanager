@@ -273,14 +273,14 @@ $(document).ready(function() {
 			var hasVerticalScrollbar = infotab.scrollHeight > infotab.clientHeight;
 			var scrollBarWidth = 0;
 			if (hasVerticalScrollbar) {
-				var scrollBarWidth = infotab.offsetWidth - infotab.clientWidth;
+				scrollBarWidth = infotab.offsetWidth - infotab.clientWidth;
 			}
-			$("#infotab").css("width", 210 + scrollBarWidth);
+			$("#infotab").css("width", 220 + scrollBarWidth + "px");
 			var infotab_w = $("#infotab").outerWidth();
 			$("#mapscreen #bg").css("max-width", scr_w - infotab_w);
-			console.log(scrollBarWidth);
-			console.log(scr_w);
-			console.log(infotab_w);
+			console.log("Scroll bar width: "+scrollBarWidth);
+			console.log("Screen width: "+scr_w);
+			console.log("Info tab width: "+infotab_w);
 		} else {
 			$("body").removeClass("desktop");
 			$("body").addClass("mobile");
