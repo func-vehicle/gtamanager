@@ -28,7 +28,9 @@ body.mobile {
 	overflow-x: auto;
 	overflow-y: scroll;
 }
-
+.desktop .mobile-only,.mobile .desktop-only {
+	display: none;
+}
 body.desktop::-webkit-scrollbar {		/* WebKit */
     width: 0;
     height: 0;
@@ -234,16 +236,19 @@ input[type=range]::-ms-fill-upper {
 /* MAP */
 #mapscreen {
 	line-height: 0;
-	height: auto;
-	max-height: 100%;
+	height: 100%;
 	position: relative;
 }
 #mapscreen * {
 	line-height: 1.15;
 }
+#map {
+	position: relative;
+}
 #mapscreen #bg {
 	max-height: 100%;
 	width: auto;
+	display: block;
 }
 .map_icon {
 	width: 32px;
@@ -253,7 +258,7 @@ input[type=range]::-ms-fill-upper {
 	position: absolute;
 }
 .map_icon.flash {
-	-webkit-filter: invert(40%) grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(400%) contrast(2);
+	-webkit-filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8);
 	filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8);
 }
 .map_icon.clickable {
@@ -274,11 +279,12 @@ input[type=range]::-ms-fill-upper {
 	color: white;
 	padding: 5px;
 	width: 400px;
+	max-width: 100%;
 	top: 20px;
 	left: calc(50% - 200px);
 	text-align: center;
 }
-#options {
+.desktop #options {
 	background-color: #000;
 	border: 1px solid #CC212C;
 	position: absolute;
@@ -289,17 +295,27 @@ input[type=range]::-ms-fill-upper {
 	top: calc(100% - 100px);
 	left: calc(100% - 175px);
 }
-#options button {
+.desktop #options button {
 	height: 29px;
 	padding: 5px 3px 5px 3px;
 }
-#options button.toggle {
+.desktop #options button.toggle {
 	width: 100%;
 	margin-bottom: 5px;
 }
-#options button.audio, #options button.setup {
+.desktop #options button.audio, .desktop #options button.setup {
 	width: calc(50% - 2.5px);
 }
+.mobile  #options {
+	margin: 5px 5px 0 5px;
+	background-color: #FFF;
+	padding: 5px;
+	border: 1px solid #000;
+}
+.mobile #options button {
+	width: calc((100% - 10px) / 3);
+}
+
 #overlay {
 	background-color: #000;
 	opacity: 0.75;
@@ -311,21 +327,22 @@ input[type=range]::-ms-fill-upper {
 	left: 0;
 }
 #notification {
+	margin: 5px;
 	background-color: #000;
 	border: 1px solid #CC212C;
 	position: absolute;
 	min-height: 200px;
 	display: none;
 }
-
 .desktop #notification {
 	width: 600px;
+	max-width: calc(100% - 10px);
 	top: 50%;
 	left: 50%;
 	margin-left: -300px;
 }
 .mobile #notification {
-	width: 100%;
+	width: calc(100% - 10px);
 }
 #notification > div {
 	height: 100%;
