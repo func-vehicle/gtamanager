@@ -20,7 +20,16 @@ body {
 	scrollbar-width: thin;
     -ms-overflow-style: none;	/* IE 10+ */
 }
-body.hide_scroll::-webkit-scrollbar {		/* WebKit */
+body.desktop {
+	overflow-x: hidden;
+	overflow-y: hidden;
+}
+body.mobile {
+	overflow-x: auto;
+	overflow-y: scroll;
+}
+
+body.desktop::-webkit-scrollbar {		/* WebKit */
     width: 0;
     height: 0;
 }
@@ -209,8 +218,17 @@ input[type=range]::-ms-fill-upper {
 
 /* WRAPPER */
 #wrapper {
+	display: flex;
 	max-width: 100%;
+}
+
+.desktop #wrapper {
 	max-height: 100%;
+	flex-direction: row;
+}
+
+.mobile #wrapper {
+	flex-direction: column;
 }
 
 /* MAP */
@@ -296,12 +314,18 @@ input[type=range]::-ms-fill-upper {
 	background-color: #000;
 	border: 1px solid #CC212C;
 	position: absolute;
-	width: 600px;
 	min-height: 200px;
+	display: none;
+}
+
+.desktop #notification {
+	width: 600px;
 	top: 50%;
 	left: 50%;
 	margin-left: -300px;
-	display: none;
+}
+.mobile #notification {
+	width: 100%;
 }
 #notification > div {
 	height: 100%;
@@ -444,10 +468,14 @@ input[type=range]::-ms-fill-upper {
 	overflow-y: auto;
 	max-height: 100vh;
 }
+.desktop #infotab {
+	width: 220px;
+}
+
 .information {
 	border: 1px solid black;
 	padding: 5px;
-	width: 200px;
+	width: 100%;
 	margin-bottom: 5px;
 }
 .information:last-child {

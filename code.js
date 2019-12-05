@@ -266,28 +266,18 @@ $(document).ready(function() {
 		// Resize map
 		scr_w = document.body.clientWidth;
 		scr_h = document.body.clientHeight;
-		if (scr_w > 840 && scr_h > 620) {
-			var infotab = document.getElementById("infotab");
-			var hasVerticalScrollbar = infotab.scrollHeight > infotab.clientHeight;
-			var scrollBarWidth = 0;
-			if (hasVerticalScrollbar) {
-				var scrollBarWidth = infotab.offsetWidth - infotab.clientWidth;
-			}
-			$("#infotab").css("width", 210 + scrollBarWidth);
-			var infotab_w = $("#infotab").outerWidth();
-			$("#mapscreen #bg").css("max-width", scr_w - infotab_w);
-			$("#mapscreen #bg").css("max-height", scr_h);
-			$("body").css("overflow-x", "hidden");
-			$("body").css("overflow-y", "hidden");
-			$("body").addClass("hide_scroll");
+
+		if (scr_w > 600) {
+			$("body").removeClass("mobile");
+			$("body").addClass("desktop");
+			$("#mapscreen #bg").css("max-width", scr_w - 220);
+		} else {
+			$("body").removeClass("desktop");
+			$("body").addClass("mobile");
+			$("#mapscreen #bg").css("max-width", scr_w);
 		}
-		else {
-			$("#mapscreen #bg").css("max-width", Math.max(scr_w, 620));
-			$("#mapscreen #bg").css("max-height", Math.max(scr_w, 620));
-			$("body").css("overflow-x", "auto");
-			$("body").css("overflow-y", "scroll");
-			$("body").removeClass("hide_scroll");
-		}
+		$("#mapscreen #bg").css("max-height", scr_h);
+
 		// Make overlay same size as map
 		map_w = $("#mapscreen #bg").width();
 		map_h = $("#mapscreen #bg").height();
