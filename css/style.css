@@ -469,7 +469,6 @@ input[type=range]::-ms-fill-upper {
 	max-height: 100vh;
 }
 .desktop #infotab {
-	overflow-y: scroll;
 	width: 220px;
 }
 
