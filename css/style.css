@@ -235,20 +235,20 @@ input[type=range]::-ms-fill-upper {
 
 /* MAP */
 #mapscreen {
-	line-height: 0;
+	/*line-height: 0;*/
 	height: 100%;
 	position: relative;
 }
 #mapscreen * {
 	line-height: 1.15;
 }
-#map {
-	position: relative;
-}
 #mapscreen #bg {
 	max-height: 100%;
 	width: auto;
 	display: block;
+}
+#map {
+	position: relative;
 }
 .map_icon {
 	width: 32px;
@@ -385,6 +385,9 @@ input[type=range]::-ms-fill-upper {
 	padding-top: 5px;
 	color: #FFF;
 	font-size: 1em;
+}
+#notification .main {
+	padding-bottom: 2px;
 }
 #notification ul {
 	margin-left: 30px;
