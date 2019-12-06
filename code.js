@@ -253,7 +253,7 @@ function update() {
 		userInfo.version = "1.4.0";
 	}
 	if (userInfo.version == "1.4.0") {
-		//userInfo.version = "1.5.0";
+		userInfo.version = "1.5.0";
 	}
 }
 
