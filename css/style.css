@@ -35,7 +35,7 @@ body.desktop::-webkit-scrollbar {		/* WebKit */
     width: 0;
     height: 0;
 }
-::-webkit-scrollbar {
+/*::-webkit-scrollbar {
 	width: 12px;
 	height: 10px;
 }
@@ -55,7 +55,7 @@ body.desktop::-webkit-scrollbar {		/* WebKit */
     width: 0;
     height: 0;
     display: none;
-}
+}*/
 .span_1_of_2 {
 	width: 50%;
 }
@@ -278,10 +278,12 @@ input[type=range]::-ms-fill-upper {
 	position: absolute;
 	color: white;
 	padding: 5px;
+	margin: 5px;
 	width: 400px;
-	max-width: 100%;
-	top: 20px;
-	left: calc(50% - 200px);
+	max-width: calc(100% - 10px);
+	top: 15px;
+	left: 50%;
+	transform: translate(calc(-50% - 5px), 0);
 	text-align: center;
 }
 .desktop #options {
@@ -334,15 +336,14 @@ input[type=range]::-ms-fill-upper {
 	min-height: 200px;
 	display: none;
 }
-.desktop #notification {
+#notification {
 	width: 600px;
 	max-width: calc(100% - 10px);
+	max-height: 80vh;
+	/* Center a div of unknown width */
 	top: 50%;
 	left: 50%;
-	margin-left: -300px;
-}
-.mobile #notification {
-	width: calc(100% - 10px);
+	transform: translate(calc(-50% - 5px), calc(-50% - 5px));
 }
 #notification > div {
 	height: 100%;
@@ -362,10 +363,10 @@ input[type=range]::-ms-fill-upper {
 }
 #notification .main {
 	flex: 1;
-}
-#notification .main {
 	padding-left: 5px;
 	padding-right: 5px;
+	overflow-y: auto;
+	max-height: 80vh;
 }
 #notification .main h1 {
 	padding-top: 3px;
@@ -395,12 +396,12 @@ input[type=range]::-ms-fill-upper {
 	font-size: 1em;
 }
 #notification th, #notification td {
-	padding: 5px 5px 0 0;
+	padding: 0 5px 0 0;
 	color: #FFF;
 }
 #notification td:first-child {
-	vertical-align: top;
-	padding: 10px 8px 0 0;
+	padding: 0 8px 0 0;
+	/*vertical-align: top;*/
 }
 #notification .buttons {
 	padding: 5px;
@@ -409,14 +410,22 @@ input[type=range]::-ms-fill-upper {
 #notification .buttons .button {
 	min-width: 100px;
 }
-#mainSetup .audioFreq span {
+#mainSetup .audioFreq span,#mainSetup .audioVolume span {
 	vertical-align: top;
-	margin: 5px 0 0 8px;
+	margin: 10px 0 0 8px;
 	display: inline-block;
 }
-#mainSetup .audioVolume span {
-	margin-left: 8px;
+#notification .main button, #notification .main input {
+	margin-top: 5px;
 }
+#notification td:first-child {
+	vertical-align: top;
+	padding-top: 10px;
+}
+#notification .incDecButtons button {
+	margin-top: 0;
+}
+
 #nightclubGUI th, #nightclubGUI td {
 	text-align: left;
 }
@@ -468,12 +477,6 @@ input[type=range]::-ms-fill-upper {
 }
 #nightclubSetupGUI td:first-child {
 	width: 112px;
-}
-#nightclubSetupGUI .producing .button {
-	margin-bottom: 5px;
-}
-#nightclubSetupGUI .producing .button:last-child {
-	margin-bottom: 0;
 }
 .button.off {
 	opacity: 0.60;
