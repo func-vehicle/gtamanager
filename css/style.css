@@ -20,11 +20,22 @@ body {
 	scrollbar-width: thin;
     -ms-overflow-style: none;	/* IE 10+ */
 }
-body.hide_scroll::-webkit-scrollbar {		/* WebKit */
+body.desktop {
+	overflow-x: hidden;
+	overflow-y: hidden;
+}
+body.mobile {
+	overflow-x: auto;
+	overflow-y: scroll;
+}
+.desktop .mobile-only,.mobile .desktop-only {
+	display: none;
+}
+body.desktop::-webkit-scrollbar {		/* WebKit */
     width: 0;
     height: 0;
 }
-::-webkit-scrollbar {
+/*::-webkit-scrollbar {
 	width: 12px;
 	height: 10px;
 }
@@ -44,7 +55,7 @@ body.hide_scroll::-webkit-scrollbar {		/* WebKit */
     width: 0;
     height: 0;
     display: none;
-}
+}*/
 .span_1_of_2 {
 	width: 50%;
 }
@@ -209,15 +220,23 @@ input[type=range]::-ms-fill-upper {
 
 /* WRAPPER */
 #wrapper {
+	display: flex;
 	max-width: 100%;
+}
+
+.desktop #wrapper {
 	max-height: 100%;
+	flex-direction: row;
+}
+
+.mobile #wrapper {
+	flex-direction: column;
 }
 
 /* MAP */
 #mapscreen {
-	line-height: 0;
-	height: auto;
-	max-height: 100%;
+	/*line-height: 0;*/
+	height: 100%;
 	position: relative;
 }
 #mapscreen * {
@@ -226,6 +245,10 @@ input[type=range]::-ms-fill-upper {
 #mapscreen #bg {
 	max-height: 100%;
 	width: auto;
+	display: block;
+}
+#map {
+	position: relative;
 }
 .map_icon {
 	width: 32px;
@@ -235,7 +258,7 @@ input[type=range]::-ms-fill-upper {
 	position: absolute;
 }
 .map_icon.flash {
-	-webkit-filter: invert(40%) grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(400%) contrast(2);
+	-webkit-filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8);
 	filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8);
 }
 .map_icon.clickable {
@@ -255,12 +278,15 @@ input[type=range]::-ms-fill-upper {
 	position: absolute;
 	color: white;
 	padding: 5px;
+	margin: 5px;
 	width: 400px;
-	top: 20px;
-	left: calc(50% - 200px);
+	max-width: calc(100% - 10px);
+	top: 15px;
+	left: 50%;
+	transform: translate(calc(-50% - 5px), 0);
 	text-align: center;
 }
-#options {
+.desktop #options {
 	background-color: #000;
 	border: 1px solid #CC212C;
 	position: absolute;
@@ -271,17 +297,27 @@ input[type=range]::-ms-fill-upper {
 	top: calc(100% - 100px);
 	left: calc(100% - 175px);
 }
-#options button {
+.desktop #options button {
 	height: 29px;
 	padding: 5px 3px 5px 3px;
 }
-#options button.toggle {
+.desktop #options button.toggle {
 	width: 100%;
 	margin-bottom: 5px;
 }
-#options button.audio, #options button.setup {
+.desktop #options button.audio, .desktop #options button.setup {
 	width: calc(50% - 2.5px);
 }
+.mobile  #options {
+	margin: 5px 5px 0 5px;
+	background-color: #FFF;
+	padding: 5px;
+	border: 1px solid #000;
+}
+.mobile #options button {
+	width: calc((100% - 10px) / 3);
+}
+
 #overlay {
 	background-color: #000;
 	opacity: 0.75;
@@ -293,15 +329,21 @@ input[type=range]::-ms-fill-upper {
 	left: 0;
 }
 #notification {
+	margin: 5px;
 	background-color: #000;
 	border: 1px solid #CC212C;
 	position: absolute;
-	width: 600px;
 	min-height: 200px;
+	display: none;
+}
+#notification {
+	width: 600px;
+	max-width: calc(100% - 10px);
+	max-height: 80vh;
+	/* Center a div of unknown width */
 	top: 50%;
 	left: 50%;
-	margin-left: -300px;
-	display: none;
+	transform: translate(calc(-50% - 5px), calc(-50% - 5px));
 }
 #notification > div {
 	height: 100%;
@@ -321,10 +363,10 @@ input[type=range]::-ms-fill-upper {
 }
 #notification .main {
 	flex: 1;
-}
-#notification .main {
 	padding-left: 5px;
 	padding-right: 5px;
+	overflow-y: auto;
+	max-height: 80vh;
 }
 #notification .main h1 {
 	padding-top: 3px;
@@ -344,6 +386,9 @@ input[type=range]::-ms-fill-upper {
 	color: #FFF;
 	font-size: 1em;
 }
+#notification .main {
+	padding-bottom: 2px;
+}
 #notification ul {
 	margin-left: 30px;
 	color: #FFF;
@@ -354,12 +399,12 @@ input[type=range]::-ms-fill-upper {
 	font-size: 1em;
 }
 #notification th, #notification td {
-	padding: 5px 5px 0 0;
+	padding: 0 5px 0 0;
 	color: #FFF;
 }
 #notification td:first-child {
-	vertical-align: top;
-	padding: 10px 8px 0 0;
+	padding: 0 8px 0 0;
+	/*vertical-align: top;*/
 }
 #notification .buttons {
 	padding: 5px;
@@ -368,14 +413,22 @@ input[type=range]::-ms-fill-upper {
 #notification .buttons .button {
 	min-width: 100px;
 }
-#mainSetup .audioFreq span {
+#mainSetup .audioFreq span,#mainSetup .audioVolume span {
 	vertical-align: top;
-	margin: 5px 0 0 8px;
+	margin: 10px 0 0 8px;
 	display: inline-block;
 }
-#mainSetup .audioVolume span {
-	margin-left: 8px;
+#notification .main button, #notification .main input {
+	margin-top: 5px;
 }
+#notification td:first-child {
+	vertical-align: top;
+	padding-top: 10px;
+}
+#notification .incDecButtons button {
+	margin-top: 0;
+}
+
 #nightclubGUI th, #nightclubGUI td {
 	text-align: left;
 }
@@ -428,12 +481,6 @@ input[type=range]::-ms-fill-upper {
 #nightclubSetupGUI td:first-child {
 	width: 112px;
 }
-#nightclubSetupGUI .producing .button {
-	margin-bottom: 5px;
-}
-#nightclubSetupGUI .producing .button:last-child {
-	margin-bottom: 0;
-}
 .button.off {
 	opacity: 0.60;
 }
@@ -442,12 +489,18 @@ input[type=range]::-ms-fill-upper {
 #infotab {
 	padding: 5px;
 	overflow-y: auto;
+}
+.desktop #infotab {
 	max-height: 100vh;
 }
+.desktop #infotab {
+	width: 220px;
+}
+
 .information {
 	border: 1px solid black;
 	padding: 5px;
-	width: 200px;
+	width: 100%;
 	margin-bottom: 5px;
 }
 .information:last-child {
@@ -457,6 +510,9 @@ input[type=range]::-ms-fill-upper {
     .information:last-child {
         margin-bottom: 5px;
     }
+}
+.business-section {
+	width: 100%;
 }
 #inactiveBusinesses {
 	margin-top: 5px;

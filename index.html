@@ -31,16 +31,18 @@
 	<div id="wrapper">
 		<div id="mapscreen" class="col">
 			<audio id="notification_ding" src="sfx/chime.mp3"></audio>
-			<img id="bg" src="img/bg.jpg" draggable="false"/>
-			<img id="bunker_map" src="img/bunker.png" class="map_icon clickable"/>
-			<img id="coke_map" src="img/coke.png" class="map_icon clickable"/>
-			<img id="meth_map" src="img/meth.png" class="map_icon clickable"/>
-			<img id="cash_map" src="img/cash.png" class="map_icon clickable"/>
-			<img id="weed_map" src="img/weed.png" class="map_icon clickable"/>
-			<img id="forgery_map" src="img/forgery.png" class="map_icon clickable"/>
-			<img id="nightclub_map" src="img/nightclub.png" class="map_icon clickable"/>
-			<img id="importExport_map" src="img/import.png" class="map_icon"/>
-			<img id="wheel_map" src="img/wheel.png" class="map_icon clickable"/>
+			<div id="map">
+				<img id="bg" src="img/bg.jpg" draggable="false"/>
+				<img id="bunker_map" src="img/bunker.png" class="map_icon clickable"/>
+				<img id="coke_map" src="img/coke.png" class="map_icon clickable"/>
+				<img id="meth_map" src="img/meth.png" class="map_icon clickable"/>
+				<img id="cash_map" src="img/cash.png" class="map_icon clickable"/>
+				<img id="weed_map" src="img/weed.png" class="map_icon clickable"/>
+				<img id="forgery_map" src="img/forgery.png" class="map_icon clickable"/>
+				<img id="nightclub_map" src="img/nightclub.png" class="map_icon clickable"/>
+				<img id="importExport_map" src="img/import.png" class="map_icon"/>
+				<img id="wheel_map" src="img/wheel.png" class="map_icon clickable"/>
+			</div>
 			<div id="mini_notif">
 				<p>The business manager is paused.</p>
 			</div>
@@ -51,26 +53,52 @@
 			</div>
 			<div id="overlay"></div>
 			<div id="notification">
+				<div id="newUserNotice">
+					<div class="heading">
+						<h1>Welcome</h1>
+					</div>
+					<div class="main desktop-only">
+						<p>The GTA V Business Manager can keep track of your businesses while you play the game and alert you when one needs
+						your attention. It can also remind you when to spin the wheel, and when your daily fees will occur.</p>
+						<p>To begin, click the cog of a business on the right to set it up. Product and supply bars can be set by dragging
+						the bars to their in game values.</p>
+						<p>Whenever you are in a session where businesses run (such as free roam and contact missions), start the manager
+						with the button in the bottom right corner of the map. Pause it when you are no longer in session.</p>
+						<p>Your information will persist between browsing sessions. We recommend you bookmark this page if you are
+						considering using this manager long term.</p>
+					</div>
+					<div class="main mobile-only">
+						<p>The GTA V Business Manager can keep track of your businesses while you play the game and alert you when one needs
+						your attention. It can also remind you when to spin the wheel, and when your daily fees will occur.</p>
+						<p>To begin, tap the cog of a business (below the map) to set it up. Product and supply bars can be set by dragging
+						the bars to their in game values.</p>
+						<p>Whenever you are in a session where businesses run (such as free roam and contact missions), start the manager
+						with the button below the map. Pause it when you are no longer in session.</p>
+						<p>Your information will persist between browsing sessions. We recommend you bookmark this page if you are
+						considering using this manager long term.</p>
+					</div>
+					<div class="buttons fsz">
+						<button class="button ok red">OK</button>
+					</div>
+				</div>
 				<div id="updateNotice">
 					<div class="heading">
 						<h1>Patch Notes</h1>
 					</div>
 					<div class="main">
-						<h1>Version 1.4.0</h1>
+						<h1 style="padding-left: 3px;">Version 1.5.0</h1>
 						<div class="indent">
-							<h2>New features</h2>
+							<h2>Improvements</h2>
 							<ul>
-								<li>Businesses can now be individually muted by clicking on their map icon.</li>
-								<li>The Lucky Wheel can now be hidden via its setup.</li>
-								<li>Added button to view these patch notes again to the main setup.</li>
+								<li>The business manager now scales better at common mobile resolutions.</li>
+								<ul>
+									<li>Main controls are moved to below the map.</li>
+									<li>Information windows are centered on the display instead of on the map.</li>
+								</ul>
 							</ul>
 							<h2>Fixes</h2>
 							<ul>
-								<li>Bunker research bar should now be calculated correctly.
-									<ul><li>Projected times with time remaining bar style may still be incorrect for bunker research.</li></ul>
-								</li>
-								<li>Increased contrast of progress bar text (for percentage and time remaining styles).</li>
-								<li>Potential fix for notification sound not playing on some browsers.</li>
+								<li>Various minor bug fixes.</li>
 							</ul>
 						</div>
 					</div>
@@ -426,7 +454,7 @@
 			</div>
 		</div>
 		<div id="infotab" class="col">
-			<div id="activeBusinesses">
+			<div class="business-section" id="activeBusinesses">
 				<div id="bunker" class="information">
 					<div class="business_heading clearfix">
 						<img src="img/bunker.png" class="icon"/>
@@ -788,7 +816,7 @@
 					<button class="button purple" disabled="true">Not in Session</button>
 				</div>
 			</div>
-			<div id="inactiveBusinesses"></div>
+			<div class="business-section" id="inactiveBusinesses"></div>
 		</div>
 	</div>
 </body>

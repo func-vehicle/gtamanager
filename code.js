@@ -1,7 +1,7 @@
 var userInfo;
 
 var defaultUserInfo = {
-	version: "1.4.0",
+	version: "1.5.0",
 	settings: {
 		hide_unowned: false,
 		audio: {
@@ -128,8 +128,11 @@ var defaultUserInfo = {
 	},
 }
 
+var newUser = false;
+
 if (localStorage.getItem("userInfo") == null) {
 	userInfo = defaultUserInfo;
+	newUser = true;
 }
 else {
 	userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -249,11 +252,17 @@ function update() {
 		userInfo.wheel.owned = true;
 		userInfo.version = "1.4.0";
 	}
+	if (userInfo.version == "1.4.0") {
+		userInfo.version = "1.5.0";
+	}
 }
 
 $(document).ready(function() {
 	// Display notice
-	if (userInfo.version != defaultUserInfo.version) {
+	if (newUser) {
+		displayPopup("newUserNotice");
+	}
+	else if (userInfo.version != defaultUserInfo.version) {
 		update();
 		displayPopup("updateNotice");
 	}
@@ -261,38 +270,41 @@ $(document).ready(function() {
 		displayPopup("pauseNotice");
 	}
 	
+	// Window resize function
 	$(window).resize(function() {
 		var scr_w, scr_h, map_w, map_h;
 		// Resize map
 		scr_w = document.body.clientWidth;
 		scr_h = document.body.clientHeight;
-		if (scr_w > 840 && scr_h > 620) {
-			var infotab = document.getElementById("infotab");
-			var hasVerticalScrollbar = infotab.scrollHeight > infotab.clientHeight;
-			var scrollBarWidth = 0;
-			if (hasVerticalScrollbar) {
-				var scrollBarWidth = infotab.offsetWidth - infotab.clientWidth;
-			}
-			$("#infotab").css("width", 210 + scrollBarWidth);
-			var infotab_w = $("#infotab").outerWidth();
-			$("#mapscreen #bg").css("max-width", scr_w - infotab_w);
+		if (scr_w > 600) {
+			$("body").removeClass("mobile");
+			$("body").addClass("desktop");
+			$("#mapscreen").append($("#overlay"));
+			$("#mapscreen").append($("#notification"));
+			$("#mapscreen #bg").css("max-width", scr_w - 220);
 			$("#mapscreen #bg").css("max-height", scr_h);
-			$("body").css("overflow-x", "hidden");
-			$("body").css("overflow-y", "hidden");
-			$("body").addClass("hide_scroll");
+			// Make transparent overlay same size as map
+			map_w = $("#mapscreen #bg").width();
+			map_h = $("#mapscreen #bg").height();
+			$("#overlay").css("width", map_w);
+			$("#overlay").css("height", map_h);
+			// Remain static
+			$("#notification").css("position", "absolute");
+			$("#overlay").css("position", "absolute");
+		} else {
+			$("body").removeClass("desktop");
+			$("body").addClass("mobile");
+			$("#wrapper").append($("#overlay"));
+			$("#wrapper").append($("#notification"));
+			$("#mapscreen #bg").css("max-width", scr_w);
+			$("#mapscreen #bg").css("max-height", "unset");
+			// Make transparent overlay cover screen
+			$("#overlay").css("width", scr_w);
+			$("#overlay").css("height", scr_h);
+			// Move with screen
+			$("#notification").css("position", "fixed");
+			$("#overlay").css("position", "fixed");
 		}
-		else {
-			$("#mapscreen #bg").css("max-width", Math.max(scr_w, 620));
-			$("#mapscreen #bg").css("max-height", Math.max(scr_w, 620));
-			$("body").css("overflow-x", "auto");
-			$("body").css("overflow-y", "scroll");
-			$("body").removeClass("hide_scroll");
-		}
-		// Make overlay same size as map
-		map_w = $("#mapscreen #bg").width();
-		map_h = $("#mapscreen #bg").height();
-		$("#overlay").css("width", map_w);
-		$("#overlay").css("height", map_h);
 	});
 	window.dispatchEvent(new Event("resize"));
 	
@@ -321,7 +333,7 @@ $(document).ready(function() {
 	
 	// General input field settings
 	$(".incDecButtons button.minus").on("click", function(event) {
-		var inputField = $(event.target).siblings("input")
+		var inputField = $(event.target).siblings("input");
 		inputField.val(function(i, oldval) {
 			var minVal = parseInt($(this).attr("min"), 10);
 			return Math.max(parseInt(oldval, 10) - 1, minVal);
@@ -330,7 +342,7 @@ $(document).ready(function() {
 	});
 	
 	$(".incDecButtons button.plus").on("click", function(event) {
-		var inputField = $(event.target).siblings("input")
+		var inputField = $(event.target).siblings("input");
 		inputField.val(function(i, oldval) {
 			var maxVal = parseInt($(this).attr("max"), 10);
 			return Math.min(parseInt(oldval, 10) + 1, maxVal);
@@ -499,7 +511,7 @@ $(document).ready(function() {
 		redrawScreen();
 	});
 	
-	$("#importExportSetupGUI .highEndCars input").on("input", function(event) {
+	$("#importExportSetupGUI .highEndCars input").on("keyup", function(event) {
 		var value = $(event.target).val();
 		changeInfo.highend_cars = parseInt(value, 10);
 		redrawScreen();
@@ -566,7 +578,7 @@ $(document).ready(function() {
 		redrawScreen();
 	});
 	
-	$("#mainSetup .audioFreq input").on("input", function(event) {
+	$("#mainSetup .audioFreq input").on("keyup", function(event) {
 		var value = $(event.target).val();
 		changeInfo.audio.interval = value;
 		redrawScreen();
@@ -765,10 +777,13 @@ $(document).ready(function() {
 function displayPopup(divName) {
 	$("#notification > *").hide();
 	$("#"+divName).show();
-	var h = $("#notification").outerHeight();
-	$("#notification").css("top", "calc(50% - "+h/2.0+"px)");
 	$("#notification").show();
 	$("#overlay").show();
+}
+
+function hidePopup(divName = null) {
+	$("#notification").hide();
+	$("#overlay").hide();
 }
 
 function createBackup(business) {
