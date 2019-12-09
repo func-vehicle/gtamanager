@@ -4,7 +4,16 @@
 <!-- Website by func_vehicle. Copyright 2019 -->
 
 <head>
+	<!-- Google Tag Manager -->
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+	'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-WDLMN5G');</script>
+	<!-- End Google Tag Manager -->
+	
 	<title>GTA V Business Manager</title>
+	<meta name="description" content="Keep track of your GTA V business supply and stock levels, as well as cooldowns through an online manager."/>
 	<meta charset="utf-8"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -16,32 +25,36 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script src="code.js"></script>
 	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-76620963-2"></script>
+	<!--<script async src="https://www.googletagmanager.com/gtag/js?id=UA-76620963-2"></script>
 	<script>
 	  window.dataLayer = window.dataLayer || [];
 	  function gtag(){dataLayer.push(arguments);}
 	  gtag('js', new Date());
 
 	  gtag('config', 'UA-76620963-2');
-	</script>
-
+	</script>-->
 </head>
 
 <body>
+	<!-- Google Tag Manager (noscript) -->
+	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WDLMN5G"
+	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+	<!-- End Google Tag Manager (noscript) -->
+
 	<div id="wrapper">
 		<div id="mapscreen" class="col">
 			<audio id="notification_ding" src="sfx/chime.mp3"></audio>
 			<div id="map">
-				<img id="bg" src="img/bg.jpg" draggable="false"/>
-				<img id="bunker_map" src="img/bunker.png" class="map_icon clickable"/>
-				<img id="coke_map" src="img/coke.png" class="map_icon clickable"/>
-				<img id="meth_map" src="img/meth.png" class="map_icon clickable"/>
-				<img id="cash_map" src="img/cash.png" class="map_icon clickable"/>
-				<img id="weed_map" src="img/weed.png" class="map_icon clickable"/>
-				<img id="forgery_map" src="img/forgery.png" class="map_icon clickable"/>
-				<img id="nightclub_map" src="img/nightclub.png" class="map_icon clickable"/>
-				<img id="importExport_map" src="img/import.png" class="map_icon"/>
-				<img id="wheel_map" src="img/wheel.png" class="map_icon clickable"/>
+				<img id="bg" src="img/bg.jpg" draggable="false" alt="Satellite view style map of GTA V"/>
+				<img id="bunker_map" src="img/bunker.png" class="map_icon clickable" alt="Bunker icon"/>
+				<img id="coke_map" src="img/coke.png" class="map_icon clickable" alt="Cocaine icon"/>
+				<img id="meth_map" src="img/meth.png" class="map_icon clickable" alt="Meth icon"/>
+				<img id="cash_map" src="img/cash.png" class="map_icon clickable" alt="Counterfeit Cash icon"/>
+				<img id="weed_map" src="img/weed.png" class="map_icon clickable" alt="Weed icon"/>
+				<img id="forgery_map" src="img/forgery.png" class="map_icon clickable" alt="Document Forgery icon"/>
+				<img id="nightclub_map" src="img/nightclub.png" class="map_icon clickable" alt="Nightclub icon"/>
+				<img id="importExport_map" src="img/import.png" class="map_icon" alt="Import/Export icon"/>
+				<img id="wheel_map" src="img/wheel.png" class="map_icon clickable" alt="Lucky Wheel icon"/>
 			</div>
 			<div id="mini_notif">
 				<p>The business manager is paused.</p>
@@ -457,7 +470,7 @@
 			<div class="business-section" id="activeBusinesses">
 				<div id="bunker" class="information">
 					<div class="business_heading clearfix">
-						<img src="img/bunker.png" class="icon"/>
+						<img src="img/bunker.png" class="icon" alt="Bunker icon"/>
 						<h1>Bunker</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -505,7 +518,7 @@
 				</div>
 				<div id="coke" class="information mcbusiness">
 					<div class="business_heading clearfix">
-						<img src="img/coke.png" class="icon"/>
+						<img src="img/coke.png" class="icon" alt="Cocaine icon"/>
 						<h1>Cocaine</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -542,7 +555,7 @@
 				</div>
 				<div id="meth" class="information mcbusiness">
 					<div class="business_heading clearfix">
-						<img src="img/meth.png" class="icon"/>
+						<img src="img/meth.png" class="icon" alt="Meth icon"/>
 						<h1>Meth</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -579,7 +592,7 @@
 				</div>
 				<div id="cash" class="information mcbusiness">
 					<div class="business_heading clearfix">
-						<img src="img/cash.png" class="icon"/>
+						<img src="img/cash.png" class="icon" alt="Counterfeit Cash icon"/>
 						<h1>Counterfeit Cash</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -616,7 +629,7 @@
 				</div>
 				<div id="weed" class="information mcbusiness">
 					<div class="business_heading clearfix">
-						<img src="img/weed.png" class="icon"/>
+						<img src="img/weed.png" class="icon" alt="Weed icon"/>
 						<h1>Weed</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -653,7 +666,7 @@
 				</div>
 				<div id="forgery" class="information mcbusiness">
 					<div class="business_heading clearfix">
-						<img src="img/forgery.png" class="icon"/>
+						<img src="img/forgery.png" class="icon" alt="Document Forgery icon"/>
 						<h1>Doc. Forgery</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -690,7 +703,7 @@
 				</div>
 				<div id="nightclub" class="information">
 					<div class="business_heading clearfix">
-						<img src="img/nightclub.png" class="icon"/>
+						<img src="img/nightclub.png" class="icon" alt="Nightclub icon"/>
 						<h1>Nightclub</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -778,7 +791,7 @@
 				</div>
 				<div id="importExport" class="information">
 					<div class="business_heading clearfix">
-						<img src="img/import.png" class="icon"/>
+						<img src="img/import.png" class="icon" alt="Import/Export icon"/>
 						<h1>Import / Export</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -800,7 +813,7 @@
 				</div>
 				<div id="wheel" class="information">
 					<div class="business_heading clearfix">
-						<img src="img/wheel.png" class="icon"/>
+						<img src="img/wheel.png" class="icon" alt="Lucky Wheel icon"/>
 						<h1>Lucky Wheel</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -810,7 +823,7 @@
 				</div>
 				<div id="fees" class="information">
 					<div class="business_heading clearfix">
-						<img src="img/fees.png" class="icon"/>
+						<img src="img/fees.png" class="icon" alt="Daily Fees icon"/>
 						<h1>Daily Fees</h1>
 					</div>
 					<button class="button purple" disabled="true">Not in Session</button>
