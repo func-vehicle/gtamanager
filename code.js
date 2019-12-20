@@ -1,7 +1,7 @@
 var userInfo;
 
 var defaultUserInfo = {
-	version: "1.5.0",
+	version: "1.5.3",
 	settings: {
 		hide_unowned: false,
 		audio: {
@@ -9,7 +9,7 @@ var defaultUserInfo = {
 			volume: 1,
 			interval: 3,
 		},
-		progress_bar_style: 0,
+		progress_bar_style: 1,
 	},
 	bunker: {
 		name: "Bunker",
@@ -207,15 +207,15 @@ function capitalize(s) {
 function update() {
 	if (userInfo.version == "1.0.0") {
 		userInfo.audio = {enabled: true};
-		userInfo.bunker.name = defaultUserInfo.bunker.name;
-		userInfo.coke.name = defaultUserInfo.coke.name;
-		userInfo.meth.name = defaultUserInfo.meth.name;
-		userInfo.cash.name = defaultUserInfo.cash.name;
+		userInfo.bunker.name = "Bunker";
+		userInfo.coke.name = "Cocaine";
+		userInfo.meth.name = "Meth";
+		userInfo.cash.name = "Counterfeit Cash";
 		userInfo.weed = jQuery.extend(true, {}, defaultUserInfo.weed);
 		userInfo.forgery = jQuery.extend(true, {}, defaultUserInfo.forgery);
-		userInfo.nightclub.name = defaultUserInfo.nightclub.name;
-		userInfo.importExport.name = defaultUserInfo.importExport.name;
-		userInfo.wheel.name = defaultUserInfo.wheel.name;
+		userInfo.nightclub.name = "Nightclub";
+		userInfo.importExport.name = "Import / Export";
+		userInfo.wheel.name = "Lucky Wheel";
 		userInfo.bunker.research /= 60000;
 		var todo = ["bunker", "coke", "meth", "cash"];
 		for (var i = 0; i < todo.length; i++) {
@@ -229,15 +229,15 @@ function update() {
 		userInfo.settings = jQuery.extend(true, {}, defaultUserInfo.settings);
 		userInfo.settings.audio.enabled = userInfo.audio.enabled;
 		delete userInfo.audio;
-		userInfo.nightclub.sidebar = defaultUserInfo.nightclub.sidebar;
-		userInfo.nightclub.organic = defaultUserInfo.nightclub.organic;
-		userInfo.nightclub.copying = defaultUserInfo.nightclub.copying;
-		userInfo.nightclub.producing.organic = defaultUserInfo.nightclub.producing.organic;
-		userInfo.nightclub.producing.copying = defaultUserInfo.nightclub.producing.copying;
+		userInfo.nightclub.sidebar = true;
+		userInfo.nightclub.organic = 0;
+		userInfo.nightclub.copying = 0;
+		userInfo.nightclub.producing.organic = false;
+		userInfo.nightclub.producing.copying = false;
 		userInfo.version = "1.2.0";
 	}
 	if (userInfo.version == "1.2.0") {
-		userInfo.settings.progress_bar_style = defaultUserInfo.settings.progress_bar_style;
+		userInfo.settings.progress_bar_style = 0;
 		userInfo.version = "1.3.0";
 	}
 	if (userInfo.version == "1.3.0") {
@@ -254,6 +254,12 @@ function update() {
 	}
 	if (userInfo.version == "1.4.0") {
 		userInfo.version = "1.5.0";
+	}
+	if (userInfo.version == "1.5.0") {
+		if (userInfo.settings.progress_bar_style == 0) {
+			userInfo.settings.progress_bar_style = 1;
+		}
+		userInfo.version = "1.5.3";
 	}
 }
 
