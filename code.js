@@ -1,7 +1,7 @@
 var userInfo;
 
 var defaultUserInfo = {
-	version: "1.5.0",
+	version: "1.5.3",
 	settings: {
 		hide_unowned: false,
 		audio: {
@@ -9,7 +9,7 @@ var defaultUserInfo = {
 			volume: 1,
 			interval: 3,
 		},
-		progress_bar_style: 0,
+		progress_bar_style: 1,
 	},
 	bunker: {
 		name: "Bunker",
@@ -207,15 +207,15 @@ function capitalize(s) {
 function update() {
 	if (userInfo.version == "1.0.0") {
 		userInfo.audio = {enabled: true};
-		userInfo.bunker.name = defaultUserInfo.bunker.name;
-		userInfo.coke.name = defaultUserInfo.coke.name;
-		userInfo.meth.name = defaultUserInfo.meth.name;
-		userInfo.cash.name = defaultUserInfo.cash.name;
+		userInfo.bunker.name = "Bunker";
+		userInfo.coke.name = "Cocaine";
+		userInfo.meth.name = "Meth";
+		userInfo.cash.name = "Counterfeit Cash";
 		userInfo.weed = jQuery.extend(true, {}, defaultUserInfo.weed);
 		userInfo.forgery = jQuery.extend(true, {}, defaultUserInfo.forgery);
-		userInfo.nightclub.name = defaultUserInfo.nightclub.name;
-		userInfo.importExport.name = defaultUserInfo.importExport.name;
-		userInfo.wheel.name = defaultUserInfo.wheel.name;
+		userInfo.nightclub.name = "Nightclub";
+		userInfo.importExport.name = "Import / Export";
+		userInfo.wheel.name = "Lucky Wheel";
 		userInfo.bunker.research /= 60000;
 		var todo = ["bunker", "coke", "meth", "cash"];
 		for (var i = 0; i < todo.length; i++) {
@@ -229,15 +229,15 @@ function update() {
 		userInfo.settings = jQuery.extend(true, {}, defaultUserInfo.settings);
 		userInfo.settings.audio.enabled = userInfo.audio.enabled;
 		delete userInfo.audio;
-		userInfo.nightclub.sidebar = defaultUserInfo.nightclub.sidebar;
-		userInfo.nightclub.organic = defaultUserInfo.nightclub.organic;
-		userInfo.nightclub.copying = defaultUserInfo.nightclub.copying;
-		userInfo.nightclub.producing.organic = defaultUserInfo.nightclub.producing.organic;
-		userInfo.nightclub.producing.copying = defaultUserInfo.nightclub.producing.copying;
+		userInfo.nightclub.sidebar = true;
+		userInfo.nightclub.organic = 0;
+		userInfo.nightclub.copying = 0;
+		userInfo.nightclub.producing.organic = false;
+		userInfo.nightclub.producing.copying = false;
 		userInfo.version = "1.2.0";
 	}
 	if (userInfo.version == "1.2.0") {
-		userInfo.settings.progress_bar_style = defaultUserInfo.settings.progress_bar_style;
+		userInfo.settings.progress_bar_style = 0;
 		userInfo.version = "1.3.0";
 	}
 	if (userInfo.version == "1.3.0") {
@@ -254,6 +254,12 @@ function update() {
 	}
 	if (userInfo.version == "1.4.0") {
 		userInfo.version = "1.5.0";
+	}
+	if (userInfo.version == "1.5.0") {
+		if (userInfo.settings.progress_bar_style == 0) {
+			userInfo.settings.progress_bar_style = 1;
+		}
+		userInfo.version = "1.5.3";
 	}
 }
 
@@ -306,7 +312,6 @@ $(document).ready(function() {
 			$("#overlay").css("position", "fixed");
 		}
 	});
-	window.dispatchEvent(new Event("resize"));
 	
 	function muteBusiness(event) {
 		var business = businessRegexp.exec($(event.target).attr("id"))[1];
@@ -315,20 +320,18 @@ $(document).ready(function() {
 		}
 		redrawBusinessTabs();
 	}
-	$("#mapscreen .map_icon").on("click", muteBusiness);
+	$("#mapscreen .icons-map").on("click", muteBusiness);
 	
 	// General notification settings
 	$("#notification button.ok").on("click", function(event) {
-		$("#notification").hide();
-		$("#overlay").hide();
+		hidePopup();
 	});
 	
 	$(".setupGUI .buttons button.cancel").on("click", function(event) {
 		loadBackup();
 		redrawBusinessTabs();
 		redrawScreen();
-		$("#notification").hide();
-		$("#overlay").hide();
+		hidePopup();
 	});
 	
 	// General input field settings
@@ -441,7 +444,7 @@ $(document).ready(function() {
 		
 		$("#notification").hide();
 		$("#overlay").hide();
-		$("#mapscreen .map_icon").off("click");
+		$("#mapscreen .icons-map").off("click");
 		
 		$(document).on("mousemove", function(e) {
 			var x = (e.clientX);
@@ -480,7 +483,7 @@ $(document).ready(function() {
 			$(document).off("mousemove");
 			$("#notification").show();
 			$("#overlay").show();
-			$("#mapscreen .map_icon").on("click", muteBusiness);
+			$("#mapscreen .icons-map").on("click", muteBusiness);
 		});
 	});
 	
@@ -770,8 +773,14 @@ $(document).ready(function() {
 		redrawScreen();
 	});
 	
+	window.dispatchEvent(new Event("resize"));
+	
 	redrawScreen();
 	redrawBusinessTabs();
+});
+
+$(window).on("load", function() {
+	window.dispatchEvent(new Event("resize"));
 });
 
 function displayPopup(divName) {
@@ -928,8 +937,8 @@ function redrawBusinessTabs() {
 		if (userInfo[business].hasOwnProperty("muted")) {
 			if (userInfo[business].muted) {
 				if ($("#"+business+"_mute").length == 0) {
-					var img = $("<img id='"+business+"_mute' class='map_icon_mute'>");
-					img.attr("src", "img/muted.png");
+					var img = $("<img id='"+business+"_mute' class='icons icons-map icons-mute'>");
+					img.attr("src", "img/blank.png");
 					img.insertAfter("#"+business+"_map");
 					img.css("top", "calc("+y+"% - 8px");
 					img.css("left", "calc("+x+"% + 8px");
@@ -1131,7 +1140,7 @@ function redrawScreen() {
 		$("#options button.audio").addClass("off");
 	}
 	
-	window.dispatchEvent(new Event("resize"));
+	//window.dispatchEvent(new Event("resize"));
 }
 
 function notify() {

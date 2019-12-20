@@ -13,7 +13,7 @@
 	<!-- End Google Tag Manager -->
 	
 	<title>GTA V Business Manager</title>
-	<meta name="description" content="Keep track of your GTA V business supply and stock levels, as well as cooldowns through an online manager."/>
+	<meta name="description" content="Keep track of your GTA V business supply and stock levels, as well as cooldowns with this online manager."/>
 	<meta charset="utf-8"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -21,18 +21,13 @@
 	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans" type="text/css"/>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+			integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+			crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+			integrity="sha384-Dziy8F2VlJQLMShA6FHWNul/veM9bCkRUaLqr199K94ntO5QUrLJBEbYegdSkkqX"
+			crossorigin="anonymous"></script>
 	<script src="code.js"></script>
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<!--<script async src="https://www.googletagmanager.com/gtag/js?id=UA-76620963-2"></script>
-	<script>
-	  window.dataLayer = window.dataLayer || [];
-	  function gtag(){dataLayer.push(arguments);}
-	  gtag('js', new Date());
-
-	  gtag('config', 'UA-76620963-2');
-	</script>-->
 </head>
 
 <body>
@@ -48,15 +43,15 @@
 				<img id="bg" src="img/bg-512.jpg"
 				srcset="img/bg-512.jpg 512w, img/bg-1024.jpg 1024w, img/bg-2048.jpg 2048w"
 				draggable="false" alt="Satellite view map of San Andreas (GTA V)"/>
-				<img id="bunker_map" src="img/bunker.png" class="map_icon clickable" alt="Bunker icon"/>
-				<img id="coke_map" src="img/coke.png" class="map_icon clickable" alt="Cocaine icon"/>
-				<img id="meth_map" src="img/meth.png" class="map_icon clickable" alt="Meth icon"/>
-				<img id="cash_map" src="img/cash.png" class="map_icon clickable" alt="Counterfeit Cash icon"/>
-				<img id="weed_map" src="img/weed.png" class="map_icon clickable" alt="Weed icon"/>
-				<img id="forgery_map" src="img/forgery.png" class="map_icon clickable" alt="Document Forgery icon"/>
-				<img id="nightclub_map" src="img/nightclub.png" class="map_icon clickable" alt="Nightclub icon"/>
-				<img id="importExport_map" src="img/import.png" class="map_icon" alt="Import/Export icon"/>
-				<img id="wheel_map" src="img/wheel.png" class="map_icon clickable" alt="Lucky Wheel icon"/>
+				<img id="bunker_map" src="img/blank.png" class="icons icons-map icons-bunker clickable" alt="Bunker icon"/>
+				<img id="coke_map" src="img/blank.png" class="icons icons-map icons-coke clickable" alt="Cocaine icon"/>
+				<img id="meth_map" src="img/blank.png" class="icons icons-map icons-meth clickable" alt="Meth icon"/>
+				<img id="cash_map" src="img/blank.png" class="icons icons-map icons-cash clickable" alt="Counterfeit Cash icon"/>
+				<img id="weed_map" src="img/blank.png" class="icons icons-map icons-weed clickable" alt="Weed icon"/>
+				<img id="forgery_map" src="img/blank.png" class="icons icons-map icons-forgery clickable" alt="Document Forgery icon"/>
+				<img id="nightclub_map" src="img/blank.png" class="icons icons-map icons-nightclub clickable" alt="Nightclub icon"/>
+				<img id="importExport_map" src="img/blank.png" class="icons icons-map icons-importExport" alt="Import/Export icon"/>
+				<img id="wheel_map" src="img/blank.png" class="icons icons-map icons-wheel clickable" alt="Lucky Wheel icon"/>
 			</div>
 			<div id="mini_notif">
 				<p>The business manager is paused.</p>
@@ -101,19 +96,20 @@
 						<h1>Patch Notes</h1>
 					</div>
 					<div class="main">
-						<h1 style="padding-left: 3px;">Version 1.5.0</h1>
+						<h1 style="padding-left: 3px;">Version 1.5.3</h1>
 						<div class="indent">
 							<h2>Improvements</h2>
 							<ul>
-								<li>The business manager now scales better at common mobile resolutions.</li>
+								<li>The default progress bar style has been changed to '5-tick'.</li>
 								<ul>
-									<li>Main controls are moved to below the map.</li>
-									<li>Information windows are centered on the display instead of on the map.</li>
+									<li>If you were using the 'compact' progress bar style, you have been automatically moved to the '5-tick'
+									style. Feel free to swap back if you prefer the previous look.</li>
+									<li>The 'compact' style is now called 'plain' in the settings.</li>
 								</ul>
 							</ul>
 							<h2>Fixes</h2>
 							<ul>
-								<li>Various minor bug fixes.</li>
+								<li>Various optimizations to improve loading speed.</li>
 							</ul>
 						</div>
 					</div>
@@ -165,7 +161,7 @@
 							<tr class="progressBarStyle">
 								<td>Progress style:</td>
 								<td class="onechoice fsz">
-									<button class="button blue" data-value="0">Compact</button>
+									<button class="button blue" data-value="0">Plain</button>
 									<button class="button blue" data-value="1">5-tick</button>
 									<button class="button blue" data-value="2">Percentage</button>
 									<button class="button blue" data-value="3">Time Remaining</button>
@@ -472,7 +468,9 @@
 			<div class="business-section" id="activeBusinesses">
 				<div id="bunker" class="information">
 					<div class="business_heading clearfix">
-						<img src="img/bunker.png" class="icon" alt="Bunker icon"/>
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-bunker" alt="Bunker icon"/>
+						</div>
 						<h1>Bunker</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -520,7 +518,9 @@
 				</div>
 				<div id="coke" class="information mcbusiness">
 					<div class="business_heading clearfix">
-						<img src="img/coke.png" class="icon" alt="Cocaine icon"/>
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-coke" alt="Cocaine icon"/>
+						</div>
 						<h1>Cocaine</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -557,7 +557,9 @@
 				</div>
 				<div id="meth" class="information mcbusiness">
 					<div class="business_heading clearfix">
-						<img src="img/meth.png" class="icon" alt="Meth icon"/>
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-meth" alt="Meth icon"/>
+						</div>
 						<h1>Meth</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -594,7 +596,9 @@
 				</div>
 				<div id="cash" class="information mcbusiness">
 					<div class="business_heading clearfix">
-						<img src="img/cash.png" class="icon" alt="Counterfeit Cash icon"/>
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-cash" alt="Counterfeit Cash icon"/>
+						</div>
 						<h1>Counterfeit Cash</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -631,7 +635,9 @@
 				</div>
 				<div id="weed" class="information mcbusiness">
 					<div class="business_heading clearfix">
-						<img src="img/weed.png" class="icon" alt="Weed icon"/>
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-weed" alt="Weed icon"/>
+						</div>
 						<h1>Weed</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -668,7 +674,9 @@
 				</div>
 				<div id="forgery" class="information mcbusiness">
 					<div class="business_heading clearfix">
-						<img src="img/forgery.png" class="icon" alt="Document Forgery icon"/>
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-forgery" alt="Document Forgery icon"/>
+						</div>
 						<h1>Doc. Forgery</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -705,7 +713,9 @@
 				</div>
 				<div id="nightclub" class="information">
 					<div class="business_heading clearfix">
-						<img src="img/nightclub.png" class="icon" alt="Nightclub icon"/>
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-nightclub" alt="Nightclub icon"/>
+						</div>
 						<h1>Nightclub</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -793,7 +803,9 @@
 				</div>
 				<div id="importExport" class="information">
 					<div class="business_heading clearfix">
-						<img src="img/import.png" class="icon" alt="Import/Export icon"/>
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-importExport" alt="Import/Export icon"/>
+						</div>
 						<h1>Import / Export</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -815,7 +827,9 @@
 				</div>
 				<div id="wheel" class="information">
 					<div class="business_heading clearfix">
-						<img src="img/wheel.png" class="icon" alt="Lucky Wheel icon"/>
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-wheel" alt="Lucky Wheel icon"/>
+						</div>
 						<h1>Lucky Wheel</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -825,7 +839,9 @@
 				</div>
 				<div id="fees" class="information">
 					<div class="business_heading clearfix">
-						<img src="img/fees.png" class="icon" alt="Daily Fees icon"/>
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-fees" alt="Daily Fees icon"/>
+						</div>
 						<h1>Daily Fees</h1>
 					</div>
 					<button class="button purple" disabled="true">Not in Session</button>
