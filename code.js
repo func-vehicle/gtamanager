@@ -312,7 +312,6 @@ $(document).ready(function() {
 			$("#overlay").css("position", "fixed");
 		}
 	});
-	window.dispatchEvent(new Event("resize"));
 	
 	function muteBusiness(event) {
 		var business = businessRegexp.exec($(event.target).attr("id"))[1];
@@ -321,20 +320,18 @@ $(document).ready(function() {
 		}
 		redrawBusinessTabs();
 	}
-	$("#mapscreen .map_icon").on("click", muteBusiness);
+	$("#mapscreen .icons-map").on("click", muteBusiness);
 	
 	// General notification settings
 	$("#notification button.ok").on("click", function(event) {
-		$("#notification").hide();
-		$("#overlay").hide();
+		hidePopup();
 	});
 	
 	$(".setupGUI .buttons button.cancel").on("click", function(event) {
 		loadBackup();
 		redrawBusinessTabs();
 		redrawScreen();
-		$("#notification").hide();
-		$("#overlay").hide();
+		hidePopup();
 	});
 	
 	// General input field settings
@@ -447,7 +444,7 @@ $(document).ready(function() {
 		
 		$("#notification").hide();
 		$("#overlay").hide();
-		$("#mapscreen .map_icon").off("click");
+		$("#mapscreen .icons-map").off("click");
 		
 		$(document).on("mousemove", function(e) {
 			var x = (e.clientX);
@@ -486,7 +483,7 @@ $(document).ready(function() {
 			$(document).off("mousemove");
 			$("#notification").show();
 			$("#overlay").show();
-			$("#mapscreen .map_icon").on("click", muteBusiness);
+			$("#mapscreen .icons-map").on("click", muteBusiness);
 		});
 	});
 	
@@ -776,8 +773,14 @@ $(document).ready(function() {
 		redrawScreen();
 	});
 	
+	window.dispatchEvent(new Event("resize"));
+	
 	redrawScreen();
 	redrawBusinessTabs();
+});
+
+$(window).on("load", function() {
+	window.dispatchEvent(new Event("resize"));
 });
 
 function displayPopup(divName) {
@@ -934,8 +937,8 @@ function redrawBusinessTabs() {
 		if (userInfo[business].hasOwnProperty("muted")) {
 			if (userInfo[business].muted) {
 				if ($("#"+business+"_mute").length == 0) {
-					var img = $("<img id='"+business+"_mute' class='map_icon_mute'>");
-					img.attr("src", "img/muted.png");
+					var img = $("<img id='"+business+"_mute' class='icons icons-map icons-mute'>");
+					img.attr("src", "img/blank.png");
 					img.insertAfter("#"+business+"_map");
 					img.css("top", "calc("+y+"% - 8px");
 					img.css("left", "calc("+x+"% + 8px");
@@ -1137,7 +1140,7 @@ function redrawScreen() {
 		$("#options button.audio").addClass("off");
 	}
 	
-	window.dispatchEvent(new Event("resize"));
+	//window.dispatchEvent(new Event("resize"));
 }
 
 function notify() {

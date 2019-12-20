@@ -35,27 +35,6 @@ body.desktop::-webkit-scrollbar {		/* WebKit */
     width: 0;
     height: 0;
 }
-/*::-webkit-scrollbar {
-	width: 12px;
-	height: 10px;
-}
-::-webkit-scrollbar-thumb {
-	border-top: 5px solid rgba(0, 0, 0, 0);
-	border-bottom: 5px solid rgba(0, 0, 0, 0);
-	background-clip: padding-box;
-	background-color: #999;
-}
-::-webkit-scrollbar-thumb:hover {
-	background-color: #888;
-}
-::-webkit-scrollbar-thumb:active {
-	background-color: #555;
-}
-::-webkit-scrollbar-button {
-    width: 0;
-    height: 0;
-    display: none;
-}*/
 .span_1_of_2 {
 	width: 50%;
 }
@@ -235,7 +214,6 @@ input[type=range]::-ms-fill-upper {
 
 /* MAP */
 #mapscreen {
-	/*line-height: 0;*/
 	height: 100%;
 	position: relative;
 }
@@ -250,28 +228,66 @@ input[type=range]::-ms-fill-upper {
 #map {
 	position: relative;
 }
-.map_icon {
-	width: 32px;
-	height: 32px;
-	margin-top: -16px;
-	margin-left: -16px;
+.icons {
+    background-image: url(../img/spritesheet.png);
+    background-repeat: no-repeat;
+    display: block;
+}
+.icons-map {
+	/* 32x32 */
+	width: 64px;
+	height: 64px;
+	margin-top: -32px;
+	margin-left: -32px;
+	transform: scale(0.5);
 	position: absolute;
 }
-.map_icon.flash {
+.icons-map.flash {
 	-webkit-filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8);
 	filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8);
 }
-.map_icon.clickable {
+.icons-map.clickable {
 	cursor: pointer;
 }
-.map_icon_mute {
-	width: 24px;
-	height: 24px;
-	margin-top: -12px;
-	margin-left: -12px;
+.icons-mute {
+	transform: scale(0.375);
 	position: absolute;
 	pointer-events: none;
+	background-position: -67px -133px;
 }
+.icons-bunker {
+    background-position: -1px -1px;
+}
+.icons-cash {
+    background-position: -67px -1px;
+}
+.icons-coke {
+    background-position: -133px -1px;
+}
+.icons-fees {
+    background-position: -1px -67px;
+}
+.icons-forgery {
+    background-position: -67px -67px;
+}
+.icons-importExport {
+    background-position: -133px -67px;
+}
+.icons-meth {
+    background-position: -1px -133px;
+}
+.icons-nightclub {
+    width: 60px;
+    height: 60px;
+    background-position: -133px -133px;
+}
+.icons-weed {
+    background-position: -199px -1px;
+}
+.icons-wheel {
+    background-position: -199px -67px;
+}
+
 #mini_notif {
 	background-color: #000;
 	border: 1px solid #CC212C;
@@ -402,10 +418,6 @@ input[type=range]::-ms-fill-upper {
 	padding: 0 5px 0 0;
 	color: #FFF;
 }
-#notification td:first-child {
-	padding: 0 8px 0 0;
-	/*vertical-align: top;*/
-}
 #notification .buttons {
 	padding: 5px;
 	margin: auto;
@@ -428,7 +440,6 @@ input[type=range]::-ms-fill-upper {
 #notification .incDecButtons button {
 	margin-top: 0;
 }
-
 #nightclubGUI th, #nightclubGUI td {
 	text-align: left;
 }
@@ -529,10 +540,17 @@ input[type=range]::-ms-fill-upper {
 	clear: both;
 	display: table;
 }
-.icon {
+.icon_wrap {
 	width: 25px;
 	height: 25px;
 	margin-right: 5px;
+}
+.icons-info {
+	/* 25x25 */
+	width: 64px;
+	height: 64px;
+	transform-origin: top left;
+	transform: scale(0.390625);
 }
 .business_heading h1 {
 	padding-top: 3px;
