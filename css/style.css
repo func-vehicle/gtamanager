@@ -523,11 +523,11 @@ input[type=range]::-ms-fill-upper {
 .information:last-child {
 	margin-bottom: 0;
 }
-@-moz-document url-prefix() {
+/*@-moz-document url-prefix() {
     .information:last-child {
         margin-bottom: 5px;
     }
-}
+}*/
 .business-section {
 	width: 100%;
 }

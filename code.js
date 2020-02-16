@@ -121,7 +121,7 @@ var defaultUserInfo = {
 		name: "Lucky Wheel",
 		owned: true,
 		muted: false,
-		notify_when_paused: true, 
+		notify_while_paused: true, 
 		timestamp: 0,
 		map_position: {
 			x: 53.89,
@@ -131,7 +131,6 @@ var defaultUserInfo = {
 }
 
 var newUser = false;
-
 if (localStorage.getItem("userInfo") == null) {
 	userInfo = defaultUserInfo;
 	newUser = true;
@@ -140,11 +139,11 @@ else {
 	userInfo = JSON.parse(localStorage.getItem("userInfo"));
 }
 
+var windowStack = [];
 var backupInfo = {};
 var changeInfo = {};
 
 var feesCooldown = 0;
-
 var notifications = {
 	lastPlayed: 0,
 }
@@ -266,7 +265,7 @@ function update() {
 	// TODO:
 	//if (userInfo.version == "1.5.3") {
 	//	userInfo.recentFriday = 0;
-	//  userInfo.wheel.notify_when_paused = true;
+	//  userInfo.wheel.notify_while_paused = true;
 	//	userInfo.version = "1.6.0";
 	//}
 }
@@ -285,6 +284,33 @@ $(document).ready(function() {
 	};
 	window.addEventListener('storage', onLocalStorageEvent, false);
 	
+	// Check if new week
+	remindFriday = false;
+	
+	var recentFriday = new Date();
+	// Don't count today if Friday and before 10AM UTC
+	if (recentFriday.getUTCDay() === 4 && recentFriday.getUTCHours() < 10) {
+		recentFriday.setUTCDate(recentFriday.getUTCDate() - 1);
+	}
+	// Find recent Friday
+	while (recentFriday.getUTCDay() !== 4) {
+		recentFriday.setUTCDate(recentFriday.getUTCDate() - 1);
+	}
+	// Set time to 10AM UTC
+	recentFriday.setUTCHours(10);
+	recentFriday.setUTCMinutes(0);
+	recentFriday.setUTCSeconds(0);
+	recentFriday.setUTCMilliseconds(0);
+
+	console.log(recentFriday.toUTCString());
+	
+	if (recentFriday.toUTCString() != userInfo.recentFriday) {
+		console.log(recentFriday.toUTCString());
+		console.log(userInfo.recentFriday);
+		userInfo.recentFriday = recentFriday.toUTCString();
+		remindFriday = true;
+	}
+	
 	// Display notice
 	if (newUser) {
 		displayPopup("newUserNotice");
@@ -292,6 +318,9 @@ $(document).ready(function() {
 	else if (userInfo.version != defaultUserInfo.version) {
 		update();
 		displayPopup("updateNotice");
+	}
+	else if (remindFriday) {
+		displayPopup("newWeekNotice");
 	}
 	else {
 		displayPopup("pauseNotice");
@@ -569,6 +598,11 @@ $(document).ready(function() {
 		redrawScreen();
 	});
 	
+	$("#wheelSetupGUI .notifyWhilePaused button").on("click", function(event) {
+		changeInfo.notify_while_paused = !changeInfo.notify_while_paused;
+		redrawScreen();
+	});
+	
 	// Main setup buttons
 	$("#mainSetup .buttons button.cancel").off("click");
 	$("#mainSetup .buttons button.apply").off("click");
@@ -809,16 +843,24 @@ $(window).on("load", function() {
 	window.dispatchEvent(new Event("resize"));
 });
 
-function displayPopup(divName) {
+function displayPopup(divName, clearExisting) {
 	$("#notification > *").hide();
 	$("#"+divName).show();
 	$("#notification").show();
 	$("#overlay").show();
+	if (clearExisting) {
+		windowStack = [divName];
+	}
+	else {
+		windowStack.push(divName);
+	}
+	console.log(windowStack);
 }
 
 function hidePopup(divName = null) {
 	$("#notification").hide();
 	$("#overlay").hide();
+	windowStack.pop();
 }
 
 function createBackup(business) {
@@ -997,6 +1039,7 @@ function redrawScreen() {
 	}
 	
 	// setupGUI buttons
+	// Main Setup
 	var owned = changeInfo["owned"];
 	$(".setupGUI .own button[data-value=1]").prop("disabled", owned);
 	$(".setupGUI .own button[data-value=0]").prop("disabled", !owned);
@@ -1007,6 +1050,16 @@ function redrawScreen() {
 	$("#mainSetup .hideUnowned button[data-value=1]").prop("disabled", hide_unowned);
 	$("#mainSetup .hideUnowned button[data-value=0]").prop("disabled", !hide_unowned);
 	
+	// TODO:
+	var audio_enabled = changeInfo.audio;
+	
+	var progress_bar_style = changeInfo["progress_bar_style"];
+	$("#mainSetup .progressBarStyle button").eq(0).prop("disabled", progress_bar_style == 0);
+	$("#mainSetup .progressBarStyle button").eq(1).prop("disabled", progress_bar_style == 1);
+	$("#mainSetup .progressBarStyle button").eq(2).prop("disabled", progress_bar_style == 2);
+	$("#mainSetup .progressBarStyle button").eq(3).prop("disabled", progress_bar_style == 3);
+	
+	// Bunker Setup
 	var hide_research = changeInfo["hide_research"];
 	$("#bunkerSetupGUI .hide_research button").eq(0).prop("disabled", hide_research);
 	$("#bunkerSetupGUI .hide_research button").eq(1).prop("disabled", !hide_research);
@@ -1016,15 +1069,10 @@ function redrawScreen() {
 	$("#bunkerSetupGUI .mode button").eq(1).prop("disabled", mode == 1);
 	$("#bunkerSetupGUI .mode button").eq(2).prop("disabled", mode == 2);
 	
+	// Nightclub Setup
 	var sidebar = changeInfo["sidebar"];
 	$("#nightclubSetupGUI .sidebar button[data-value=1]").prop("disabled", !sidebar);
 	$("#nightclubSetupGUI .sidebar button[data-value=0]").prop("disabled", sidebar);
-	
-	var progress_bar_style = changeInfo["progress_bar_style"];
-	$("#mainSetup .progressBarStyle button").eq(0).prop("disabled", progress_bar_style == 0);
-	$("#mainSetup .progressBarStyle button").eq(1).prop("disabled", progress_bar_style == 1);
-	$("#mainSetup .progressBarStyle button").eq(2).prop("disabled", progress_bar_style == 2);
-	$("#mainSetup .progressBarStyle button").eq(3).prop("disabled", progress_bar_style == 3);
 	
 	var products = staticInfo["nightclub"]["products"];
 	for (var i = 0; i < products.length; i++) {
@@ -1036,6 +1084,11 @@ function redrawScreen() {
 			$("#nightclubSetupGUI .producing button[data-value=\""+product+"\"]").addClass("off");
 		}
 	}
+	
+	// Wheel setup
+	var notify_while_paused = changeInfo["notify_while_paused"];
+	$("#wheelSetupGUI .notifyWhilePaused button[data-value=1]").prop("disabled", notify_while_paused);
+	$("#wheelSetupGUI .notifyWhilePaused button[data-value=0]").prop("disabled", !notify_while_paused);
 	
 	// Business sidebar progress bars
 	var progressBars = $(".progress_bar");
@@ -1170,10 +1223,27 @@ function redrawScreen() {
 }
 
 function notify() {
+	// Wheel
+	if (running || userInfo.wheel.notify_while_paused) {
+		if (new Date().getTime() - userInfo["wheel"]["timestamp"] > 86400000) {
+			flashIcon("wheel");
+			playNotification("wheel");
+		}
+		else {
+			flashIcon("wheel", false);
+		}
+	}
+	
 	// No flashing if not running
 	if (!running) {
 		for (item in userInfo) {
 			if (userInfo[item].hasOwnProperty("map_position")) {
+				// Workaround for wheel flashing while paused
+				if (item == "wheel") {
+					if (userInfo.wheel.notify_while_paused) {
+						continue;
+					}
+				}
 				flashIcon(item, false);
 			}
 		}
@@ -1232,15 +1302,6 @@ function notify() {
 	}
 	if (!flashed) {
 		flashIcon("nightclub", false);
-	}
-	
-	// Wheel
-	if (new Date().getTime() - userInfo["wheel"]["timestamp"] > 86400000) {
-		flashIcon("wheel");
-		playNotification("wheel");
-	}
-	else {
-		flashIcon("wheel", false);
 	}
 }
 
