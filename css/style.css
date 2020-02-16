@@ -503,9 +503,10 @@ input[type=range]::-ms-fill-upper {
 }
 .desktop #infotab {
 	max-height: 100vh;
-}
-.desktop #infotab {
 	width: 220px;
+}
+.mobile #infotab {
+	overflow-y: hidden;
 }
 
 .information {
