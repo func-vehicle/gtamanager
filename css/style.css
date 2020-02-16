@@ -402,6 +402,11 @@ input[type=range]::-ms-fill-upper {
 	color: #FFF;
 	font-size: 1em;
 }
+#notification a {
+	color: #FFF;
+	text-decoration: none;
+	font-weight: bold;
+}
 #notification .main {
 	padding-bottom: 2px;
 }

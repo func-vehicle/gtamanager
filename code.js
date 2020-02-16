@@ -1,7 +1,8 @@
 var userInfo;
 
 var defaultUserInfo = {
-	version: "1.5.3",
+	version: "1.6.0",
+	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
 		audio: {
@@ -120,6 +121,7 @@ var defaultUserInfo = {
 		name: "Lucky Wheel",
 		owned: true,
 		muted: false,
+		notify_when_paused: true, 
 		timestamp: 0,
 		map_position: {
 			x: 53.89,
@@ -217,9 +219,9 @@ function update() {
 		userInfo.importExport.name = "Import / Export";
 		userInfo.wheel.name = "Lucky Wheel";
 		userInfo.bunker.research /= 60000;
-		var todo = ["bunker", "coke", "meth", "cash"];
-		for (var i = 0; i < todo.length; i++) {
-			var business = todo[i];
+		var toUpdate = ["bunker", "coke", "meth", "cash"];
+		for (var i = 0; i < toUpdate.length; i++) {
+			var business = toUpdate[i];
 			userInfo[business].product /= 60000;
 			userInfo[business].supplies /= 60000;
 		}
@@ -261,6 +263,12 @@ function update() {
 		}
 		userInfo.version = "1.5.3";
 	}
+	// TODO:
+	//if (userInfo.version == "1.5.3") {
+	//	userInfo.recentFriday = 0;
+	//  userInfo.wheel.notify_when_paused = true;
+	//	userInfo.version = "1.6.0";
+	//}
 }
 
 $(document).ready(function() {
@@ -448,7 +456,7 @@ $(document).ready(function() {
 		var business = businessRegexp.exec($(event.target).parents(".setupGUI").attr("class"))[1];
 		var toMove = $("#"+business+"_map");
 		var toMoveMute = $("#"+business+"_mute");
-		var outerDiv = $("#mapscreen");
+		var outerDiv = $("#map");
 		var outDim = outerDiv.offset();
 		outDim.right = (outDim.left + outerDiv.width() - 15);
 		outDim.bottom = (outDim.top + outerDiv.height() - 15);
