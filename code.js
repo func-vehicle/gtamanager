@@ -343,7 +343,6 @@ $(document).ready(function() {
 		displayPopup("newUserNotice");
 	}
 	
-	
 	// Window resize function
 	$(window).resize(function() {
 		var scr_w, scr_h, map_w, map_h;
@@ -660,7 +659,13 @@ $(document).ready(function() {
 	});
 	
 	$("#mainSetup .notificationSettings button[data-value=push]").on("click", function(event) {
-		notify.authorize();
+		if (!changeInfo.push_notifications) {
+			notify.authorize();
+		}
+		else {
+			$("#mainSetup .notificationSettings button[data-value=push]").addClass("off");
+			changeInfo.push_notifications = false;
+		}
 	});
 	
 	$("#mainSetup .audioFreq input").on("keyup", function(event) {
