@@ -5,6 +5,7 @@ var defaultUserInfo = {
 	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
+		push_notifications: false,
 		audio: {
 			enabled: true,
 			volume: 1,
@@ -147,6 +148,16 @@ var feesCooldown = 0;
 var notifications = {
 	pushAllowed: false,
 	lastPlayed: 0,
+	lastPlayedDict: {
+		bunker: 0,
+		coke: 0,
+		meth: 0,
+		cash: 0,
+		weed: 0,
+		forgery: 0,
+		nightclub: 0,
+		wheel: 0,
+	},
 }
 var flashIconState = true;
 
@@ -266,6 +277,7 @@ function update() {
 	// TODO:
 	//if (userInfo.version == "1.5.3") {
 	//	userInfo.recentFriday = 0;
+	//  userInfo.settings.push_notifications = false;
 	//  userInfo.wheel.notify_while_paused = false;
 	//	userInfo.version = "1.6.0";
 	//}
@@ -644,7 +656,7 @@ $(document).ready(function() {
 	});
 	
 	$("#mainSetup .notificationSettings button[data-value=push]").on("click", function(event) {
-		setupPushNotifications();
+		notify.authorize();
 	});
 	
 	$("#mainSetup .audioFreq input").on("keyup", function(event) {
@@ -703,7 +715,7 @@ $(document).ready(function() {
 		redrawScreen();
 	});
 	
-	// Reset
+	// Reset dialog
 	$("#resetWarning button.cancel").on("click", function(event) {
 		$("#notification").hide();
 		$("#overlay").hide();
@@ -1057,7 +1069,13 @@ function redrawScreen() {
 	$("#mainSetup .hideUnowned button[data-value=0]").prop("disabled", !hide_unowned);
 	
 	// TODO:
-	var audio_enabled = changeInfo.audio;
+	var push_enabled = changeInfo["push_notifications"];
+	if (push_enabled && notify.compatible()) {
+		$("#mainSetup .notificationSettings button[data-value=push]").removeClass("off");
+	}
+	else {
+		$("#mainSetup .notificationSettings button[data-value=push]").addClass("off");
+	}
 	
 	var progress_bar_style = changeInfo["progress_bar_style"];
 	$("#mainSetup .progressBarStyle button").eq(0).prop("disabled", progress_bar_style == 0);
@@ -1233,7 +1251,7 @@ function checkNotify() {
 	if (running || userInfo.wheel.notify_while_paused) {
 		if (new Date().getTime() - userInfo["wheel"]["timestamp"] > 86400000) {
 			flashIcon("wheel");
-			playNotification("wheel");
+			playNotification("wheel", "GTA Online Business Manager", "The Lucky Wheel is ready to be spun.");
 		}
 		else {
 			flashIcon("wheel", false);
@@ -1260,15 +1278,15 @@ function checkNotify() {
 	if (userInfo.bunker.owned) {
 		if (userInfo.bunker.product >= staticInfo.bunker.maxProduct && (userInfo.bunker.mode == 0 || userInfo.bunker.mode == 1)) {
 			flashIcon("bunker");
-			playNotification("bunker");
+			playNotification("bunker", "GTA Online Business Manager", "Your Bunker has reached maximum product and is ready to sell.");
 		}
 		else if (userInfo.bunker.research >= staticInfo.bunker.maxResearch && (userInfo.bunker.mode == 2 || userInfo.bunker.mode == 1)) {
 			flashIcon("bunker");
-			playNotification("bunker");
+			playNotification("bunker", "GTA Online Business Manager", "Your Bunker has finished researching an item.");
 		}
 		else if (userInfo.bunker.supplies <= 0) {
 			flashIcon("bunker");
-			playNotification("bunker");
+			playNotification("bunker", "GTA Online Business Manager", "Your Bunker has run out of supplies.");
 		}
 		else {
 			flashIcon("bunker", false);
@@ -1281,11 +1299,11 @@ function checkNotify() {
 		if (userInfo[business].owned) {
 			if (userInfo[business].product >= staticInfo[business].maxProduct) {
 				flashIcon(business);
-				playNotification(business);
+				playNotification(business, "GTA Online Business Manager", "Your "+userInfo[business].name+" business has reached maximum product and is ready to sell.");
 			}
 			else if (userInfo[business].supplies <= 0) {
 				flashIcon(business);
-				playNotification(business);
+				playNotification(business, "GTA Online Business Manager", "Your "+userInfo[business].name+" business has run out of supplies.");
 			}
 			else {
 				flashIcon(business, false);
@@ -1302,7 +1320,7 @@ function checkNotify() {
 			if (userInfo.nightclub[product] >= staticInfo.nightclub["max"+capitalize(product)]) {
 				flashed = true;
 				flashIcon("nightclub");
-				playNotification("nightclub");
+				playNotification("nightclub", "GTA Online Business Manager", "Your Nightclub is at maximum capacity in one or more products.");
 			}
 		}
 	}
@@ -1325,19 +1343,28 @@ function flashIcon(business, enable = true) {
 	}
 }
 
-function playNotification(business) {
+function playNotification(business, title, body) {
 	if (business != null) {
 		if (!userInfo.settings.audio.enabled || userInfo[business].muted) {
 			return;
 		}
 	}
-	if (new Date().getTime() - notifications.lastPlayed > 60000*userInfo.settings.audio.interval) {
+	var time = new Date().getTime();
+	// Push notification
+	if (notify.compatible() && userInfo.settings.push_notifications && title != null) {
+		if (time - notifications.lastPlayedDict[business] > 60000*userInfo.settings.audio.interval) {
+			notify.show(title, body, business);
+			notifications.lastPlayedDict[business] = time;
+		}
+	}
+	// Audio notification
+	if (time - notifications.lastPlayed > 60000*userInfo.settings.audio.interval) {
 		var audio = $("audio#notification_ding")[0]
 		audio.pause();
 		audio.currentTime = 0;
 		audio.volume = userInfo.settings.audio.volume;
 		audio.play();
-		notifications.lastPlayed = new Date().getTime();
+		notifications.lastPlayed = time;
 	}
 }
 
@@ -1349,7 +1376,7 @@ window.notify = {
 	},
 	compatible: function() {
 		if (typeof Notification === 'undefined') {
-			notify.log("Notifications are not available for your browser.");
+			alert("Unfortunately, notifications are not available for your browser.");
 			return false;
 		}
 		return true;
@@ -1358,16 +1385,17 @@ window.notify = {
 		if (notify.compatible()) {
 			Notification.requestPermission(function(permission) {
 				notify.log("Permission to display: "+permission);
+				notify.show("Testing Push Notifications",
+				"If you can see this, you're good to go.",
+				"forgery");
+				$("#mainSetup .notificationSettings button[data-value=push]").removeClass("off");
+				changeInfo.push_notifications = true;
 			});
 		}
 	},
-	showDelayed: function(seconds) {
-		notify.log("A notification will be triggered in "+seconds+" seconds. Try minimising the browser now.");
-		setTimeout(notify.show, (seconds*1000));
-	},
 	show: function(title, body, business) {
 		if (typeof Notification === "undefined") {
-			notify.log("Notifications are not available for your browser.");
+			console.log("Notifications not supported, ignoring.");
 			return;
 		}
 		if (notify.compatible()) {
@@ -1385,7 +1413,7 @@ window.notify = {
 			notify.list[id].onshow  = function() { notify.logEvent(id, "showed");  };
 			notify.list[id].onerror = function() { notify.logEvent(id, "errored"); };
 			notify.list[id].onclose = function() { notify.logEvent(id, "closed");  };
-
+			
 			console.log("Created a new notification...");
 			console.log(notify.list[id]);
 		}
@@ -1394,10 +1422,3 @@ window.notify = {
 		notify.log("Notification #"+id+" "+event);
 	}
 };
-
-function setupPushNotifications() {
-	notify.authorize();
-	notify.show("Testing Push Notifications",
-	"If you can see this, you're good to go.",
-	"forgery");
-}
