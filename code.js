@@ -1,5 +1,6 @@
 var userInfo;
 
+// The current format of user's data.
 var defaultUserInfo = {
 	version: "1.6.0",
 	recentFriday: 0,
@@ -131,6 +132,7 @@ var defaultUserInfo = {
 	},
 }
 
+// Load saved data JSON from localStorage
 var newUser = false;
 if (localStorage.getItem("userInfo") == null) {
 	userInfo = defaultUserInfo;
@@ -144,6 +146,7 @@ var windowStack = [];
 var backupInfo = {};
 var changeInfo = {};
 
+// Session notification information
 var feesCooldown = 0;
 var notifications = {
 	pushAllowed: false,
@@ -161,6 +164,7 @@ var notifications = {
 }
 var flashIconState = true;
 
+// Times are in minutes
 var staticInfo = {
 	mcbusinesses: ["coke", "meth", "cash", "weed", "forgery"],
 	bunker: {
@@ -207,9 +211,11 @@ var staticInfo = {
 	},
 }
 
+// Useful regexp
 var typeRegexp = /^.*(product|research|supplies|sell|cargo|sporting|imports|pharma|creation|organic|copying).*$/;
 var businessRegexp = /^.*(bunker|coke|meth|cash|weed|forgery|nightclub|importExport|wheel).*$/;
 
+// Set up main loop to run every second
 var intervalID = setInterval(tick, 1000);
 var running = 0;
 
@@ -297,6 +303,12 @@ $(document).ready(function() {
 	};
 	window.addEventListener('storage', onLocalStorageEvent, false);
 	
+	// Update if necessary
+	var needsUpdate = userInfo.version != defaultUserInfo.version;
+	if (needsUpdate) {
+		update();
+	}
+	
 	// Check if new week
 	var remindFriday = false;
 	var recentFriday = new Date();
@@ -313,28 +325,24 @@ $(document).ready(function() {
 	recentFriday.setUTCMinutes(0);
 	recentFriday.setUTCSeconds(0);
 	recentFriday.setUTCMilliseconds(0);
-
 	console.log(recentFriday.toUTCString());
-	
 	if (recentFriday.toUTCString() != userInfo.recentFriday) {
 		userInfo.recentFriday = recentFriday.toUTCString();
 		remindFriday = true;
 	}
 	
-	// Display notice
+	// Display initial notices
+	displayPopup("pauseNotice");
+	if (remindFriday) {
+		displayPopup("newWeekNotice");
+	}
+	if (needsUpdate) {
+		displayPopup("updateNotice");
+	}
 	if (newUser) {
 		displayPopup("newUserNotice");
 	}
-	else if (userInfo.version != defaultUserInfo.version) {
-		update();
-		displayPopup("updateNotice");
-	}
-	else if (remindFriday) {
-		displayPopup("newWeekNotice");
-	}
-	else {
-		displayPopup("pauseNotice");
-	}
+	
 	
 	// Window resize function
 	$(window).resize(function() {
@@ -502,8 +510,7 @@ $(document).ready(function() {
 		outDim.left += 15;
 		outDim.top += 15;
 		
-		$("#notification").hide();
-		$("#overlay").hide();
+		hidePopup();
 		$("#mapscreen .icons-map").off("click");
 		$("#mini_notif p").html("Click to select the location.");  // TODO: make this less hacky
 		$("#mini_notif").show();
@@ -577,8 +584,7 @@ $(document).ready(function() {
 		var gui = $(event.target).parents(".setupGUI").prop("id");
 		var business = businessRegexp.exec($("#"+gui).prop("class"))[1];
 		userInfo[business] = changeInfo;
-		$("#notification").hide();
-		$("#overlay").hide();
+		hidePopup();
 		redrawBusinessTabs();
 		redrawScreen();
 	});
@@ -630,8 +636,7 @@ $(document).ready(function() {
 		loadBackup();
 		redrawBusinessTabs();
 		redrawScreen();
-		$("#notification").hide();
-		$("#overlay").hide();
+		hidePopup();
 	});
 	
 	$("#mainSetup .buttons button.apply").on("click", function(event) {
@@ -639,8 +644,7 @@ $(document).ready(function() {
 		notifications.lastPlayed = 0;
 		redrawBusinessTabs();
 		redrawScreen();
-		$("#notification").hide();
-		$("#overlay").hide();
+		hidePopup();
 	});
 	
 	$("#mainSetup .hideUnowned button").on("click", function(event) {
@@ -717,8 +721,7 @@ $(document).ready(function() {
 	
 	// Reset dialog
 	$("#resetWarning button.cancel").on("click", function(event) {
-		$("#notification").hide();
-		$("#overlay").hide();
+		hidePopup();
 	});
 	
 	$("#resetWarning button.reset").on("click", function(event) {
@@ -726,8 +729,7 @@ $(document).ready(function() {
 		localStorage.setItem("userInfo", JSON.stringify(userInfo));
 		redrawBusinessTabs();
 		redrawScreen();
-		$("#notification").hide();
-		$("#overlay").hide();
+		hidePopup();
 	});
 	
 	// General sliders
@@ -817,8 +819,6 @@ $(document).ready(function() {
 			$("#options button.toggle").html("Pause");
 			feesCooldown = 2880000;
 			$("#mini_notif").hide();
-			$("#notification").hide();
-			$("#overlay").hide();
 			window.onbeforeunload = function() {
 				return true;
 			};
@@ -869,16 +869,24 @@ function displayPopup(divName, clearExisting) {
 	if (clearExisting) {
 		windowStack = [divName];
 	}
-	else {
+	else if (windowStack[windowStack.length - 1] != divName) {
 		windowStack.push(divName);
 	}
 	console.log(windowStack);
 }
 
-function hidePopup(divName = null) {
+function hidePopup(hideAll) {
 	$("#notification").hide();
 	$("#overlay").hide();
-	windowStack.pop();
+	if (hideAll) {
+		windowStack = [];
+	}
+	else {
+		windowStack.pop();
+		if (windowStack.length > 0) {
+			displayPopup(windowStack[windowStack.length - 1], false);
+		}
+	}
 }
 
 function createBackup(business) {
@@ -1246,6 +1254,7 @@ function redrawScreen() {
 	//window.dispatchEvent(new Event("resize"));
 }
 
+// Check if user needs to be notified
 function checkNotify() {
 	// Wheel
 	if (running || userInfo.wheel.notify_while_paused) {
@@ -1329,6 +1338,7 @@ function checkNotify() {
 	}
 }
 
+// Handle flash state of map icon
 function flashIcon(business, enable = true) {
 	var icon = $("#"+business+"_map");
 	if (!enable) {
@@ -1343,6 +1353,7 @@ function flashIcon(business, enable = true) {
 	}
 }
 
+// Handle deciding to play audio / push notifications
 function playNotification(business, title, body) {
 	if (business != null) {
 		if (!userInfo.settings.audio.enabled || userInfo[business].muted) {
@@ -1368,6 +1379,7 @@ function playNotification(business, title, body) {
 	}
 }
 
+// Handle sending push notifications
 window.notify = {
 	list: [],
 	id: 0,
