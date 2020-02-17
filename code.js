@@ -1,9 +1,12 @@
 var userInfo;
 
+// The current format of user's data.
 var defaultUserInfo = {
-	version: "1.5.3",
+	version: "1.6.0",
+	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
+		push_notifications: false,
 		audio: {
 			enabled: true,
 			volume: 1,
@@ -120,6 +123,7 @@ var defaultUserInfo = {
 		name: "Lucky Wheel",
 		owned: true,
 		muted: false,
+		notify_while_paused: false, 
 		timestamp: 0,
 		map_position: {
 			x: 53.89,
@@ -128,8 +132,8 @@ var defaultUserInfo = {
 	},
 }
 
+// Load saved data JSON from localStorage
 var newUser = false;
-
 if (localStorage.getItem("userInfo") == null) {
 	userInfo = defaultUserInfo;
 	newUser = true;
@@ -138,16 +142,29 @@ else {
 	userInfo = JSON.parse(localStorage.getItem("userInfo"));
 }
 
+var windowStack = [];
 var backupInfo = {};
 var changeInfo = {};
 
+// Session notification information
 var feesCooldown = 0;
-
 var notifications = {
+	pushAllowed: false,
 	lastPlayed: 0,
+	lastPlayedDict: {
+		bunker: 0,
+		coke: 0,
+		meth: 0,
+		cash: 0,
+		weed: 0,
+		forgery: 0,
+		nightclub: 0,
+		wheel: 0,
+	},
 }
 var flashIconState = true;
 
+// Times are in minutes
 var staticInfo = {
 	mcbusinesses: ["coke", "meth", "cash", "weed", "forgery"],
 	bunker: {
@@ -194,9 +211,11 @@ var staticInfo = {
 	},
 }
 
+// Useful regexp
 var typeRegexp = /^.*(product|research|supplies|sell|cargo|sporting|imports|pharma|creation|organic|copying).*$/;
 var businessRegexp = /^.*(bunker|coke|meth|cash|weed|forgery|nightclub|importExport|wheel).*$/;
 
+// Set up main loop to run every second
 var intervalID = setInterval(tick, 1000);
 var running = 0;
 
@@ -217,9 +236,9 @@ function update() {
 		userInfo.importExport.name = "Import / Export";
 		userInfo.wheel.name = "Lucky Wheel";
 		userInfo.bunker.research /= 60000;
-		var todo = ["bunker", "coke", "meth", "cash"];
-		for (var i = 0; i < todo.length; i++) {
-			var business = todo[i];
+		var toUpdate = ["bunker", "coke", "meth", "cash"];
+		for (var i = 0; i < toUpdate.length; i++) {
+			var business = toUpdate[i];
 			userInfo[business].product /= 60000;
 			userInfo[business].supplies /= 60000;
 		}
@@ -261,19 +280,66 @@ function update() {
 		}
 		userInfo.version = "1.5.3";
 	}
+	if (userInfo.version == "1.5.3") {
+		userInfo.recentFriday = 0;
+		userInfo.settings.push_notifications = false;
+		userInfo.wheel.notify_while_paused = false;
+		userInfo.version = "1.6.0";
+	}
 }
 
 $(document).ready(function() {
-	// Display notice
-	if (newUser) {
-		displayPopup("newUserNotice");
-	}
-	else if (userInfo.version != defaultUserInfo.version) {
+	// Multiple instance check
+	localStorage.openPages = Date.now();
+	var onLocalStorageEvent = function(e) {
+		if (e.key == "openPages") {
+			// Listen if anybody else opening the same page!
+			localStorage.pageAvailable = Date.now();
+		}
+		if (e.key == "pageAvailable") {
+			alert("Warning: you have multiple tabs of the business manager open. Ensure you only have one open at a time.");
+		}
+	};
+	window.addEventListener('storage', onLocalStorageEvent, false);
+	
+	// Update if necessary
+	var needsUpdate = userInfo.version != defaultUserInfo.version;
+	if (needsUpdate) {
 		update();
+	}
+	
+	// Check if new week
+	var remindFriday = false;
+	var recentFriday = new Date();
+	// Use last Friday if Friday today but before 10AM UTC
+	if (recentFriday.getUTCDay() === 4 && recentFriday.getUTCHours() < 10) {
+		recentFriday.setUTCDate(recentFriday.getUTCDate() - 7);
+	}
+	// Find recent Friday
+	while (recentFriday.getUTCDay() !== 4) {
+		recentFriday.setUTCDate(recentFriday.getUTCDate() - 1);
+	}
+	// Set time to 10AM UTC
+	recentFriday.setUTCHours(10);
+	recentFriday.setUTCMinutes(0);
+	recentFriday.setUTCSeconds(0);
+	recentFriday.setUTCMilliseconds(0);
+	//console.log(recentFriday.toUTCString());
+	if (recentFriday.toUTCString() != userInfo.recentFriday) {
+		userInfo.recentFriday = recentFriday.toUTCString();
+		remindFriday = true;
+	}
+	
+	// Display initial notices
+	displayPopup("pauseNotice");
+	if (remindFriday) {
+		displayPopup("newWeekNotice");
+	}
+	if (needsUpdate) {
 		displayPopup("updateNotice");
 	}
-	else {
-		displayPopup("pauseNotice");
+	if (newUser) {
+		displayPopup("newUserNotice");
 	}
 	
 	// Window resize function
@@ -435,16 +501,20 @@ $(document).ready(function() {
 		var business = businessRegexp.exec($(event.target).parents(".setupGUI").attr("class"))[1];
 		var toMove = $("#"+business+"_map");
 		var toMoveMute = $("#"+business+"_mute");
-		var outerDiv = $("#mapscreen");
+		var outerDiv = $("#map");
 		var outDim = outerDiv.offset();
 		outDim.right = (outDim.left + outerDiv.width() - 15);
 		outDim.bottom = (outDim.top + outerDiv.height() - 15);
 		outDim.left += 15;
 		outDim.top += 15;
 		
-		$("#notification").hide();
-		$("#overlay").hide();
+		hidePopup();
 		$("#mapscreen .icons-map").off("click");
+		$("#mini_notif p").html("Click to select the location.");  // TODO: make this less hacky
+		$("#mini_notif").show();
+		$('html, body').animate({
+			scrollTop: $("#mapscreen").offset().top
+		}, 300);
 		
 		$(document).on("mousemove", function(e) {
 			var x = (e.clientX);
@@ -483,6 +553,10 @@ $(document).ready(function() {
 			$(document).off("mousemove");
 			$("#notification").show();
 			$("#overlay").show();
+			$("#mini_notif p").html("The business manager is paused.");  // TODO: make this less hacky
+			if (running) {
+				$("#mini_notif").hide();
+			}
 			$("#mapscreen .icons-map").on("click", muteBusiness);
 		});
 	});
@@ -508,8 +582,7 @@ $(document).ready(function() {
 		var gui = $(event.target).parents(".setupGUI").prop("id");
 		var business = businessRegexp.exec($("#"+gui).prop("class"))[1];
 		userInfo[business] = changeInfo;
-		$("#notification").hide();
-		$("#overlay").hide();
+		hidePopup();
 		redrawBusinessTabs();
 		redrawScreen();
 	});
@@ -543,6 +616,11 @@ $(document).ready(function() {
 		redrawScreen();
 	});
 	
+	$("#wheelSetupGUI .notifyWhilePaused button").on("click", function(event) {
+		changeInfo.notify_while_paused = !changeInfo.notify_while_paused;
+		redrawScreen();
+	});
+	
 	// Main setup buttons
 	$("#mainSetup .buttons button.cancel").off("click");
 	$("#mainSetup .buttons button.apply").off("click");
@@ -556,8 +634,7 @@ $(document).ready(function() {
 		loadBackup();
 		redrawBusinessTabs();
 		redrawScreen();
-		$("#notification").hide();
-		$("#overlay").hide();
+		hidePopup();
 	});
 	
 	$("#mainSetup .buttons button.apply").on("click", function(event) {
@@ -565,8 +642,7 @@ $(document).ready(function() {
 		notifications.lastPlayed = 0;
 		redrawBusinessTabs();
 		redrawScreen();
-		$("#notification").hide();
-		$("#overlay").hide();
+		hidePopup();
 	});
 	
 	$("#mainSetup .hideUnowned button").on("click", function(event) {
@@ -579,6 +655,16 @@ $(document).ready(function() {
 		}
 		redrawBusinessTabs();
 		redrawScreen();
+	});
+	
+	$("#mainSetup .notificationSettings button[data-value=push]").on("click", function(event) {
+		if (!changeInfo.push_notifications) {
+			notify.authorize();
+		}
+		else {
+			$("#mainSetup .notificationSettings button[data-value=push]").addClass("off");
+			changeInfo.push_notifications = false;
+		}
 	});
 	
 	$("#mainSetup .audioFreq input").on("keyup", function(event) {
@@ -637,10 +723,9 @@ $(document).ready(function() {
 		redrawScreen();
 	});
 	
-	// Reset
+	// Reset dialog
 	$("#resetWarning button.cancel").on("click", function(event) {
-		$("#notification").hide();
-		$("#overlay").hide();
+		hidePopup();
 	});
 	
 	$("#resetWarning button.reset").on("click", function(event) {
@@ -648,8 +733,7 @@ $(document).ready(function() {
 		localStorage.setItem("userInfo", JSON.stringify(userInfo));
 		redrawBusinessTabs();
 		redrawScreen();
-		$("#notification").hide();
-		$("#overlay").hide();
+		hidePopup();
 	});
 	
 	// General sliders
@@ -739,8 +823,6 @@ $(document).ready(function() {
 			$("#options button.toggle").html("Pause");
 			feesCooldown = 2880000;
 			$("#mini_notif").hide();
-			$("#notification").hide();
-			$("#overlay").hide();
 			window.onbeforeunload = function() {
 				return true;
 			};
@@ -783,16 +865,32 @@ $(window).on("load", function() {
 	window.dispatchEvent(new Event("resize"));
 });
 
-function displayPopup(divName) {
+function displayPopup(divName, clearExisting) {
 	$("#notification > *").hide();
 	$("#"+divName).show();
 	$("#notification").show();
 	$("#overlay").show();
+	if (clearExisting) {
+		windowStack = [divName];
+	}
+	else if (windowStack[windowStack.length - 1] != divName) {
+		windowStack.push(divName);
+	}
+	//console.log(windowStack);
 }
 
-function hidePopup(divName = null) {
+function hidePopup(hideAll) {
 	$("#notification").hide();
 	$("#overlay").hide();
+	if (hideAll) {
+		windowStack = [];
+	}
+	else {
+		windowStack.pop();
+		if (windowStack.length > 0) {
+			displayPopup(windowStack[windowStack.length - 1], false);
+		}
+	}
 }
 
 function createBackup(business) {
@@ -901,7 +999,7 @@ function tick() {
 	
 	// Notification call
 	flashIconState = !flashIconState;
-	notify();
+	checkNotify();
 }
 
 function redrawBusinessTabs() {
@@ -971,6 +1069,7 @@ function redrawScreen() {
 	}
 	
 	// setupGUI buttons
+	// Main Setup
 	var owned = changeInfo["owned"];
 	$(".setupGUI .own button[data-value=1]").prop("disabled", owned);
 	$(".setupGUI .own button[data-value=0]").prop("disabled", !owned);
@@ -981,6 +1080,22 @@ function redrawScreen() {
 	$("#mainSetup .hideUnowned button[data-value=1]").prop("disabled", hide_unowned);
 	$("#mainSetup .hideUnowned button[data-value=0]").prop("disabled", !hide_unowned);
 	
+	// TODO:
+	var push_enabled = changeInfo["push_notifications"];
+	if (push_enabled && notify.compatible()) {
+		$("#mainSetup .notificationSettings button[data-value=push]").removeClass("off");
+	}
+	else {
+		$("#mainSetup .notificationSettings button[data-value=push]").addClass("off");
+	}
+	
+	var progress_bar_style = changeInfo["progress_bar_style"];
+	$("#mainSetup .progressBarStyle button").eq(0).prop("disabled", progress_bar_style == 0);
+	$("#mainSetup .progressBarStyle button").eq(1).prop("disabled", progress_bar_style == 1);
+	$("#mainSetup .progressBarStyle button").eq(2).prop("disabled", progress_bar_style == 2);
+	$("#mainSetup .progressBarStyle button").eq(3).prop("disabled", progress_bar_style == 3);
+	
+	// Bunker Setup
 	var hide_research = changeInfo["hide_research"];
 	$("#bunkerSetupGUI .hide_research button").eq(0).prop("disabled", hide_research);
 	$("#bunkerSetupGUI .hide_research button").eq(1).prop("disabled", !hide_research);
@@ -990,15 +1105,10 @@ function redrawScreen() {
 	$("#bunkerSetupGUI .mode button").eq(1).prop("disabled", mode == 1);
 	$("#bunkerSetupGUI .mode button").eq(2).prop("disabled", mode == 2);
 	
+	// Nightclub Setup
 	var sidebar = changeInfo["sidebar"];
 	$("#nightclubSetupGUI .sidebar button[data-value=1]").prop("disabled", !sidebar);
 	$("#nightclubSetupGUI .sidebar button[data-value=0]").prop("disabled", sidebar);
-	
-	var progress_bar_style = changeInfo["progress_bar_style"];
-	$("#mainSetup .progressBarStyle button").eq(0).prop("disabled", progress_bar_style == 0);
-	$("#mainSetup .progressBarStyle button").eq(1).prop("disabled", progress_bar_style == 1);
-	$("#mainSetup .progressBarStyle button").eq(2).prop("disabled", progress_bar_style == 2);
-	$("#mainSetup .progressBarStyle button").eq(3).prop("disabled", progress_bar_style == 3);
 	
 	var products = staticInfo["nightclub"]["products"];
 	for (var i = 0; i < products.length; i++) {
@@ -1010,6 +1120,11 @@ function redrawScreen() {
 			$("#nightclubSetupGUI .producing button[data-value=\""+product+"\"]").addClass("off");
 		}
 	}
+	
+	// Wheel setup
+	var notify_while_paused = changeInfo["notify_while_paused"];
+	$("#wheelSetupGUI .notifyWhilePaused button[data-value=1]").prop("disabled", notify_while_paused);
+	$("#wheelSetupGUI .notifyWhilePaused button[data-value=0]").prop("disabled", !notify_while_paused);
 	
 	// Business sidebar progress bars
 	var progressBars = $(".progress_bar");
@@ -1143,11 +1258,29 @@ function redrawScreen() {
 	//window.dispatchEvent(new Event("resize"));
 }
 
-function notify() {
+// Check if user needs to be notified
+function checkNotify() {
+	// Wheel
+	if (running || userInfo.wheel.notify_while_paused) {
+		if (new Date().getTime() - userInfo["wheel"]["timestamp"] > 86400000) {
+			flashIcon("wheel");
+			playNotification("wheel", "GTA Online Business Manager", "The Lucky Wheel is ready to be spun.");
+		}
+		else {
+			flashIcon("wheel", false);
+		}
+	}
+	
 	// No flashing if not running
 	if (!running) {
 		for (item in userInfo) {
 			if (userInfo[item].hasOwnProperty("map_position")) {
+				// Workaround for wheel flashing while paused
+				if (item == "wheel") {
+					if (userInfo.wheel.notify_while_paused) {
+						continue;
+					}
+				}
 				flashIcon(item, false);
 			}
 		}
@@ -1158,15 +1291,15 @@ function notify() {
 	if (userInfo.bunker.owned) {
 		if (userInfo.bunker.product >= staticInfo.bunker.maxProduct && (userInfo.bunker.mode == 0 || userInfo.bunker.mode == 1)) {
 			flashIcon("bunker");
-			playNotification("bunker");
+			playNotification("bunker", "GTA Online Business Manager", "Your Bunker has reached maximum product and is ready to sell.");
 		}
 		else if (userInfo.bunker.research >= staticInfo.bunker.maxResearch && (userInfo.bunker.mode == 2 || userInfo.bunker.mode == 1)) {
 			flashIcon("bunker");
-			playNotification("bunker");
+			playNotification("bunker", "GTA Online Business Manager", "Your Bunker has finished researching an item.");
 		}
 		else if (userInfo.bunker.supplies <= 0) {
 			flashIcon("bunker");
-			playNotification("bunker");
+			playNotification("bunker", "GTA Online Business Manager", "Your Bunker has run out of supplies.");
 		}
 		else {
 			flashIcon("bunker", false);
@@ -1179,11 +1312,11 @@ function notify() {
 		if (userInfo[business].owned) {
 			if (userInfo[business].product >= staticInfo[business].maxProduct) {
 				flashIcon(business);
-				playNotification(business);
+				playNotification(business, "GTA Online Business Manager", "Your "+userInfo[business].name+" business has reached maximum product and is ready to sell.");
 			}
 			else if (userInfo[business].supplies <= 0) {
 				flashIcon(business);
-				playNotification(business);
+				playNotification(business, "GTA Online Business Manager", "Your "+userInfo[business].name+" business has run out of supplies.");
 			}
 			else {
 				flashIcon(business, false);
@@ -1200,24 +1333,16 @@ function notify() {
 			if (userInfo.nightclub[product] >= staticInfo.nightclub["max"+capitalize(product)]) {
 				flashed = true;
 				flashIcon("nightclub");
-				playNotification("nightclub");
+				playNotification("nightclub", "GTA Online Business Manager", "Your Nightclub is at maximum capacity in one or more products.");
 			}
 		}
 	}
 	if (!flashed) {
 		flashIcon("nightclub", false);
 	}
-	
-	// Wheel
-	if (new Date().getTime() - userInfo["wheel"]["timestamp"] > 86400000) {
-		flashIcon("wheel");
-		playNotification("wheel");
-	}
-	else {
-		flashIcon("wheel", false);
-	}
 }
 
+// Handle flash state of map icon
 function flashIcon(business, enable = true) {
 	var icon = $("#"+business+"_map");
 	if (!enable) {
@@ -1232,18 +1357,86 @@ function flashIcon(business, enable = true) {
 	}
 }
 
-function playNotification(business) {
+// Handle deciding to play audio / push notifications
+function playNotification(business, title, body) {
 	if (business != null) {
 		if (!userInfo.settings.audio.enabled || userInfo[business].muted) {
 			return;
 		}
 	}
-	if (new Date().getTime() - notifications.lastPlayed > 60000*userInfo.settings.audio.interval) {
+	var time = new Date().getTime();
+	// Push notification
+	if (notify.compatible() && userInfo.settings.push_notifications && title != null) {
+		if (time - notifications.lastPlayedDict[business] > 60000*userInfo.settings.audio.interval) {
+			notify.show(title, body, business);
+			notifications.lastPlayedDict[business] = time;
+		}
+	}
+	// Audio notification
+	if (time - notifications.lastPlayed > 60000*userInfo.settings.audio.interval) {
 		var audio = $("audio#notification_ding")[0]
 		audio.pause();
 		audio.currentTime = 0;
 		audio.volume = userInfo.settings.audio.volume;
 		audio.play();
-		notifications.lastPlayed = new Date().getTime();
+		notifications.lastPlayed = time;
 	}
 }
+
+// Handle sending push notifications
+window.notify = {
+	list: [],
+	id: 0,
+	log: function(msg) {
+		console.log(msg);
+	},
+	compatible: function() {
+		if (typeof Notification === 'undefined') {
+			alert("Unfortunately, notifications are not available for your browser.");
+			return false;
+		}
+		return true;
+	},
+	authorize: function() {
+		if (notify.compatible()) {
+			Notification.requestPermission(function(permission) {
+				notify.log("Permission to display: "+permission);
+				if (permission === "granted") {
+					notify.show("Testing Push Notifications",
+					"If you can see this, you're good to go.",
+					"forgery");
+					$("#mainSetup .notificationSettings button[data-value=push]").removeClass("off");
+					changeInfo.push_notifications = true;
+				}
+			});
+		}
+	},
+	show: function(title, body, business) {
+		if (typeof Notification === "undefined") {
+			notify.log("Notifications not supported, ignoring.");
+			return;
+		}
+		if (notify.compatible()) {
+			notify.id++;
+			var id = notify.id;
+			notify.list[id] = new Notification(title, {
+				body: body,
+				tag: id,
+				icon: "img/"+business+".png",
+				lang: "",
+				dir: "auto",
+			});
+			notify.log("Notification #"+id+" queued for display");
+			notify.list[id].onclick = function() { notify.logEvent(id, "clicked"); };
+			notify.list[id].onshow  = function() { notify.logEvent(id, "showed");  };
+			notify.list[id].onerror = function() { notify.logEvent(id, "errored"); };
+			notify.list[id].onclose = function() { notify.logEvent(id, "closed");  };
+			
+			notify.log("Created a new notification...");
+			notify.log(notify.list[id]);
+		}
+	},
+	logEvent: function(id, event) {
+		notify.log("Notification #"+id+" "+event);
+	}
+};

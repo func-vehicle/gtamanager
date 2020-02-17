@@ -302,6 +302,9 @@ input[type=range]::-ms-fill-upper {
 	transform: translate(calc(-50% - 5px), 0);
 	text-align: center;
 }
+.mobile #mini_notif {
+	top: 5px;
+}
 .desktop #options {
 	background-color: #000;
 	border: 1px solid #CC212C;
@@ -355,7 +358,6 @@ input[type=range]::-ms-fill-upper {
 #notification {
 	width: 600px;
 	max-width: calc(100% - 10px);
-	max-height: 80vh;
 	/* Center a div of unknown width */
 	top: 50%;
 	left: 50%;
@@ -382,7 +384,7 @@ input[type=range]::-ms-fill-upper {
 	padding-left: 5px;
 	padding-right: 5px;
 	overflow-y: auto;
-	max-height: 80vh;
+	max-height: 75vh;
 }
 #notification .main h1 {
 	padding-top: 3px;
@@ -401,6 +403,11 @@ input[type=range]::-ms-fill-upper {
 	padding-top: 5px;
 	color: #FFF;
 	font-size: 1em;
+}
+#notification a {
+	color: #FFF;
+	text-decoration: none;
+	font-weight: bold;
 }
 #notification .main {
 	padding-bottom: 2px;
@@ -503,9 +510,10 @@ input[type=range]::-ms-fill-upper {
 }
 .desktop #infotab {
 	max-height: 100vh;
-}
-.desktop #infotab {
 	width: 220px;
+}
+.mobile #infotab {
+	overflow-y: hidden;
 }
 
 .information {
@@ -527,6 +535,7 @@ input[type=range]::-ms-fill-upper {
 }
 #inactiveBusinesses {
 	margin-top: 5px;
+	overflow: hidden;
 }
 .business_heading {
 	margin-bottom: 3px;
@@ -660,7 +669,7 @@ input[type=range].slider::-moz-range-thumb {
 .product .bar {
 	background-color: #5BB3E1;
 }
-.research  .bar {
+.research .bar {
 	background-color: #71C973;
 }
 .supplies .bar {

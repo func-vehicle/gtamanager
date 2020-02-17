@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<!-- Website by func_vehicle. Copyright 2019 -->
+<!-- Website by func_vehicle. Copyright 2020 -->
 
 <head>
 	<!-- Google Tag Manager -->
@@ -96,24 +96,38 @@
 						<h1>Patch Notes</h1>
 					</div>
 					<div class="main">
-						<h1 style="padding-left: 3px;">Version 1.5.3</h1>
+						<h1 style="padding-left: 3px;">Version 1.6.0</h1>
 						<div class="indent">
 							<h2>Improvements</h2>
 							<ul>
-								<li>The default progress bar style has been changed to '5-tick'.</li>
+								<li>Push notifications are now available in the main setup. These will send you a notification through your browser, but you still need to have the manager open to receive them.</li>
+								<li>You will be reminded if the weekly bonuses have changed when loading the website.</li>
+								<li>You can now enable the Lucky Wheel reminder to play even while the manager is paused in its setup.</li>
 								<ul>
-									<li>If you were using the 'compact' progress bar style, you have been automatically moved to the '5-tick'
-									style. Feel free to swap back if you prefer the previous look.</li>
-									<li>The 'compact' style is now called 'plain' in the settings.</li>
+									<li>The notification sound may not play when initially loading the website with this setting.</li>
 								</ul>
+								<li>You will now be warned if you have more than one tab of the business manager open as having multiple open at the same time causes issues.</li>
+								<li>Added instructions when setting the location of a business.</li>
 							</ul>
 							<h2>Fixes</h2>
 							<ul>
-								<li>Various optimizations to improve loading speed.</li>
+								<li>Various display fixes, especially for Firefox.</li>
 							</ul>
 						</div>
 					</div>
 					<div class="buttons">
+						<button class="button ok red">OK</button>
+					</div>
+				</div>
+				<div id="newWeekNotice">
+					<div class="heading">
+						<h1>New Weekly Bonuses</h1>
+					</div>
+					<div class="main">
+						<p>The weekly bonuses for GTA Online have changed.
+						<br/><a target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/gtaonline/search?q=%22weekly+gta+online+bonuses%22&restrict_sr=on&sort=new&t=week">Click here</a> to see what's new.</p>
+					</div>
+					<div class="buttons fsz">
 						<button class="button ok red">OK</button>
 					</div>
 				</div>
@@ -140,6 +154,13 @@
 								<td class="onechoice fsz">
 									<button class="button green" data-value="1">Yes</button>
 									<button class="button red" data-value="0">No</button>
+								</td>
+							</tr>
+							<tr class="notificationSettings">
+								<td>Notifications:</td>
+								<td class="fsz">
+									<!--<button class="button blue" data-value="audio">Sound</button>-->
+									<button class="button blue off" data-value="push">Push notifications</button>
 								</td>
 							</tr>
 							<tr class="audioFreq">
@@ -447,6 +468,13 @@
 								<td class="onechoice fsz">
 									<button class="button green" data-value="1">Yes</button>
 									<button class="button red" data-value="0">No</button>
+								</td>
+							</tr>
+							<tr class="notifyWhilePaused">
+								<td>Notify:</td>
+								<td class="onechoice fsz">
+									<button class="button green" data-value="1">Always</button>
+									<button class="button orange" data-value="0">Only while running</button>
 								</td>
 							</tr>
 							<tr class="resetCooldown">
