@@ -121,7 +121,7 @@ var defaultUserInfo = {
 		name: "Lucky Wheel",
 		owned: true,
 		muted: false,
-		notify_while_paused: true, 
+		notify_while_paused: false, 
 		timestamp: 0,
 		map_position: {
 			x: 53.89,
@@ -145,6 +145,7 @@ var changeInfo = {};
 
 var feesCooldown = 0;
 var notifications = {
+	pushAllowed: false,
 	lastPlayed: 0,
 }
 var flashIconState = true;
@@ -265,7 +266,7 @@ function update() {
 	// TODO:
 	//if (userInfo.version == "1.5.3") {
 	//	userInfo.recentFriday = 0;
-	//  userInfo.wheel.notify_while_paused = true;
+	//  userInfo.wheel.notify_while_paused = false;
 	//	userInfo.version = "1.6.0";
 	//}
 }
@@ -285,12 +286,11 @@ $(document).ready(function() {
 	window.addEventListener('storage', onLocalStorageEvent, false);
 	
 	// Check if new week
-	remindFriday = false;
-	
+	var remindFriday = false;
 	var recentFriday = new Date();
-	// Don't count today if Friday and before 10AM UTC
+	// Use last Friday if Friday today but before 10AM UTC
 	if (recentFriday.getUTCDay() === 4 && recentFriday.getUTCHours() < 10) {
-		recentFriday.setUTCDate(recentFriday.getUTCDate() - 1);
+		recentFriday.setUTCDate(recentFriday.getUTCDate() - 7);
 	}
 	// Find recent Friday
 	while (recentFriday.getUTCDay() !== 4) {
@@ -305,8 +305,6 @@ $(document).ready(function() {
 	console.log(recentFriday.toUTCString());
 	
 	if (recentFriday.toUTCString() != userInfo.recentFriday) {
-		console.log(recentFriday.toUTCString());
-		console.log(userInfo.recentFriday);
 		userInfo.recentFriday = recentFriday.toUTCString();
 		remindFriday = true;
 	}
@@ -495,7 +493,8 @@ $(document).ready(function() {
 		$("#notification").hide();
 		$("#overlay").hide();
 		$("#mapscreen .icons-map").off("click");
-		$("#mini_notif p").html("Click to select the location.");
+		$("#mini_notif p").html("Click to select the location.");  // TODO: make this less hacky
+		$("#mini_notif").show();
 		$('html, body').animate({
 			scrollTop: $("#mapscreen").offset().top
 		}, 300);
@@ -537,7 +536,10 @@ $(document).ready(function() {
 			$(document).off("mousemove");
 			$("#notification").show();
 			$("#overlay").show();
-			$("#mini_notif p").html("The business manager is paused.");  // TODO: make resetting this less hacky
+			$("#mini_notif p").html("The business manager is paused.");  // TODO: make this less hacky
+			if (running) {
+				$("#mini_notif").hide();
+			}
 			$("#mapscreen .icons-map").on("click", muteBusiness);
 		});
 	});
@@ -639,6 +641,10 @@ $(document).ready(function() {
 		}
 		redrawBusinessTabs();
 		redrawScreen();
+	});
+	
+	$("#mainSetup .notificationSettings button[data-value=push]").on("click", function(event) {
+		setupPushNotifications();
 	});
 	
 	$("#mainSetup .audioFreq input").on("keyup", function(event) {
@@ -969,7 +975,7 @@ function tick() {
 	
 	// Notification call
 	flashIconState = !flashIconState;
-	notify();
+	checkNotify();
 }
 
 function redrawBusinessTabs() {
@@ -1222,7 +1228,7 @@ function redrawScreen() {
 	//window.dispatchEvent(new Event("resize"));
 }
 
-function notify() {
+function checkNotify() {
 	// Wheel
 	if (running || userInfo.wheel.notify_while_paused) {
 		if (new Date().getTime() - userInfo["wheel"]["timestamp"] > 86400000) {
@@ -1333,4 +1339,65 @@ function playNotification(business) {
 		audio.play();
 		notifications.lastPlayed = new Date().getTime();
 	}
+}
+
+window.notify = {
+	list: [],
+	id: 0,
+	log: function(msg) {
+		console.log(msg);
+	},
+	compatible: function() {
+		if (typeof Notification === 'undefined') {
+			notify.log("Notifications are not available for your browser.");
+			return false;
+		}
+		return true;
+	},
+	authorize: function() {
+		if (notify.compatible()) {
+			Notification.requestPermission(function(permission) {
+				notify.log("Permission to display: "+permission);
+			});
+		}
+	},
+	showDelayed: function(seconds) {
+		notify.log("A notification will be triggered in "+seconds+" seconds. Try minimising the browser now.");
+		setTimeout(notify.show, (seconds*1000));
+	},
+	show: function(title, body, business) {
+		if (typeof Notification === "undefined") {
+			notify.log("Notifications are not available for your browser.");
+			return;
+		}
+		if (notify.compatible()) {
+			notify.id++;
+			var id = notify.id;
+			notify.list[id] = new Notification(title, {
+				body: body,
+				tag: id,
+				icon: "img/"+business+".png",
+				lang: "",
+				dir: "auto",
+			});
+			notify.log("Notification #"+id+" queued for display");
+			notify.list[id].onclick = function() { notify.logEvent(id, "clicked"); };
+			notify.list[id].onshow  = function() { notify.logEvent(id, "showed");  };
+			notify.list[id].onerror = function() { notify.logEvent(id, "errored"); };
+			notify.list[id].onclose = function() { notify.logEvent(id, "closed");  };
+
+			console.log("Created a new notification...");
+			console.log(notify.list[id]);
+		}
+	},
+	logEvent: function(id, event) {
+		notify.log("Notification #"+id+" "+event);
+	}
+};
+
+function setupPushNotifications() {
+	notify.authorize();
+	notify.show("Testing Push Notifications",
+	"If you can see this, you're good to go.",
+	"forgery");
 }
