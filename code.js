@@ -280,13 +280,12 @@ function update() {
 		}
 		userInfo.version = "1.5.3";
 	}
-	// TODO:
-	//if (userInfo.version == "1.5.3") {
-	//	userInfo.recentFriday = 0;
-	//  userInfo.settings.push_notifications = false;
-	//  userInfo.wheel.notify_while_paused = false;
-	//	userInfo.version = "1.6.0";
-	//}
+	if (userInfo.version == "1.5.3") {
+		userInfo.recentFriday = 0;
+		userInfo.settings.push_notifications = false;
+		userInfo.wheel.notify_while_paused = false;
+		userInfo.version = "1.6.0";
+	}
 }
 
 $(document).ready(function() {
@@ -325,7 +324,7 @@ $(document).ready(function() {
 	recentFriday.setUTCMinutes(0);
 	recentFriday.setUTCSeconds(0);
 	recentFriday.setUTCMilliseconds(0);
-	console.log(recentFriday.toUTCString());
+	//console.log(recentFriday.toUTCString());
 	if (recentFriday.toUTCString() != userInfo.recentFriday) {
 		userInfo.recentFriday = recentFriday.toUTCString();
 		remindFriday = true;
@@ -877,7 +876,7 @@ function displayPopup(divName, clearExisting) {
 	else if (windowStack[windowStack.length - 1] != divName) {
 		windowStack.push(divName);
 	}
-	console.log(windowStack);
+	//console.log(windowStack);
 }
 
 function hidePopup(hideAll) {
@@ -1402,17 +1401,19 @@ window.notify = {
 		if (notify.compatible()) {
 			Notification.requestPermission(function(permission) {
 				notify.log("Permission to display: "+permission);
-				notify.show("Testing Push Notifications",
-				"If you can see this, you're good to go.",
-				"forgery");
-				$("#mainSetup .notificationSettings button[data-value=push]").removeClass("off");
-				changeInfo.push_notifications = true;
+				if (permission === "granted") {
+					notify.show("Testing Push Notifications",
+					"If you can see this, you're good to go.",
+					"forgery");
+					$("#mainSetup .notificationSettings button[data-value=push]").removeClass("off");
+					changeInfo.push_notifications = true;
+				}
 			});
 		}
 	},
 	show: function(title, body, business) {
 		if (typeof Notification === "undefined") {
-			console.log("Notifications not supported, ignoring.");
+			notify.log("Notifications not supported, ignoring.");
 			return;
 		}
 		if (notify.compatible()) {
@@ -1431,8 +1432,8 @@ window.notify = {
 			notify.list[id].onerror = function() { notify.logEvent(id, "errored"); };
 			notify.list[id].onclose = function() { notify.logEvent(id, "closed");  };
 			
-			console.log("Created a new notification...");
-			console.log(notify.list[id]);
+			notify.log("Created a new notification...");
+			notify.log(notify.list[id]);
 		}
 	},
 	logEvent: function(id, event) {
