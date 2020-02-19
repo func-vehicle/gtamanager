@@ -1,24 +1,24 @@
 /* GENERAL */
 * {
-    box-sizing: border-box;
+	box-sizing: border-box;
 }
 html {
 	height: 100%;
 }
 body {
 	line-height: 1.15;
-    background: #FFF;
-    font-family: 'Open Sans', sans-serif;
-    height: 100%;
-    margin: 0;
-    padding: 0;
+	background: #FFF;
+	font-family: 'Open Sans', sans-serif;
+	height: 100%;
+	margin: 0;
+	padding: 0;
 }
 body {
 	overflow-x: hidden;
-    overflow-y: scroll;
+	overflow-y: scroll;
 	scrollbar-color: #7f7f7f white; /* thumb and track color */
 	scrollbar-width: thin;
-    -ms-overflow-style: none;	/* IE 10+ */
+	-ms-overflow-style: none;	/* IE 10+ */
 }
 body.desktop {
 	overflow-x: hidden;
@@ -32,8 +32,8 @@ body.mobile {
 	display: none;
 }
 body.desktop::-webkit-scrollbar {		/* WebKit */
-    width: 0;
-    height: 0;
+	width: 0;
+	height: 0;
 }
 .span_1_of_2 {
 	width: 50%;
@@ -84,12 +84,12 @@ button.purple {
 }
 /* General input */
 input {
-    border: 1px solid #FFF;
+	border: 1px solid #FFF;
 	color: #FFF;
 	background-color: #000;
-    padding: 5px 10px;
-    width: 100px;
-    outline: none;
+	padding: 5px 10px;
+	width: 100px;
+	outline: none;
 }
 /* Numeric input */
 input[type=number] {
@@ -229,9 +229,9 @@ input[type=range]::-ms-fill-upper {
 	position: relative;
 }
 .icons {
-    background-image: url(../img/spritesheet.png);
-    background-repeat: no-repeat;
-    display: block;
+	background-image: url(../img/spritesheet.png);
+	background-repeat: no-repeat;
+	display: block;
 }
 .icons-map {
 	/* 32x32 */
@@ -256,36 +256,36 @@ input[type=range]::-ms-fill-upper {
 	background-position: -67px -133px;
 }
 .icons-bunker {
-    background-position: -1px -1px;
+	background-position: -1px -1px;
 }
 .icons-cash {
-    background-position: -67px -1px;
+	background-position: -67px -1px;
 }
 .icons-coke {
-    background-position: -133px -1px;
+	background-position: -133px -1px;
 }
 .icons-fees {
-    background-position: -1px -67px;
+	background-position: -1px -67px;
 }
 .icons-forgery {
-    background-position: -67px -67px;
+	background-position: -67px -67px;
 }
 .icons-importExport {
-    background-position: -133px -67px;
+	background-position: -133px -67px;
 }
 .icons-meth {
-    background-position: -1px -133px;
+	background-position: -1px -133px;
 }
 .icons-nightclub {
-    width: 60px;
-    height: 60px;
-    background-position: -133px -133px;
+	width: 60px;
+	height: 60px;
+	background-position: -133px -133px;
 }
 .icons-weed {
-    background-position: -199px -1px;
+	background-position: -199px -1px;
 }
 .icons-wheel {
-    background-position: -199px -67px;
+	background-position: -199px -67px;
 }
 
 #mini_notif {
@@ -454,11 +454,11 @@ input[type=range]::-ms-fill-upper {
 	border: 1px solid #FFF;
 	background-color: #000;
 	color: #FFF;
-    display: inline-block;
-    padding: 5px 5px;
-    border-radius: 0;
+	display: inline-block;
+	padding: 5px 5px;
+	border-radius: 0;
 	height: 30px;
-    -webkit-appearance: none;
+	-webkit-appearance: none;
 	vertical-align: bottom;
 	margin: 0;
 }
@@ -526,9 +526,9 @@ input[type=range]::-ms-fill-upper {
 	margin-bottom: 0;
 }
 @-moz-document url-prefix() {
-    .information:last-child {
-        margin-bottom: 5px;
-    }
+	.information:last-child {
+		margin-bottom: 5px;
+	}
 }
 .business-section {
 	width: 100%;

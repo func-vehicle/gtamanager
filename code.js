@@ -463,7 +463,7 @@ $(document).ready(function() {
 	$("#bunker button.setup").on("click", function(event) {
 		createBackup("bunker");
 		
-		displayPopup("bunkerSetupGUI");
+		displayPopup("bunkerSetupGUI", true);
 		if (changeInfo["hide_research"]) {
 			$("#bunkerSetupGUI .mode").hide();
 		}
@@ -476,7 +476,7 @@ $(document).ready(function() {
 		$("#mcbusinessSetupGUI").prop("class", "setupGUI "+business);
 		createBackup(business);
 		
-		displayPopup("mcbusinessSetupGUI");
+		displayPopup("mcbusinessSetupGUI", true);
 		redrawScreen();
 	});
 	
@@ -765,14 +765,14 @@ $(document).ready(function() {
 	
 	// Nightclub
 	$("#nightclub button.modify").on("click", function() {
-		displayPopup("nightclubGUI");
+		displayPopup("nightclubGUI", true);
 		redrawScreen();
 	});
 	
 	$("#nightclub button.setup").on("click", function(event) {
 		createBackup("nightclub");
 		
-		displayPopup("nightclubSetupGUI");
+		displayPopup("nightclubSetupGUI", true);
 		redrawScreen();
 	});
 	
@@ -794,7 +794,7 @@ $(document).ready(function() {
 	$("#importExport button.setup").on("click", function(event) {
 		createBackup("importExport");
 		$("#importExportSetupGUI .highEndCars input").val(userInfo.importExport.highend_cars);
-		displayPopup("importExportSetupGUI");
+		displayPopup("importExportSetupGUI", true);
 		redrawScreen();
 	});
 	
@@ -808,7 +808,7 @@ $(document).ready(function() {
 	$("#wheel button.setup").on("click", function(event) {
 		createBackup("wheel");
 		
-		displayPopup("wheelSetupGUI");
+		displayPopup("wheelSetupGUI", true);
 		redrawScreen();
 	});
 	
@@ -851,7 +851,7 @@ $(document).ready(function() {
 		createBackup("settings");
 		$("#mainSetup .audioFreq input").val(userInfo.settings.audio.interval);
 		$("#mainSetup .audioVolume input").val(userInfo.settings.audio.volume * 100);
-		displayPopup("mainSetup");
+		displayPopup("mainSetup", true);
 		redrawScreen();
 	});
 	
