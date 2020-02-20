@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <!-- Website by func_vehicle. Copyright 2020 -->
@@ -148,62 +148,77 @@
 						<h1>Setup</h1>
 					</div>
 					<div class="main">
-						<table>
-							<tr class="hideUnowned">
-								<td>Hide unowned:</td>
-								<td class="onechoice fsz">
-									<button class="button green" data-value="1">Yes</button>
-									<button class="button red" data-value="0">No</button>
-								</td>
-							</tr>
-							<tr class="notificationSettings">
-								<td>Notifications:</td>
-								<td class="fsz">
-									<!--<button class="button blue" data-value="audio">Sound</button>-->
-									<button class="button blue off" data-value="push">Push notifications</button>
-								</td>
-							</tr>
-							<tr class="audioFreq">
-								<td>Audio interval:</td>
-								<td class="incDecButtons">
-									<button class="fa fa-minus button minus"></button><!--
-									--><input type="number" class="range_enforced integer_only" name="quantity" value="1" min="1" max="60"/><!--
-									--><button class="fa fa-plus button plus"></button><!--
-									--><span>minutes</span>
-								</td>
-							</tr>
-							<tr class="audioVolume">
-								<td>Audio volume:</td>
-								<td class="onechoice">
-									<input type="range" min="0" max="100" value="0"><!--
-									--><span>100%</span>
-								</td>
-							</tr>
-							<tr class="progressBarStyle">
-								<td>Progress style:</td>
-								<td class="onechoice fsz">
-									<button class="button blue" data-value="0">Plain</button>
-									<button class="button blue" data-value="1">5-tick</button>
-									<button class="button blue" data-value="2">Percentage</button>
-									<button class="button blue" data-value="3">Time Remaining</button>
-								</td>
-							</tr>
-							<tr class="dataDownload">
-								<td>Data:</td>
-								<td class="fsz">
-									<button class="button orange" data-value="0">Download</button>
-									<button class="button orange" data-value="1">Load from file</button>
-									<a id="dataDownloadLink" style="display: none;"></a>
-									<input id="fileInput" type="file" accept=".json, application/json" style="display: none;"/>
-								</td>
-							</tr>
-							<tr class="about">
-								<td>About:</td>
-								<td class="fsz">
-									<button class="button orange" data-value="0">Patch notes</button>
-								</td>
-							</tr>
-						</table>
+                        <table>
+                            <tr class="hideUnowned">
+                                <td>Hide unowned:</td>
+                                <td class="onechoice fsz">
+                                    <button class="button green" data-value="1">Yes</button>
+                                    <button class="button red" data-value="0">No</button>
+                                </td>
+                            </tr>
+                            <tr class="notificationSettings">
+                                <td>Notifications:</td>
+                                <td class="fsz">
+                                    <!--<button class="button blue" data-value="audio">Sound</button>-->
+                                    <button class="button blue off" data-value="push">Push notifications</button>
+                                </td>
+                            </tr>
+                            <tr class="audioFreq">
+                                <td>Audio interval:</td>
+                                <td class="incDecButtons">
+                                    <button class="fa fa-minus button minus"></button>
+                                    <!--
+            -->
+                                    <input type="number" class="range_enforced integer_only" name="quantity" value="1" min="1" max="60" />
+                                    <!--
+            -->
+                                    <button class="fa fa-plus button plus"></button>
+                                    <!--
+            -->
+                                    <span>minutes</span>
+                                </td>
+                            </tr>
+                            <tr class="audioVolume">
+                                <td>Audio volume:</td>
+                                <td class="onechoice">
+                                    <input type="range" min="0" max="100" value="0">
+                                    <!--
+            -->
+                                    <span>100%</span>
+                                </td>
+                            </tr>
+                            <tr class="progressBarStyle">
+                                <td>Progress style:</td>
+                                <td class="onechoice fsz">
+                                    <button class="button blue" data-value="0">Plain</button>
+                                    <button class="button blue" data-value="1">5-tick</button>
+                                    <button class="button blue" data-value="2">Percentage</button>
+                                    <button class="button blue" data-value="3">Time Remaining</button>
+                                </td>
+                            </tr>
+                            <tr class="appStyle">
+                                <td>App Style:</td>
+                                <td class="onechoice fsz">
+                                    <button class="button white" data-value="0">Light</button>
+                                    <button class="button grey" data-value="1">Dark</button>
+                                </td>
+                            </tr>
+                            <tr class="dataDownload">
+                                <td>Data:</td>
+                                <td class="fsz">
+                                    <button class="button orange" data-value="0">Download</button>
+                                    <button class="button orange" data-value="1">Load from file</button>
+                                    <a id="dataDownloadLink" style="display: none;"></a>
+                                    <input id="fileInput" type="file" accept=".json, application/json" style="display: none;" />
+                                </td>
+                            </tr>
+                            <tr class="about">
+                                <td>About:</td>
+                                <td class="fsz">
+                                    <button class="button orange" data-value="0">Patch notes</button>
+                                </td>
+                            </tr>
+                        </table>
 					</div>
 					<div class="buttons fsz">
 						<button class="button reset red">Reset Everything</button>

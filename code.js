@@ -12,7 +12,8 @@ var defaultUserInfo = {
 			volume: 1,
 			interval: 3,
 		},
-		progress_bar_style: 1,
+        progress_bar_style: 1,
+        app_style: 0,
 	},
 	bunker: {
 		name: "Bunker",
@@ -285,7 +286,10 @@ function update() {
 		userInfo.settings.push_notifications = false;
 		userInfo.wheel.notify_while_paused = false;
 		userInfo.version = "1.6.0";
-	}
+    }
+    if (userInfo.version == "1.6.0") {
+        userInfo.app_style = 0;
+    }
 }
 
 $(document).ready(function() {
@@ -688,8 +692,14 @@ $(document).ready(function() {
 	$("#mainSetup .progressBarStyle button").on("click", function(event) {
 		changeInfo.progress_bar_style = parseInt($(event.target).attr("data-value"), 10);
 		redrawScreen();
-	});
-	
+    });
+
+    $("#mainSetup .appStyle button").on("click", function (event) {
+        console.log("press");
+        changeInfo.app_style = parseInt($(event.target).attr("data-value"), 10)
+        redrawScreen();
+    });
+
 	$("#mainSetup .dataDownload button[data-value=0]").on("click", function(event) {
 		var data_href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(userInfo));
 		var dlAnchorElem = document.getElementById("dataDownloadLink");
@@ -1093,7 +1103,11 @@ function redrawScreen() {
 	$("#mainSetup .progressBarStyle button").eq(0).prop("disabled", progress_bar_style == 0);
 	$("#mainSetup .progressBarStyle button").eq(1).prop("disabled", progress_bar_style == 1);
 	$("#mainSetup .progressBarStyle button").eq(2).prop("disabled", progress_bar_style == 2);
-	$("#mainSetup .progressBarStyle button").eq(3).prop("disabled", progress_bar_style == 3);
+    $("#mainSetup .progressBarStyle button").eq(3).prop("disabled", progress_bar_style == 3);
+
+    var app_style = changeInfo["app_style"];
+    $("#mainSetup .appStyle button").eq(0).prop("disabled", app_style == 0);
+    $("#mainSetup .appStyle button").eq(1).prop("disabled", app_style == 1);
 	
 	// Bunker Setup
 	var hide_research = changeInfo["hide_research"];
@@ -1206,8 +1220,18 @@ function redrawScreen() {
 			$("#"+business+" tr."+type+" .progress_bar span").html(remaining_string);
 			$("#"+business+" tr."+type+" .progress_bar span").show();
 		}
-	}
-	
+    }
+
+    //App Style
+    app_style = userInfo.settings["app_style"];
+    if (app_style == 0) {
+        $(".desktop").removeClass("darkMode");
+        $(".information").removeClass("darkMode");
+    } else if (app_style == 1) {
+        $(".desktop").addClass("darkMode");
+        $(".information").addClass("darkMode");
+    }
+
 	// I/E cooldown
 	if (userInfo["importExport"]["cooldown"] <= 0) {
 		$("#importExport button.sell").attr("disabled", false);

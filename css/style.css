@@ -24,6 +24,9 @@ body.desktop {
 	overflow-x: hidden;
 	overflow-y: hidden;
 }
+body.desktop.darkMode {
+    background-color: #423d3c;
+}
 body.mobile {
 	overflow-x: auto;
 	overflow-y: scroll;
@@ -81,6 +84,13 @@ button.orange {
 }
 button.purple {
 	background-color: #9B32A8;
+}
+button.white {
+    background-color: #ffffff;
+    color: black;
+}
+button.grey {
+    background-color: #423d3c;
 }
 /* General input */
 input {
@@ -521,6 +531,10 @@ input[type=range]::-ms-fill-upper {
 	padding: 5px;
 	width: 100%;
 	margin-bottom: 5px;
+}
+.information.darkMode {
+    background-color: #565656;
+    color: white;
 }
 .information:last-child {
 	margin-bottom: 0;
