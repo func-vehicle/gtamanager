@@ -86,18 +86,12 @@ button.purple {
 	background-color: #9B32A8;
 }
 button.white {
-    background-color: #ffffff;
+    background-color: #FFFFFF;
     color: black;
 }
 button.grey {
-    background-color: #423d3c;
+    background-color: #423D3C;
 }
-/*.darkMode #infotab button.green {
-	border: 2px solid #109600;
-	padding: 3px 13px;
-	background-color: #333;
-	color: white;
-}*/
 /* General input */
 input {
 	border: 1px solid #FFF;
@@ -243,6 +237,7 @@ input[type=range]::-ms-fill-upper {
 }
 #map {
 	position: relative;
+	
 }
 .icons {
 	background-image: url(../img/spritesheet.png);
@@ -348,6 +343,9 @@ input[type=range]::-ms-fill-upper {
 	background-color: #FFFFFF00;
 	padding: 5px;
 	border: 1px solid #000;
+}
+.darkMode.mobile #options {
+	border-color: #777;
 }
 .mobile #options button {
 	width: calc((100% - 10px) / 3);
@@ -539,9 +537,9 @@ input[type=range]::-ms-fill-upper {
 	margin-bottom: 5px;
 }
 .darkMode .information {
-    background-color: #222222;
-    color: white;
-	border-color: white;
+    background-color: #222;
+    color: #FFF;
+	border-color: #777;
 }
 .information:last-child {
 	margin-bottom: 0;
@@ -586,7 +584,7 @@ input[type=range]::-ms-fill-upper {
 	padding-top: 3px;
 }
 #infotab button.setup {
-	background-color: #FFF;
+	background-color: #FFFFFF00;
 	color: #000;
 	height: 25px;
 	border-radius: 3px;
@@ -594,7 +592,6 @@ input[type=range]::-ms-fill-upper {
 	float: right;
 }
 .darkMode #infotab button.setup {
-	background-color: #FFFFFF00;
 	color: #FFF;
 }
 #infotab td  {
@@ -631,10 +628,10 @@ input[type=range]::-ms-fill-upper {
 	border-left: 0;
 }
 .darkMode .progress_bar {
-	border-color: white;
+	border-color: #FFF;
 }
 .darkMode .progress_bar .fivetick div {
-	border-color: white;
+	border-color: #FFF;
 }
 .big .progress_bar, .big .progress_bar input[type=range].slider {
 	height: 18px;
@@ -708,6 +705,25 @@ input[type=range].slider::-moz-range-thumb {
 }
 #nightclub .bar {
 	background-color: #C963FF;
+}
+/* TODO: these are too vivid */
+/*.darkMode .product .bar {
+	background-color: #19B0FF;
+}
+.darkMode .research .bar {
+	background-color: #36C738;
+}
+.darkMode .supplies .bar {
+	background-color: #FF6929;
+}
+.darkMode #nightclub .bar {
+	background-color: #B83CFA;
+}*/
+.darkMode #importExport select {
+	color: #FFF;
+	background-color: #333;
+	border-color: #999;
+	border-width: 1px;
 }
 #importExport .content div:last-child {
 	margin-top: 5px;

@@ -2,7 +2,7 @@ var userInfo;
 
 // The current format of user's data.
 var defaultUserInfo = {
-	version: "1.6.0",
+	version: "1.7.0",
 	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
@@ -289,6 +289,7 @@ function update() {
     }
     if (userInfo.version == "1.6.0") {
         userInfo.app_style = 0;
+		userInfo.version = "1.7.0";
     }
 }
 
@@ -696,7 +697,7 @@ $(document).ready(function() {
     });
 
     $("#mainSetup .appStyle button").on("click", function (event) {
-        changeInfo.app_style = !changeInfo.app_style;
+        changeInfo.app_style = parseInt($(event.target).attr("data-value"), 10);
         redrawScreen();
     });
 
@@ -886,7 +887,6 @@ function displayPopup(divName, clearExisting) {
 	else if (windowStack[windowStack.length - 1] != divName) {
 		windowStack.push(divName);
 	}
-	//console.log(windowStack);
 }
 
 function hidePopup(hideAll) {
