@@ -313,6 +313,7 @@ $(document).ready(function() {
 	}
 	
 	// Check if new week
+	// This is called "Friday" but actually it's Thursday in UTC
 	var remindFriday = false;
 	var recentFriday = new Date();
 	// Use last Friday if Friday today but before 10AM UTC
@@ -695,8 +696,7 @@ $(document).ready(function() {
     });
 
     $("#mainSetup .appStyle button").on("click", function (event) {
-        console.log("press");
-        changeInfo.app_style = parseInt($(event.target).attr("data-value"), 10)
+        changeInfo.app_style = !changeInfo.app_style;
         redrawScreen();
     });
 
@@ -1222,14 +1222,12 @@ function redrawScreen() {
 		}
     }
 
-    //App Style
+    // App style
     app_style = userInfo.settings["app_style"];
     if (app_style == 0) {
-        $(".desktop").removeClass("darkMode");
-        $(".information").removeClass("darkMode");
+        $("body").removeClass("darkMode");
     } else if (app_style == 1) {
-        $(".desktop").addClass("darkMode");
-        $(".information").addClass("darkMode");
+        $("body").addClass("darkMode");
     }
 
 	// I/E cooldown
@@ -1426,9 +1424,7 @@ window.notify = {
 			Notification.requestPermission(function(permission) {
 				notify.log("Permission to display: "+permission);
 				if (permission === "granted") {
-					notify.show("Testing Push Notifications",
-					"If you can see this, you're good to go.",
-					"forgery");
+					notify.show("Testing Push Notifications", "If you can see this, you're good to go.", "forgery");
 					$("#mainSetup .notificationSettings button[data-value=push]").removeClass("off");
 					changeInfo.push_notifications = true;
 				}
