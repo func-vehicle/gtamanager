@@ -1,24 +1,24 @@
 /* GENERAL */
 * {
-    box-sizing: border-box;
+	box-sizing: border-box;
 }
 html {
 	height: 100%;
 }
 body {
 	line-height: 1.15;
-    background: #FFF;
-    font-family: 'Open Sans', sans-serif;
-    height: 100%;
-    margin: 0;
-    padding: 0;
+	background: #FFF;
+	font-family: 'Open Sans', sans-serif;
+	height: 100%;
+	margin: 0;
+	padding: 0;
 }
 body {
 	overflow-x: hidden;
-    overflow-y: scroll;
+	overflow-y: scroll;
 	scrollbar-color: #7f7f7f white; /* thumb and track color */
 	scrollbar-width: thin;
-    -ms-overflow-style: none;	/* IE 10+ */
+	-ms-overflow-style: none;	/* IE 10+ */
 }
 body.desktop {
 	overflow-x: hidden;
@@ -28,12 +28,15 @@ body.mobile {
 	overflow-x: auto;
 	overflow-y: scroll;
 }
-.desktop .mobile-only,.mobile .desktop-only {
+body.darkMode {
+    background-color: #050505;
+}
+.desktop .mobile-only, .mobile .desktop-only {
 	display: none;
 }
 body.desktop::-webkit-scrollbar {		/* WebKit */
-    width: 0;
-    height: 0;
+	width: 0;
+	height: 0;
 }
 .span_1_of_2 {
 	width: 50%;
@@ -82,14 +85,21 @@ button.orange {
 button.purple {
 	background-color: #9B32A8;
 }
+button.white {
+    background-color: #FFFFFF;
+    color: black;
+}
+button.grey {
+    background-color: #423D3C;
+}
 /* General input */
 input {
-    border: 1px solid #FFF;
+	border: 1px solid #FFF;
 	color: #FFF;
 	background-color: #000;
-    padding: 5px 10px;
-    width: 100px;
-    outline: none;
+	padding: 5px 10px;
+	width: 100px;
+	outline: none;
 }
 /* Numeric input */
 input[type=number] {
@@ -227,11 +237,12 @@ input[type=range]::-ms-fill-upper {
 }
 #map {
 	position: relative;
+	
 }
 .icons {
-    background-image: url(../img/spritesheet.png);
-    background-repeat: no-repeat;
-    display: block;
+	background-image: url(../img/spritesheet.png);
+	background-repeat: no-repeat;
+	display: block;
 }
 .icons-map {
 	/* 32x32 */
@@ -256,36 +267,36 @@ input[type=range]::-ms-fill-upper {
 	background-position: -67px -133px;
 }
 .icons-bunker {
-    background-position: -1px -1px;
+	background-position: -1px -1px;
 }
 .icons-cash {
-    background-position: -67px -1px;
+	background-position: -67px -1px;
 }
 .icons-coke {
-    background-position: -133px -1px;
+	background-position: -133px -1px;
 }
 .icons-fees {
-    background-position: -1px -67px;
+	background-position: -1px -67px;
 }
 .icons-forgery {
-    background-position: -67px -67px;
+	background-position: -67px -67px;
 }
 .icons-importExport {
-    background-position: -133px -67px;
+	background-position: -133px -67px;
 }
 .icons-meth {
-    background-position: -1px -133px;
+	background-position: -1px -133px;
 }
 .icons-nightclub {
-    width: 60px;
-    height: 60px;
-    background-position: -133px -133px;
+	width: 60px;
+	height: 60px;
+	background-position: -133px -133px;
 }
 .icons-weed {
-    background-position: -199px -1px;
+	background-position: -199px -1px;
 }
 .icons-wheel {
-    background-position: -199px -67px;
+	background-position: -199px -67px;
 }
 
 #mini_notif {
@@ -327,11 +338,14 @@ input[type=range]::-ms-fill-upper {
 .desktop #options button.audio, .desktop #options button.setup {
 	width: calc(50% - 2.5px);
 }
-.mobile  #options {
+.mobile #options {
 	margin: 5px 5px 0 5px;
-	background-color: #FFF;
+	background-color: #FFFFFF00;
 	padding: 5px;
 	border: 1px solid #000;
+}
+.darkMode.mobile #options {
+	border-color: #777;
 }
 .mobile #options button {
 	width: calc((100% - 10px) / 3);
@@ -454,11 +468,11 @@ input[type=range]::-ms-fill-upper {
 	border: 1px solid #FFF;
 	background-color: #000;
 	color: #FFF;
-    display: inline-block;
-    padding: 5px 5px;
-    border-radius: 0;
+	display: inline-block;
+	padding: 5px 5px;
+	border-radius: 0;
 	height: 30px;
-    -webkit-appearance: none;
+	-webkit-appearance: none;
 	vertical-align: bottom;
 	margin: 0;
 }
@@ -522,13 +536,18 @@ input[type=range]::-ms-fill-upper {
 	width: 100%;
 	margin-bottom: 5px;
 }
+.darkMode .information {
+    background-color: #222;
+    color: #FFF;
+	border-color: #777;
+}
 .information:last-child {
 	margin-bottom: 0;
 }
 @-moz-document url-prefix() {
-    .information:last-child {
-        margin-bottom: 5px;
-    }
+	.desktop .information:last-child {
+		margin-bottom: 5px;
+	}
 }
 .business-section {
 	width: 100%;
@@ -565,12 +584,15 @@ input[type=range]::-ms-fill-upper {
 	padding-top: 3px;
 }
 #infotab button.setup {
-	background-color: #FFF;
+	background-color: #FFFFFF00;
 	color: #000;
 	height: 25px;
 	border-radius: 3px;
 	padding: 2px 6px 3px 6px;
 	float: right;
+}
+.darkMode #infotab button.setup {
+	color: #FFF;
 }
 #infotab td  {
 	padding-bottom: 5px;
@@ -604,6 +626,12 @@ input[type=range]::-ms-fill-upper {
 	height: 100%;
 	border: 1px solid #000;
 	border-left: 0;
+}
+.darkMode .progress_bar {
+	border-color: #FFF;
+}
+.darkMode .progress_bar .fivetick div {
+	border-color: #FFF;
 }
 .big .progress_bar, .big .progress_bar input[type=range].slider {
 	height: 18px;
@@ -677,6 +705,25 @@ input[type=range].slider::-moz-range-thumb {
 }
 #nightclub .bar {
 	background-color: #C963FF;
+}
+/* TODO: these are too vivid */
+/*.darkMode .product .bar {
+	background-color: #19B0FF;
+}
+.darkMode .research .bar {
+	background-color: #36C738;
+}
+.darkMode .supplies .bar {
+	background-color: #FF6929;
+}
+.darkMode #nightclub .bar {
+	background-color: #B83CFA;
+}*/
+.darkMode #importExport select {
+	color: #FFF;
+	background-color: #333;
+	border-color: #999;
+	border-width: 1px;
 }
 #importExport .content div:last-child {
 	margin-top: 5px;

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <!-- Website by func_vehicle. Copyright 2020 -->
@@ -96,22 +96,11 @@
 						<h1>Patch Notes</h1>
 					</div>
 					<div class="main">
-						<h1 style="padding-left: 3px;">Version 1.6.0</h1>
+						<h1 style="padding-left: 3px;">Version 1.7.0</h1>
 						<div class="indent">
 							<h2>Improvements</h2>
 							<ul>
-								<li>Push notifications are now available in the main setup. These will send you a notification through your browser, but you still need to have the manager open to receive them.</li>
-								<li>You will be reminded if the weekly bonuses have changed when loading the website.</li>
-								<li>You can now enable the Lucky Wheel reminder to play even while the manager is paused in its setup.</li>
-								<ul>
-									<li>The notification sound may not play when initially loading the website with this setting.</li>
-								</ul>
-								<li>You will now be warned if you have more than one tab of the business manager open as having multiple open at the same time causes issues.</li>
-								<li>Added instructions when setting the location of a business.</li>
-							</ul>
-							<h2>Fixes</h2>
-							<ul>
-								<li>Various display fixes, especially for Firefox.</li>
+								<li>Added dark mode, available in the main setup.</li>
 							</ul>
 						</div>
 					</div>
@@ -148,62 +137,69 @@
 						<h1>Setup</h1>
 					</div>
 					<div class="main">
-						<table>
-							<tr class="hideUnowned">
-								<td>Hide unowned:</td>
-								<td class="onechoice fsz">
-									<button class="button green" data-value="1">Yes</button>
-									<button class="button red" data-value="0">No</button>
-								</td>
-							</tr>
-							<tr class="notificationSettings">
-								<td>Notifications:</td>
-								<td class="fsz">
-									<!--<button class="button blue" data-value="audio">Sound</button>-->
-									<button class="button blue off" data-value="push">Push notifications</button>
-								</td>
-							</tr>
-							<tr class="audioFreq">
-								<td>Audio interval:</td>
-								<td class="incDecButtons">
-									<button class="fa fa-minus button minus"></button><!--
-									--><input type="number" class="range_enforced integer_only" name="quantity" value="1" min="1" max="60"/><!--
-									--><button class="fa fa-plus button plus"></button><!--
-									--><span>minutes</span>
-								</td>
-							</tr>
-							<tr class="audioVolume">
-								<td>Audio volume:</td>
-								<td class="onechoice">
-									<input type="range" min="0" max="100" value="0"><!--
-									--><span>100%</span>
-								</td>
-							</tr>
-							<tr class="progressBarStyle">
-								<td>Progress style:</td>
-								<td class="onechoice fsz">
-									<button class="button blue" data-value="0">Plain</button>
-									<button class="button blue" data-value="1">5-tick</button>
-									<button class="button blue" data-value="2">Percentage</button>
-									<button class="button blue" data-value="3">Time Remaining</button>
-								</td>
-							</tr>
-							<tr class="dataDownload">
-								<td>Data:</td>
-								<td class="fsz">
-									<button class="button orange" data-value="0">Download</button>
-									<button class="button orange" data-value="1">Load from file</button>
-									<a id="dataDownloadLink" style="display: none;"></a>
-									<input id="fileInput" type="file" accept=".json, application/json" style="display: none;"/>
-								</td>
-							</tr>
-							<tr class="about">
-								<td>About:</td>
-								<td class="fsz">
-									<button class="button orange" data-value="0">Patch notes</button>
-								</td>
-							</tr>
-						</table>
+                        <table>
+                            <tr class="hideUnowned">
+                                <td>Hide unowned:</td>
+                                <td class="onechoice fsz">
+                                    <button class="button green" data-value="1">Yes</button>
+                                    <button class="button red" data-value="0">No</button>
+                                </td>
+                            </tr>
+                            <tr class="notificationSettings">
+                                <td>Notifications:</td>
+                                <td class="fsz">
+                                    <!--<button class="button blue" data-value="audio">Sound</button>-->
+                                    <button class="button blue off" data-value="push">Push notifications</button>
+                                </td>
+                            </tr>
+                            <tr class="audioFreq">
+                                <td>Audio interval:</td>
+                                <td class="incDecButtons">
+                                    <button class="fa fa-minus button minus"></button><!--
+                                 --><input type="number" class="range_enforced integer_only" name="quantity" value="1" min="1" max="60" /><!--
+                                 --><button class="fa fa-plus button plus"></button><!--
+                                 --><span>minutes</span>
+                                </td>
+                            </tr>
+                            <tr class="audioVolume">
+                                <td>Audio volume:</td>
+                                <td class="onechoice">
+                                    <input type="range" min="0" max="100" value="0"><!--
+                                 --><span>100%</span>
+                                </td>
+                            </tr>
+                            <tr class="progressBarStyle">
+                                <td>Progress style:</td>
+                                <td class="onechoice fsz">
+                                    <button class="button blue" data-value="0">Plain</button>
+                                    <button class="button blue" data-value="1">5-tick</button>
+                                    <button class="button blue" data-value="2">Percentage</button>
+                                    <button class="button blue" data-value="3">Time Remaining</button>
+                                </td>
+                            </tr>
+                            <tr class="appStyle">
+                                <td>App style:</td>
+                                <td class="onechoice fsz">
+                                    <button class="button white" data-value="0">Light</button>
+                                    <button class="button grey" data-value="1">Dark</button>
+                                </td>
+                            </tr>
+                            <tr class="dataDownload">
+                                <td>Data:</td>
+                                <td class="fsz">
+                                    <button class="button orange" data-value="0">Download</button>
+                                    <button class="button orange" data-value="1">Load from file</button>
+                                    <a id="dataDownloadLink" style="display: none;"></a>
+                                    <input id="fileInput" type="file" accept=".json, application/json" style="display: none;" />
+                                </td>
+                            </tr>
+                            <tr class="about">
+                                <td>About:</td>
+                                <td class="fsz">
+                                    <button class="button orange" data-value="0">Patch notes</button>
+                                </td>
+                            </tr>
+                        </table>
 					</div>
 					<div class="buttons fsz">
 						<button class="button reset red">Reset Everything</button>
