@@ -399,6 +399,7 @@ input[type=range]::-ms-fill-upper {
 	padding-right: 5px;
 	overflow-y: auto;
 	max-height: 75vh;
+	padding-bottom: 2px;  /* This fixes scrollbar on Chrome in paragraph dialog */
 }
 #notification .main h1 {
 	padding-top: 3px;

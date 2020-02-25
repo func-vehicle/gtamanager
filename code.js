@@ -359,7 +359,11 @@ $(document).ready(function() {
 			$("body").addClass("desktop");
 			$("#mapscreen").append($("#overlay"));
 			$("#mapscreen").append($("#notification"));
-			$("#mapscreen #bg").css("max-width", scr_w - 220);
+			var element = document.getElementById("infotab");
+			var scrollBarWidth = element.offsetWidth - element.clientWidth;
+			console.log(scrollBarWidth);
+			$("#infotab").css("width", 220 + scrollBarWidth);
+			$("#mapscreen #bg").css("max-width", scr_w - 220 - scrollBarWidth);
 			$("#mapscreen #bg").css("max-height", scr_h);
 			// Make transparent overlay same size as map
 			map_w = $("#mapscreen #bg").width();
@@ -374,8 +378,9 @@ $(document).ready(function() {
 			$("body").addClass("mobile");
 			$("#wrapper").append($("#overlay"));
 			$("#wrapper").append($("#notification"));
+			$("#infotab").css("width", "");
 			$("#mapscreen #bg").css("max-width", scr_w);
-			$("#mapscreen #bg").css("max-height", "unset");
+			$("#mapscreen #bg").css("max-height", "");
 			// Make transparent overlay cover screen
 			$("#overlay").css("width", "100%");
 			$("#overlay").css("height", "100%");
@@ -870,9 +875,7 @@ $(document).ready(function() {
 	
 	redrawScreen();
 	redrawBusinessTabs();
-});
-
-$(window).on("load", function() {
+	
 	window.dispatchEvent(new Event("resize"));
 });
 
@@ -1090,7 +1093,6 @@ function redrawScreen() {
 	$("#mainSetup .hideUnowned button[data-value=1]").prop("disabled", hide_unowned);
 	$("#mainSetup .hideUnowned button[data-value=0]").prop("disabled", !hide_unowned);
 	
-	// TODO:
 	var push_enabled = changeInfo["push_notifications"];
 	if (push_enabled && notify.compatible()) {
 		$("#mainSetup .notificationSettings button[data-value=push]").removeClass("off");
