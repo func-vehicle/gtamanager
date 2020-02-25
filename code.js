@@ -377,8 +377,8 @@ $(document).ready(function() {
 			$("#mapscreen #bg").css("max-width", scr_w);
 			$("#mapscreen #bg").css("max-height", "unset");
 			// Make transparent overlay cover screen
-			$("#overlay").css("width", scr_w);
-			$("#overlay").css("height", scr_h);
+			$("#overlay").css("width", "100%");
+			$("#overlay").css("height", "100%");
 			// Move with screen
 			$("#notification").css("position", "fixed");
 			$("#overlay").css("position", "fixed");
