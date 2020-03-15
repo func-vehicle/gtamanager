@@ -2,7 +2,7 @@ var userInfo;
 
 // The current format of user's data.
 var defaultUserInfo = {
-	version: "1.7.0",
+	version: "1.7.1",
 	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
@@ -291,6 +291,9 @@ function update() {
         userInfo.app_style = 0;
 		userInfo.version = "1.7.0";
     }
+	if (userInfo.version == "1.7.0") {
+		userInfo.version = "1.7.1";
+	}
 }
 
 $(document).ready(function() {
@@ -359,9 +362,9 @@ $(document).ready(function() {
 			$("body").addClass("desktop");
 			$("#mapscreen").append($("#overlay"));
 			$("#mapscreen").append($("#notification"));
+			// If there is a scroll bar, make room for it
 			var element = document.getElementById("infotab");
 			var scrollBarWidth = element.offsetWidth - element.clientWidth;
-			console.log(scrollBarWidth);
 			$("#infotab").css("width", 220 + scrollBarWidth);
 			$("#mapscreen #bg").css("max-width", scr_w - 220 - scrollBarWidth);
 			$("#mapscreen #bg").css("max-height", scr_h);
@@ -1068,6 +1071,9 @@ function redrawBusinessTabs() {
 	else {
 		$("#inactiveBusinesses").show();
 	}
+	
+	// Redo resize function in case business tab scrollbar appears / disappears
+	window.dispatchEvent(new Event("resize"));
 }
 
 function redrawScreen() {
