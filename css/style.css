@@ -399,6 +399,7 @@ input[type=range]::-ms-fill-upper {
 	padding-right: 5px;
 	overflow-y: auto;
 	max-height: 75vh;
+	padding-bottom: 2px;  /* This fixes scrollbar on Chrome in paragraph dialog */
 }
 #notification .main h1 {
 	padding-top: 3px;
@@ -423,9 +424,6 @@ input[type=range]::-ms-fill-upper {
 	text-decoration: none;
 	font-weight: bold;
 }
-#notification .main {
-	padding-bottom: 2px;
-}
 #notification ul {
 	margin-left: 30px;
 	color: #FFF;
@@ -440,10 +438,11 @@ input[type=range]::-ms-fill-upper {
 	color: #FFF;
 }
 #notification .buttons {
-	padding: 5px;
+	padding-bottom: 5px;
 	margin: auto;
 }
 #notification .buttons .button {
+	margin-top: 5px;
 	min-width: 100px;
 }
 #mainSetup .audioFreq span,#mainSetup .audioVolume span {

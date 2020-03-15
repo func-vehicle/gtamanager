@@ -96,15 +96,29 @@
 						<h1>Patch Notes</h1>
 					</div>
 					<div class="main">
-						<h1 style="padding-left: 3px;">Version 1.7.0</h1>
+						<h1 style="padding-left: 3px;">Version 1.7.1</h1>
 						<div class="indent">
-							<h2>Improvements</h2>
+							<h2>Fixes</h2>
 							<ul>
-								<li>Added dark mode, available in the main setup.</li>
+								<li>Fixed an issue where the transparent overlay behind dialog boxes would not cover the entire background on mobile displays.</li>
+								<li>Fixed regression causing scroll bar on business tabs to make the business headers overflow in Firefox.</li>
+								<li>New users will now only receive the new user dialog box upon opening the page.</li>
 							</ul>
 						</div>
 					</div>
 					<div class="buttons">
+						<button class="button ok red">OK</button>
+					</div>
+				</div>
+				<div id="pushDeniedNotice">
+					<div class="heading">
+						<h1>Notice</h1>
+					</div>
+					<div class="main">
+						<p>The request to allow push notifications has been denied. You may need to refresh the page for the
+						request to appear again when you press this button.</p>
+					</div>
+					<div class="buttons fsz">
 						<button class="button ok red">OK</button>
 					</div>
 				</div>

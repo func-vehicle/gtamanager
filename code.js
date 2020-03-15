@@ -2,7 +2,7 @@ var userInfo;
 
 // The current format of user's data.
 var defaultUserInfo = {
-	version: "1.7.0",
+	version: "1.7.1",
 	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
@@ -291,6 +291,9 @@ function update() {
         userInfo.app_style = 0;
 		userInfo.version = "1.7.0";
     }
+	if (userInfo.version == "1.7.0") {
+		userInfo.version = "1.7.1";
+	}
 }
 
 $(document).ready(function() {
@@ -345,7 +348,7 @@ $(document).ready(function() {
 		displayPopup("updateNotice");
 	}
 	if (newUser) {
-		displayPopup("newUserNotice");
+		displayPopup("newUserNotice", true);
 	}
 	
 	// Window resize function
@@ -359,7 +362,11 @@ $(document).ready(function() {
 			$("body").addClass("desktop");
 			$("#mapscreen").append($("#overlay"));
 			$("#mapscreen").append($("#notification"));
-			$("#mapscreen #bg").css("max-width", scr_w - 220);
+			// If there is a scroll bar, make room for it
+			var element = document.getElementById("infotab");
+			var scrollBarWidth = element.offsetWidth - element.clientWidth;
+			$("#infotab").css("width", 220 + scrollBarWidth);
+			$("#mapscreen #bg").css("max-width", scr_w - 220 - scrollBarWidth);
 			$("#mapscreen #bg").css("max-height", scr_h);
 			// Make transparent overlay same size as map
 			map_w = $("#mapscreen #bg").width();
@@ -374,11 +381,12 @@ $(document).ready(function() {
 			$("body").addClass("mobile");
 			$("#wrapper").append($("#overlay"));
 			$("#wrapper").append($("#notification"));
+			$("#infotab").css("width", "");
 			$("#mapscreen #bg").css("max-width", scr_w);
-			$("#mapscreen #bg").css("max-height", "unset");
+			$("#mapscreen #bg").css("max-height", "");
 			// Make transparent overlay cover screen
-			$("#overlay").css("width", scr_w);
-			$("#overlay").css("height", scr_h);
+			$("#overlay").css("width", "100%");
+			$("#overlay").css("height", "100%");
 			// Move with screen
 			$("#notification").css("position", "fixed");
 			$("#overlay").css("position", "fixed");
@@ -870,9 +878,7 @@ $(document).ready(function() {
 	
 	redrawScreen();
 	redrawBusinessTabs();
-});
-
-$(window).on("load", function() {
+	
 	window.dispatchEvent(new Event("resize"));
 });
 
@@ -1065,6 +1071,9 @@ function redrawBusinessTabs() {
 	else {
 		$("#inactiveBusinesses").show();
 	}
+	
+	// Redo resize function in case business tab scrollbar appears / disappears
+	window.dispatchEvent(new Event("resize"));
 }
 
 function redrawScreen() {
@@ -1090,7 +1099,6 @@ function redrawScreen() {
 	$("#mainSetup .hideUnowned button[data-value=1]").prop("disabled", hide_unowned);
 	$("#mainSetup .hideUnowned button[data-value=0]").prop("disabled", !hide_unowned);
 	
-	// TODO:
 	var push_enabled = changeInfo["push_notifications"];
 	if (push_enabled && notify.compatible()) {
 		$("#mainSetup .notificationSettings button[data-value=push]").removeClass("off");
@@ -1427,6 +1435,9 @@ window.notify = {
 					notify.show("Testing Push Notifications", "If you can see this, you're good to go.", "forgery");
 					$("#mainSetup .notificationSettings button[data-value=push]").removeClass("off");
 					changeInfo.push_notifications = true;
+				}
+				if (permission === "denied") {
+					displayPopup("pushDeniedNotice");
 				}
 			});
 		}
