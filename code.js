@@ -345,7 +345,7 @@ $(document).ready(function() {
 		displayPopup("updateNotice");
 	}
 	if (newUser) {
-		displayPopup("newUserNotice");
+		displayPopup("newUserNotice", true);
 	}
 	
 	// Window resize function
@@ -1429,6 +1429,9 @@ window.notify = {
 					notify.show("Testing Push Notifications", "If you can see this, you're good to go.", "forgery");
 					$("#mainSetup .notificationSettings button[data-value=push]").removeClass("off");
 					changeInfo.push_notifications = true;
+				}
+				if (permission === "denied") {
+					displayPopup("pushDeniedNotice");
 				}
 			});
 		}
