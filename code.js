@@ -879,7 +879,7 @@ $(document).ready(function() {
 	redrawScreen();
 	redrawBusinessTabs();
 	
-	window.dispatchEvent(new Event("resize"));
+	//window.dispatchEvent(new Event("resize"));
 });
 
 function displayPopup(divName, clearExisting) {
