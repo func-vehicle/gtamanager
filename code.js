@@ -2,7 +2,7 @@ var userInfo;
 
 // The current format of user's data.
 var defaultUserInfo = {
-	version: "1.7.1",
+	version: "1.7.2",
 	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
@@ -293,6 +293,9 @@ function update() {
     }
 	if (userInfo.version == "1.7.0") {
 		userInfo.version = "1.7.1";
+	}
+	if (userInfo.version == "1.7.1") {
+		userInfo.version = "1.7.2";
 	}
 }
 
