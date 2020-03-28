@@ -705,19 +705,6 @@ input[type=range].slider::-moz-range-thumb {
 #nightclub .bar {
 	background-color: #C963FF;
 }
-/* TODO: these are too vivid */
-/*.darkMode .product .bar {
-	background-color: #19B0FF;
-}
-.darkMode .research .bar {
-	background-color: #36C738;
-}
-.darkMode .supplies .bar {
-	background-color: #FF6929;
-}
-.darkMode #nightclub .bar {
-	background-color: #B83CFA;
-}*/
 .darkMode #importExport select {
 	color: #FFF;
 	background-color: #333;
@@ -728,7 +715,7 @@ input[type=range].slider::-moz-range-thumb {
 	margin-top: 5px;
 	display: inline-flex;
 }
-select {	
+select {
 	margin:0;
 	margin-right: 5px;
 	padding: 4px 5px;
