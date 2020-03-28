@@ -883,7 +883,7 @@ $(document).ready(function() {
 	redrawBusinessTabs();
 });
 
-$(window).load(function() {
+$(window).on('load', function() {
 	// Fix transparent overlay not appearing because image was not loaded in time
 	window.dispatchEvent(new Event("resize"));
 });
