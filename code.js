@@ -878,8 +878,6 @@ $(document).ready(function() {
 	
 	redrawScreen();
 	redrawBusinessTabs();
-	
-	window.dispatchEvent(new Event("resize"));
 });
 
 function displayPopup(divName, clearExisting) {
@@ -1284,8 +1282,6 @@ function redrawScreen() {
 	else {
 		$("#options button.audio").addClass("off");
 	}
-	
-	//window.dispatchEvent(new Event("resize"));
 }
 
 // Check if user needs to be notified
@@ -1294,7 +1290,7 @@ function checkNotify() {
 	if (running || userInfo.wheel.notify_while_paused) {
 		if (new Date().getTime() - userInfo["wheel"]["timestamp"] > 86400000) {
 			flashIcon("wheel");
-			playNotification("wheel", "GTA Online Business Manager", "The Lucky Wheel is ready to be spun.");
+			playNotification("wheel", "GTA V Business Manager", "The Lucky Wheel is ready to be spun.");
 		}
 		else {
 			flashIcon("wheel", false);
@@ -1321,15 +1317,15 @@ function checkNotify() {
 	if (userInfo.bunker.owned) {
 		if (userInfo.bunker.product >= staticInfo.bunker.maxProduct && (userInfo.bunker.mode == 0 || userInfo.bunker.mode == 1)) {
 			flashIcon("bunker");
-			playNotification("bunker", "GTA Online Business Manager", "Your Bunker has reached maximum product and is ready to sell.");
+			playNotification("bunker", "GTA V Business Manager", "Your Bunker has reached maximum product and is ready to sell.");
 		}
 		else if (userInfo.bunker.research >= staticInfo.bunker.maxResearch && (userInfo.bunker.mode == 2 || userInfo.bunker.mode == 1)) {
 			flashIcon("bunker");
-			playNotification("bunker", "GTA Online Business Manager", "Your Bunker has finished researching an item.");
+			playNotification("bunker", "GTA V Business Manager", "Your Bunker has finished researching an item.");
 		}
 		else if (userInfo.bunker.supplies <= 0) {
 			flashIcon("bunker");
-			playNotification("bunker", "GTA Online Business Manager", "Your Bunker has run out of supplies.");
+			playNotification("bunker", "GTA V Business Manager", "Your Bunker has run out of supplies.");
 		}
 		else {
 			flashIcon("bunker", false);
@@ -1342,11 +1338,11 @@ function checkNotify() {
 		if (userInfo[business].owned) {
 			if (userInfo[business].product >= staticInfo[business].maxProduct) {
 				flashIcon(business);
-				playNotification(business, "GTA Online Business Manager", "Your "+userInfo[business].name+" business has reached maximum product and is ready to sell.");
+				playNotification(business, "GTA V Business Manager", "Your "+userInfo[business].name+" business has reached maximum product and is ready to sell.");
 			}
 			else if (userInfo[business].supplies <= 0) {
 				flashIcon(business);
-				playNotification(business, "GTA Online Business Manager", "Your "+userInfo[business].name+" business has run out of supplies.");
+				playNotification(business, "GTA V Business Manager", "Your "+userInfo[business].name+" business has run out of supplies.");
 			}
 			else {
 				flashIcon(business, false);
@@ -1363,7 +1359,7 @@ function checkNotify() {
 			if (userInfo.nightclub[product] >= staticInfo.nightclub["max"+capitalize(product)]) {
 				flashed = true;
 				flashIcon("nightclub");
-				playNotification("nightclub", "GTA Online Business Manager", "Your Nightclub is at maximum capacity in one or more products.");
+				playNotification("nightclub", "GTA V Business Manager", "Your Nightclub is at maximum capacity in one or more products.");
 			}
 		}
 	}
