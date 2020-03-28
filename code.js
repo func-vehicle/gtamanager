@@ -883,6 +883,11 @@ $(document).ready(function() {
 	redrawBusinessTabs();
 });
 
+$(window).load(function() {
+	// Fix transparent overlay not appearing because image was not loaded in time
+	window.dispatchEvent(new Event("resize"));
+});
+
 function displayPopup(divName, clearExisting) {
 	$("#notification > *").hide();
 	$("#"+divName).show();
