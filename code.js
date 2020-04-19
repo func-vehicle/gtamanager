@@ -2,7 +2,7 @@ var userInfo;
 
 // The current format of user's data.
 var defaultUserInfo = {
-	version: "1.7.2",
+	version: "1.7.3",
 	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
@@ -298,6 +298,9 @@ function update() {
 	}
 	if (userInfo.version == "1.7.1") {
 		userInfo.version = "1.7.2";
+	}
+	if (userInfo.version == "1.7.2") {
+		userInfo.version = "1.7.3";
 	}
 }
 
@@ -958,7 +961,7 @@ function tick() {
 	}
 	
 	var currentTime = new Date().getTime();
-	var deltaSec = (currentTime - lastTickTime) / 10;// / 1000;
+	var deltaSec = (currentTime - lastTickTime) / 1000;
 	lastTickTime = currentTime;
 	
 	if (running) {
