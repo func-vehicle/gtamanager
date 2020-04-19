@@ -2,7 +2,7 @@ var userInfo;
 
 // The current format of user's data.
 var defaultUserInfo = {
-	version: "1.7.2",
+	version: "1.7.3",
 	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
@@ -146,6 +146,8 @@ else {
 var windowStack = [];
 var backupInfo = {};
 var changeInfo = {};
+
+var lastTickTime = null;
 
 // Session notification information
 var feesCooldown = 0;
@@ -296,6 +298,9 @@ function update() {
 	}
 	if (userInfo.version == "1.7.1") {
 		userInfo.version = "1.7.2";
+	}
+	if (userInfo.version == "1.7.2") {
+		userInfo.version = "1.7.3";
 	}
 }
 
@@ -843,6 +848,7 @@ $(document).ready(function() {
 			$("#options button.toggle").addClass("pause");
 			$("#options button.toggle").addClass("blue");
 			$("#options button.toggle").html("Pause");
+			lastTickTime = null;
 			feesCooldown = 2880000;
 			$("#mini_notif").hide();
 			window.onbeforeunload = function() {
@@ -950,32 +956,40 @@ function timeFormat(timeArray) {
 }
 
 function tick() {
+	if (lastTickTime == null) {
+		lastTickTime = new Date().getTime();
+	}
+	
+	var currentTime = new Date().getTime();
+	var deltaSec = (currentTime - lastTickTime) / 1000;
+	lastTickTime = currentTime;
+	
 	if (running) {
 		// Bunker
 		if (userInfo["bunker"]["owned"] && userInfo["bunker"]["supplies"] > 0) {
 			// Manufacturing
 			if (userInfo["bunker"]["mode"] == 0) {
 				if (userInfo["bunker"]["product"] < staticInfo["bunker"]["maxProduct"]) {
-					userInfo["bunker"]["product"] += 1/60;
-					userInfo["bunker"]["supplies"] -= 1/60;
+					userInfo["bunker"]["product"] += deltaSec/60;
+					userInfo["bunker"]["supplies"] -= deltaSec/60;
 				}
 			}
 			// Research
 			else if (userInfo["bunker"]["mode"] == 2) {
 				if (userInfo["bunker"]["research"] < staticInfo["bunker"]["maxResearch"]) {
-					userInfo["bunker"]["research"] += 1/60;
-					userInfo["bunker"]["supplies"] -= 1/60 * 150/350;
+					userInfo["bunker"]["research"] += deltaSec/60;
+					userInfo["bunker"]["supplies"] -= deltaSec/60 * 150/350;
 				}
 			}
 			// Both
 			else {
 				if (userInfo["bunker"]["product"] < staticInfo["bunker"]["maxProduct"]) {
-					userInfo["bunker"]["product"] += 1/120;
-					userInfo["bunker"]["supplies"] -= 1/120;
+					userInfo["bunker"]["product"] += deltaSec/120;
+					userInfo["bunker"]["supplies"] -= deltaSec/120;
 				}
 				if (userInfo["bunker"]["research"] < staticInfo["bunker"]["maxResearch"]) {
-					userInfo["bunker"]["research"] += 1/120;
-					userInfo["bunker"]["supplies"] -= 1/120 * 150/350;
+					userInfo["bunker"]["research"] += deltaSec/120;
+					userInfo["bunker"]["supplies"] -= deltaSec/120 * 150/350;
 				}
 				
 			}
@@ -987,8 +1001,8 @@ function tick() {
 			var business = mcbusinesses[i];
 			if (userInfo[business]["owned"] && userInfo[business]["product"] < staticInfo[business]["maxProduct"]) {
 				if (userInfo[business]["supplies"] > 0) {
-					userInfo[business]["product"] += 1/60;
-					userInfo[business]["supplies"] -= 1/60;
+					userInfo[business]["product"] += deltaSec/60;
+					userInfo[business]["supplies"] -= deltaSec/60;
 				}
 			}
 		}
@@ -1000,7 +1014,7 @@ function tick() {
 				var product = products[i];
 				if (userInfo["nightclub"]["producing"][product]) {
 					if (userInfo["nightclub"][product] < staticInfo["nightclub"]["max"+capitalize(product)]) {
-						userInfo["nightclub"][product] += 1/60*1/staticInfo["nightclub"]["accrue"+capitalize(product)];
+						userInfo["nightclub"][product] += deltaSec/60 * 1/staticInfo["nightclub"]["accrue"+capitalize(product)];
 						userInfo["nightclub"][product] = Math.min(userInfo["nightclub"][product], staticInfo["nightclub"]["max"+capitalize(product)]);
 					}
 				}
@@ -1009,8 +1023,14 @@ function tick() {
 		
 		// Import / Export
 		if (userInfo["importExport"]["cooldown"] > 0) {
-			userInfo["importExport"]["cooldown"] = Math.max(userInfo["importExport"]["cooldown"] - 1000, 0);
+			userInfo["importExport"]["cooldown"] = Math.max(userInfo["importExport"]["cooldown"] - deltaSec*1000, 0);
 		}
+		
+		// Session Timer
+		if (feesCooldown <= 0) {
+			feesCooldown = 2880000;
+		}
+		feesCooldown -= deltaSec*1000;
 	}
 	
 	// Save
@@ -1247,6 +1267,7 @@ function redrawScreen() {
 	// I/E cooldown
 	if (userInfo["importExport"]["cooldown"] <= 0) {
 		$("#importExport button.sell").attr("disabled", false);
+		$("#importExport button.sell").html("Sell");
 	}
 	else {
 		$("#importExport button.sell").attr("disabled", true);
@@ -1274,13 +1295,9 @@ function redrawScreen() {
 		$("#fees button").html("Not in Session");
 	}
 	else {
-		if (feesCooldown <= 0) {
-			feesCooldown = 2880000;
-		}
 		var t = msFormat(feesCooldown);
 		var s = timeFormat(t);
 		$("#fees button").html(s);
-		feesCooldown -= 1000;
 	}
 	
 	// Options
