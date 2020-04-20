@@ -1104,6 +1104,7 @@ function redrawBusinessTabs() {
 
 function redrawScreen() {
 	// Nightclub manager values
+	var totalNightClubProduct = 0;
 	var products = staticInfo["nightclub"]["products"];
 	for (var i = 0; i < products.length; i++) {
 		var product = products[i];
@@ -1111,7 +1112,27 @@ function redrawScreen() {
 		var current = Math.round(userInfo["nightclub"][product]);
 		var maxProduct = staticInfo["nightclub"]["max"+capitalize(product)];
 		td.html(current+"/"+maxProduct);
-	}
+		
+		totalNightClubProduct = parseInt(totalNightClubProduct + current);
+		var totalProduct = $("#nightclubGUI .total" +" td").eq(1);
+	}	
+	var transport;
+	switch (true){
+		case (totalNightClubProduct > 180):
+			transport = "Pounder";
+			break;
+		case (totalNightClubProduct > 90):
+			transport = "Mule";
+			break;
+		case (totalNightClubProduct <= 90):
+			transport = "speedo";
+			break;
+		default:
+			transport = "what";
+			break;
+	}	
+	totalProduct.html(totalNightClubProduct +"/"+ transport);
+		
 	
 	// setupGUI buttons
 	// Main Setup
