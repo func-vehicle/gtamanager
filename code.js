@@ -464,6 +464,61 @@ $(document).ready(function() {
 		if (current < minVal) { $(this).val(minVal); var changed = true; }
 	});
 	
+	// Patch notes buttons
+	var PatchModule = (function () {
+		var patchnotes = null;
+		var patchIndex = null;
+		var updateScreen = function (b_left) {
+			if (b_left) {
+				patchIndex--;
+				if (patchIndex < 0)
+					patchIndex = 0;
+			}
+			else {
+				patchIndex++;
+				if (patchIndex >= patchnotes.length)
+					patchIndex = patchnotes.length - 1;
+			}
+			var noteSet = $(patchnotes.get(patchIndex));
+			$("#updateNotice .main").html(noteSet.html());
+			redraw();
+		};
+		var redraw = function () {
+			if (patchIndex == null)
+			{
+				// Haven't loaded external file, assume on latest and there is a previous patchnote
+				$("#updateNotice .pageSwap button[data-value=1]").prop("disabled", true);
+			}
+			else
+			{
+				$("#updateNotice .pageSwap button[data-value=0]").prop("disabled", patchIndex == 0);
+				$("#updateNotice .pageSwap button[data-value=1]").prop("disabled", patchIndex == patchnotes.length - 1);
+			}
+		};
+		return {
+			clickMethod: function (b_left) {
+				// Check if we need to GET the patchnotes
+				if (patchnotes == null) {
+					$.get("patchnotes.html", {"_": $.now()}, function(html) {
+						html = html.replace(/>\s+</g,'><');  // Strip whitespace between html tags
+						patchnotes = $(html);
+						patchIndex = patchnotes.length - 1;
+						updateScreen(b_left);
+					});
+				}
+				else {
+					updateScreen(b_left);
+				}
+			},
+			redraw: redraw,
+		};
+	})();
+	
+	$("#updateNotice .pageSwap button").on("click", function(event) {
+		var b_left = $(event.target).attr("data-value") == 0;
+		PatchModule.clickMethod(b_left);
+	});
+	
 	// Nightclub Manager buttons
 	$("#nightclubGUI button.sellsome").on("click", function(event) {
 		var products = staticInfo["nightclub"]["products"];
@@ -750,6 +805,7 @@ $(document).ready(function() {
 	});
 	
 	$("#mainSetup .about button").on("click", function(event) {
+		PatchModule.redraw();
 		displayPopup("updateNotice");
 		redrawScreen();
 	});
@@ -1106,7 +1162,7 @@ function redrawBusinessTabs() {
 	window.dispatchEvent(new Event("resize"));
 }
 
-function redrawScreen() {
+function redrawScreen() {	
 	// Nightclub manager values
 	var products = staticInfo["nightclub"]["products"];
 	for (var i = 0; i < products.length; i++) {
