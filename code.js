@@ -12,8 +12,8 @@ var defaultUserInfo = {
 			volume: 1,
 			interval: 3,
 		},
-        progress_bar_style: 1,
-        app_style: 0,
+		progress_bar_style: 1,
+		app_style: 0,
 	},
 	bunker: {
 		name: "Bunker",
@@ -223,8 +223,12 @@ var intervalID = setInterval(tick, 1000);
 var running = 0;
 
 function capitalize(s) {
-    return s.charAt(0).toUpperCase() + s.slice(1);
+	return s.charAt(0).toUpperCase() + s.slice(1);
 }
+
+Number.prototype.mod = function(b) { 
+    return ((this % b) + b) % b; 
+} 
 
 function update() {
 	if (userInfo.version == "1.0.0") {
@@ -288,11 +292,11 @@ function update() {
 		userInfo.settings.push_notifications = false;
 		userInfo.wheel.notify_while_paused = false;
 		userInfo.version = "1.6.0";
-    }
-    if (userInfo.version == "1.6.0") {
-        userInfo.app_style = 0;
+	}
+	if (userInfo.version == "1.6.0") {
+		userInfo.app_style = 0;
 		userInfo.version = "1.7.0";
-    }
+	}
 	if (userInfo.version == "1.7.0") {
 		userInfo.version = "1.7.1";
 	}
@@ -710,12 +714,12 @@ $(document).ready(function() {
 	$("#mainSetup .progressBarStyle button").on("click", function(event) {
 		changeInfo.progress_bar_style = parseInt($(event.target).attr("data-value"), 10);
 		redrawScreen();
-    });
+	});
 
-    $("#mainSetup .appStyle button").on("click", function (event) {
-        changeInfo.app_style = parseInt($(event.target).attr("data-value"), 10);
-        redrawScreen();
-    });
+	$("#mainSetup .appStyle button").on("click", function (event) {
+		changeInfo.app_style = parseInt($(event.target).attr("data-value"), 10);
+		redrawScreen();
+	});
 
 	$("#mainSetup .dataDownload button[data-value=0]").on("click", function(event) {
 		var data_href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(userInfo));
@@ -941,6 +945,7 @@ function msFormat(msTime) {
 }
 
 function timeFormat(timeArray) {
+	// Convert to string
 	var hours = (timeArray[0]).toLocaleString(undefined, {minimumIntegerDigits: 2});
 	var minutes = (timeArray[1]).toLocaleString(undefined, {minimumIntegerDigits: 2});
 	var seconds = (timeArray[2]).toLocaleString(undefined, {minimumIntegerDigits: 2});
@@ -952,6 +957,7 @@ function timeFormat(timeArray) {
 		s += minutes + "M ";
 	}
 	s += seconds + "S";
+	
 	return s;
 }
 
@@ -1027,10 +1033,8 @@ function tick() {
 		}
 		
 		// Session Timer
-		if (feesCooldown <= 0) {
-			feesCooldown = 2880000;
-		}
 		feesCooldown -= deltaSec*1000;
+		feesCooldown = feesCooldown.mod(2880001);
 	}
 	
 	// Save
@@ -1137,11 +1141,11 @@ function redrawScreen() {
 	$("#mainSetup .progressBarStyle button").eq(0).prop("disabled", progress_bar_style == 0);
 	$("#mainSetup .progressBarStyle button").eq(1).prop("disabled", progress_bar_style == 1);
 	$("#mainSetup .progressBarStyle button").eq(2).prop("disabled", progress_bar_style == 2);
-    $("#mainSetup .progressBarStyle button").eq(3).prop("disabled", progress_bar_style == 3);
+	$("#mainSetup .progressBarStyle button").eq(3).prop("disabled", progress_bar_style == 3);
 
-    var app_style = changeInfo["app_style"];
-    $("#mainSetup .appStyle button").eq(0).prop("disabled", app_style == 0);
-    $("#mainSetup .appStyle button").eq(1).prop("disabled", app_style == 1);
+	var app_style = changeInfo["app_style"];
+	$("#mainSetup .appStyle button").eq(0).prop("disabled", app_style == 0);
+	$("#mainSetup .appStyle button").eq(1).prop("disabled", app_style == 1);
 	
 	// Bunker Setup
 	var hide_research = changeInfo["hide_research"];
@@ -1254,15 +1258,15 @@ function redrawScreen() {
 			$("#"+business+" tr."+type+" .progress_bar span").html(remaining_string);
 			$("#"+business+" tr."+type+" .progress_bar span").show();
 		}
-    }
+	}
 
-    // App style
-    app_style = userInfo.settings["app_style"];
-    if (app_style == 0) {
-        $("body").removeClass("darkMode");
-    } else if (app_style == 1) {
-        $("body").addClass("darkMode");
-    }
+	// App style
+	app_style = userInfo.settings["app_style"];
+	if (app_style == 0) {
+		$("body").removeClass("darkMode");
+	} else if (app_style == 1) {
+		$("body").addClass("darkMode");
+	}
 
 	// I/E cooldown
 	if (userInfo["importExport"]["cooldown"] <= 0) {
