@@ -474,8 +474,27 @@ input[type=range]::-ms-fill-upper {
 #notification .incDecButtons button {
 	margin-top: 0;
 }
-#nightclubGUI th, #nightclubGUI td {
+#nightclubGUI th, #nightclubGUI td, #nightclubGUI td:first-child {
 	text-align: left;
+	height: 25px;  /* Height is actually min-height for tables */
+	vertical-align: middle;
+	padding: 2px 0;
+}
+#nightclubGUI td:first-child {
+	max-width: 0;
+	padding-right: 5px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+    white-space: nowrap;
+}
+#nightclubGUI td:nth-child(2) {
+	width: 80px;
+}
+#nightclubGUI td:last-child {
+	width: 120px;
+}
+#nightclubGUI .main input {
+	margin-top: 0;
 }
 .incDecButtons input, .incDecButtons .button {
 	border: 1px solid #FFF;
@@ -500,9 +519,6 @@ input[type=range]::-ms-fill-upper {
 	border-right: 0;
 	width: 60px;
 	text-align: center;
-}
-#nightclubGUI td {
-	vertical-align: middle;
 }
 #nightclubGUI td:last-child {
 	font-size: 0;
