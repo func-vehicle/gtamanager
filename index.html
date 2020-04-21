@@ -92,15 +92,27 @@
 					</div>
 				</div>
 				<div id="updateNotice">
-					<div class="heading">
+					<div class="heading clearfix">
 						<h1>Patch Notes</h1>
+						<div class="pageSwap">
+							<button class="fa fa-arrow-left button red" data-value="0"></button>
+							<button class="fa fa-arrow-right button red" data-value="1"></button>
+						</div>
 					</div>
 					<div class="main">
-						<h1 style="padding-left: 3px;">Version 1.7.3</h1>
+						<h1 style="padding-left: 3px;">Version 1.8.0</h1>
 						<div class="indent">
+							<h2>Improvements</h2>
+							<ul>
+								<li>Added the ability to view previous patch notes (available in the top right of this window!).</li>
+								<li>Added favicon.</li>
+								<li>The total Nightclub stock is now shown in the modify menu, along with the vehicle required to sell all stock.</li>
+							</ul>
 							<h2>Fixes</h2>
 							<ul>
-								<li>Potential fix for businesses not tracking correctly while the device is asleep.</li>
+								<li>Fixed bug where supplies could go under 0% and product could go over 100% if the device was asleep for too long.</li>
+								<li>Fixed bug where the session timer would become out of sync after reaching 0 if the device was asleep.</li>
+								<li>Fixed Nightclub modify menu on mobile.</li>
 							</ul>
 						</div>
 					</div>
@@ -160,7 +172,6 @@
                             <tr class="notificationSettings">
                                 <td>Notifications:</td>
                                 <td class="fsz">
-                                    <!--<button class="button blue" data-value="audio">Sound</button>-->
                                     <button class="button blue off" data-value="push">Push notifications</button>
                                 </td>
                             </tr>
@@ -231,6 +242,7 @@
 						<button class="button reset red">Reset</button>
 					</div>
 				</div>
+<!-- {{{ nightClubGUI-->				
 				<div id="nightclubGUI">
 					<div class="heading">
 						<h1>Nightclub Manager</h1>
@@ -305,6 +317,11 @@
 									<button class="fa fa-plus button plus"></button>
 								</td>
 							</tr>
+							<tr class="total">
+								<td>Total</td>
+								<td></td>
+								<td></td>
+
 						</table>
 					</div>
 					<div class="buttons fsz">
@@ -313,6 +330,8 @@
 						<button class="button ok red">Close</button>
 					</div>
 				</div>
+<!-- }}} -->				
+<!-- {{{ bunkerSetupGUI -->
 				<div id="bunkerSetupGUI" class="setupGUI bunker">
 					<div class="heading">
 						<h1>Bunker Setup</h1>
@@ -354,6 +373,8 @@
 						<button class="button apply red">Apply</button>
 					</div>
 				</div>
+<!-- }}} -->
+<!-- {{{ mcbusinessSetupGUI -->
 				<div id="mcbusinessSetupGUI" class="setupGUI">
 					<div class="heading">
 						<h1>MCBUSINESS Setup</h1>
@@ -380,6 +401,8 @@
 						<button class="button apply red">Apply</button>
 					</div>
 				</div>
+<!-- }}} -->
+<!-- {{{ nightclubSetupGUI -->
 				<div id="nightclubSetupGUI" class="setupGUI nightclub">
 					<div class="heading">
 						<h1>Nightclub Setup</h1>
@@ -425,6 +448,8 @@
 						<button class="button apply red">Apply</button>
 					</div>
 				</div>
+<!-- }}} -->
+<!-- {{{ importExportSetupGUI-->
 				<div id="importExportSetupGUI" class="setupGUI importExport">
 					<div class="heading">
 						<h1>Import / Export Setup</h1>
@@ -465,6 +490,9 @@
 						<button class="button apply red">Apply</button>
 					</div>
 				</div>
+<!-- }}} -->
+<!-- {{{ wheelSetupGUI -->
+
 				<div id="wheelSetupGUI" class="setupGUI wheel">
 					<div class="heading">
 						<h1>Lucky Wheel Setup</h1>
@@ -499,7 +527,8 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div>	
+<!-- }}} -->
 		<div id="infotab" class="col">
 			<div class="business-section" id="activeBusinesses">
 				<div id="bunker" class="information">
@@ -507,6 +536,7 @@
 						<div class="icon_wrap">
 							<img src="img/blank.png" class="icons icons-info icons-bunker" alt="Bunker icon"/>
 						</div>
+<!-- {{{ bunker -->						
 						<h1>Bunker</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -552,6 +582,8 @@
 						</div>
 					</div>
 				</div>
+<!-- }}} -->
+<!-- {{{ coke -->
 				<div id="coke" class="information mcbusiness">
 					<div class="business_heading clearfix">
 						<div class="icon_wrap">
@@ -591,6 +623,8 @@
 						</div>
 					</div>
 				</div>
+<!-- }}} -->
+<!-- {{{ meth-->
 				<div id="meth" class="information mcbusiness">
 					<div class="business_heading clearfix">
 						<div class="icon_wrap">
@@ -630,6 +664,8 @@
 						</div>
 					</div>
 				</div>
+<!-- }}} -->
+<!-- {{{ cash-->
 				<div id="cash" class="information mcbusiness">
 					<div class="business_heading clearfix">
 						<div class="icon_wrap">
@@ -669,12 +705,15 @@
 						</div>
 					</div>
 				</div>
+<!-- }}} -->
+<!-- {{{ weed -->
 				<div id="weed" class="information mcbusiness">
 					<div class="business_heading clearfix">
 						<div class="icon_wrap">
 							<img src="img/blank.png" class="icons icons-info icons-weed" alt="Weed icon"/>
 						</div>
-						<h1>Weed</h1>
+						<h1>Weed</h1> <!-- FIXME: id naming convention to weed -->
+
 						<button class="fa fa-cog button setup"></button>
 					</div>
 					<div class="content">
@@ -708,6 +747,8 @@
 						</div>
 					</div>
 				</div>
+<!-- }}} -->
+<!-- {{{ forgery -->
 				<div id="forgery" class="information mcbusiness">
 					<div class="business_heading clearfix">
 						<div class="icon_wrap">
@@ -747,7 +788,9 @@
 						</div>
 					</div>
 				</div>
-				<div id="nightclub" class="information">
+<!-- }}} -->
+<!-- {{{ nightClub-->
+				<div id="nightclub" class="information"> <!-- FIXME: id naming convention to nightClub -->
 					<div class="business_heading clearfix">
 						<div class="icon_wrap">
 							<img src="img/blank.png" class="icons icons-info icons-nightclub" alt="Nightclub icon"/>
@@ -837,6 +880,8 @@
 						<button class="button modify purple">Modify</button>
 					</div>
 				</div>
+<!-- }}} -->
+<!-- {{{ importExport -->
 				<div id="importExport" class="information">
 					<div class="business_heading clearfix">
 						<div class="icon_wrap">
@@ -861,6 +906,8 @@
 						</div>
 					</div>
 				</div>
+<!-- }}} -->
+<!-- {{{ wheel -->
 				<div id="wheel" class="information">
 					<div class="business_heading clearfix">
 						<div class="icon_wrap">
@@ -873,6 +920,8 @@
 						<button class="button spin purple">Spin</button>
 					</div>
 				</div>
+<!-- }}} -->
+<!-- {{{ fees -->
 				<div id="fees" class="information">
 					<div class="business_heading clearfix">
 						<div class="icon_wrap">
@@ -882,6 +931,7 @@
 					</div>
 					<button class="button purple" disabled="true">Not in Session</button>
 				</div>
+<!-- }}} -->
 			</div>
 			<div class="business-section" id="inactiveBusinesses"></div>
 		</div>

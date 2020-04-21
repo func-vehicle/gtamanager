@@ -2,7 +2,7 @@ var userInfo;
 
 // The current format of user's data.
 var defaultUserInfo = {
-	version: "1.7.3",
+	version: "1.8.0",
 	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
@@ -12,8 +12,8 @@ var defaultUserInfo = {
 			volume: 1,
 			interval: 3,
 		},
-        progress_bar_style: 1,
-        app_style: 0,
+		progress_bar_style: 1,
+		app_style: 0,
 	},
 	bunker: {
 		name: "Bunker",
@@ -223,8 +223,12 @@ var intervalID = setInterval(tick, 1000);
 var running = 0;
 
 function capitalize(s) {
-    return s.charAt(0).toUpperCase() + s.slice(1);
+	return s.charAt(0).toUpperCase() + s.slice(1);
 }
+
+Number.prototype.mod = function(b) { 
+    return ((this % b) + b) % b; 
+} 
 
 function update() {
 	if (userInfo.version == "1.0.0") {
@@ -288,11 +292,11 @@ function update() {
 		userInfo.settings.push_notifications = false;
 		userInfo.wheel.notify_while_paused = false;
 		userInfo.version = "1.6.0";
-    }
-    if (userInfo.version == "1.6.0") {
-        userInfo.app_style = 0;
+	}
+	if (userInfo.version == "1.6.0") {
+		userInfo.app_style = 0;
 		userInfo.version = "1.7.0";
-    }
+	}
 	if (userInfo.version == "1.7.0") {
 		userInfo.version = "1.7.1";
 	}
@@ -302,7 +306,59 @@ function update() {
 	if (userInfo.version == "1.7.2") {
 		userInfo.version = "1.7.3";
 	}
+	if (userInfo.version == "1.7.3") {
+		userInfo.version = "1.8.0";
+	}
 }
+
+var PatchModule = (function () {
+	var patchnotes = null;
+	var patchIndex = null;
+	var updateScreen = function (b_left) {
+		if (b_left) {
+			patchIndex--;
+			if (patchIndex < 0)
+				patchIndex = 0;
+		}
+		else {
+			patchIndex++;
+			if (patchIndex >= patchnotes.length)
+				patchIndex = patchnotes.length - 1;
+		}
+		var noteSet = $(patchnotes.get(patchIndex));
+		$("#updateNotice .main").html(noteSet.html());
+		redraw();
+	};
+	var redraw = function () {
+		if (patchIndex == null)
+		{
+			// Haven't loaded external file, assume on latest and there is a previous patch
+			$("#updateNotice .pageSwap button[data-value=1]").prop("disabled", true);
+		}
+		else
+		{
+			$("#updateNotice .pageSwap button[data-value=0]").prop("disabled", patchIndex == 0);
+			$("#updateNotice .pageSwap button[data-value=1]").prop("disabled", patchIndex == patchnotes.length - 1);
+		}
+	};
+	return {
+		clickMethod: function (b_left) {
+			// Check if we need to GET the patchnotes
+			if (patchnotes == null) {
+				$.get("patchnotes.html", {"_": $.now()}, function(html) {
+					html = html.replace(/>\s+</g,'><');  // Strip whitespace between html tags
+					patchnotes = $(html);
+					patchIndex = patchnotes.length - 1;
+					updateScreen(b_left);
+				});
+			}
+			else {
+				updateScreen(b_left);
+			}
+		},
+		redraw: redraw,
+	};
+})();
 
 $(document).ready(function() {
 	// Multiple instance check
@@ -353,6 +409,7 @@ $(document).ready(function() {
 		displayPopup("newWeekNotice");
 	}
 	if (needsUpdate) {
+		PatchModule.redraw();
 		displayPopup("updateNotice");
 	}
 	if (newUser) {
@@ -458,6 +515,12 @@ $(document).ready(function() {
 		}
 		if (current > maxVal) { $(this).val(maxVal); var changed = true; }
 		if (current < minVal) { $(this).val(minVal); var changed = true; }
+	});
+	
+	// Patch notes buttons
+	$("#updateNotice .pageSwap button").on("click", function(event) {
+		var b_left = $(event.target).attr("data-value") == 0;
+		PatchModule.clickMethod(b_left);
 	});
 	
 	// Nightclub Manager buttons
@@ -710,12 +773,12 @@ $(document).ready(function() {
 	$("#mainSetup .progressBarStyle button").on("click", function(event) {
 		changeInfo.progress_bar_style = parseInt($(event.target).attr("data-value"), 10);
 		redrawScreen();
-    });
+	});
 
-    $("#mainSetup .appStyle button").on("click", function (event) {
-        changeInfo.app_style = parseInt($(event.target).attr("data-value"), 10);
-        redrawScreen();
-    });
+	$("#mainSetup .appStyle button").on("click", function (event) {
+		changeInfo.app_style = parseInt($(event.target).attr("data-value"), 10);
+		redrawScreen();
+	});
 
 	$("#mainSetup .dataDownload button[data-value=0]").on("click", function(event) {
 		var data_href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(userInfo));
@@ -746,6 +809,7 @@ $(document).ready(function() {
 	});
 	
 	$("#mainSetup .about button").on("click", function(event) {
+		PatchModule.redraw();
 		displayPopup("updateNotice");
 		redrawScreen();
 	});
@@ -941,6 +1005,7 @@ function msFormat(msTime) {
 }
 
 function timeFormat(timeArray) {
+	// Convert to string
 	var hours = (timeArray[0]).toLocaleString(undefined, {minimumIntegerDigits: 2});
 	var minutes = (timeArray[1]).toLocaleString(undefined, {minimumIntegerDigits: 2});
 	var seconds = (timeArray[2]).toLocaleString(undefined, {minimumIntegerDigits: 2});
@@ -952,6 +1017,7 @@ function timeFormat(timeArray) {
 		s += minutes + "M ";
 	}
 	s += seconds + "S";
+	
 	return s;
 }
 
@@ -963,35 +1029,47 @@ function tick() {
 	var currentTime = new Date().getTime();
 	var deltaSec = (currentTime - lastTickTime) / 1000;
 	lastTickTime = currentTime;
+	var maxSeconds;
+	var secondsRun;
+	//console.log(deltaSec);
 	
 	if (running) {
 		// Bunker
-		if (userInfo["bunker"]["owned"] && userInfo["bunker"]["supplies"] > 0) {
+		if (userInfo["bunker"]["owned"]) {
 			// Manufacturing
 			if (userInfo["bunker"]["mode"] == 0) {
-				if (userInfo["bunker"]["product"] < staticInfo["bunker"]["maxProduct"]) {
-					userInfo["bunker"]["product"] += deltaSec/60;
-					userInfo["bunker"]["supplies"] -= deltaSec/60;
+				// Calculate maximum running time in seconds, then actual time
+				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxProduct"] - userInfo["bunker"]["product"]) * 60;
+				secondsRun = Math.min(deltaSec, maxSeconds);
+				if (secondsRun > 0) {
+					userInfo["bunker"]["product"] += secondsRun/60;
+					userInfo["bunker"]["supplies"] -= secondsRun/60;
 				}
 			}
 			// Research
 			else if (userInfo["bunker"]["mode"] == 2) {
-				if (userInfo["bunker"]["research"] < staticInfo["bunker"]["maxResearch"]) {
-					userInfo["bunker"]["research"] += deltaSec/60;
-					userInfo["bunker"]["supplies"] -= deltaSec/60 * 150/350;
+				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxResearch"] - userInfo["bunker"]["research"]) * 60;
+				secondsRun = Math.min(deltaSec, maxSeconds);
+				if (secondsRun > 0) {
+					userInfo["bunker"]["research"] += secondsRun/60;
+					userInfo["bunker"]["supplies"] -= secondsRun/60 * 150/350;
 				}
 			}
 			// Both
 			else {
-				if (userInfo["bunker"]["product"] < staticInfo["bunker"]["maxProduct"]) {
-					userInfo["bunker"]["product"] += deltaSec/120;
-					userInfo["bunker"]["supplies"] -= deltaSec/120;
+				// TODO: How does the both option even work?
+				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxProduct"] - userInfo["bunker"]["product"]) * 60;
+				secondsRun = Math.min(deltaSec, maxSeconds);
+				if (secondsRun > 0) {
+					userInfo["bunker"]["product"] += secondsRun/120;
+					userInfo["bunker"]["supplies"] -= secondsRun/120;
 				}
-				if (userInfo["bunker"]["research"] < staticInfo["bunker"]["maxResearch"]) {
-					userInfo["bunker"]["research"] += deltaSec/120;
-					userInfo["bunker"]["supplies"] -= deltaSec/120 * 150/350;
+				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxResearch"] - userInfo["bunker"]["research"]) * 60;
+				secondsRun = Math.min(deltaSec, maxSeconds);
+				if (secondsRun > 0) {
+					userInfo["bunker"]["research"] += secondsRun/120;
+					userInfo["bunker"]["supplies"] -= secondsRun/120 * 150/350;
 				}
-				
 			}
 		}
 		
@@ -999,10 +1077,12 @@ function tick() {
 		var mcbusinesses = staticInfo["mcbusinesses"];
 		for (var i = 0; i < mcbusinesses.length; i++) {
 			var business = mcbusinesses[i];
-			if (userInfo[business]["owned"] && userInfo[business]["product"] < staticInfo[business]["maxProduct"]) {
-				if (userInfo[business]["supplies"] > 0) {
-					userInfo[business]["product"] += deltaSec/60;
-					userInfo[business]["supplies"] -= deltaSec/60;
+			if (userInfo[business]["owned"]) {
+				maxSeconds = Math.min(userInfo[business]["supplies"] - 0, staticInfo[business]["maxProduct"] - userInfo[business]["product"]) * 60;
+				secondsRun = Math.min(deltaSec, maxSeconds);
+				if (secondsRun > 0) {
+					userInfo[business]["product"] += secondsRun/60;
+					userInfo[business]["supplies"] -= secondsRun/60;
 				}
 			}
 		}
@@ -1027,10 +1107,8 @@ function tick() {
 		}
 		
 		// Session Timer
-		if (feesCooldown <= 0) {
-			feesCooldown = 2880000;
-		}
 		feesCooldown -= deltaSec*1000;
+		feesCooldown = feesCooldown.mod(2880001);
 	}
 	
 	// Save
@@ -1102,8 +1180,9 @@ function redrawBusinessTabs() {
 	window.dispatchEvent(new Event("resize"));
 }
 
-function redrawScreen() {
+function redrawScreen() {	
 	// Nightclub manager values
+	var totalNightclubProduct = 0;
 	var products = staticInfo["nightclub"]["products"];
 	for (var i = 0; i < products.length; i++) {
 		var product = products[i];
@@ -1111,7 +1190,21 @@ function redrawScreen() {
 		var current = Math.round(userInfo["nightclub"][product]);
 		var maxProduct = staticInfo["nightclub"]["max"+capitalize(product)];
 		td.html(current+"/"+maxProduct);
+		totalNightclubProduct += current;
+	}	
+	var transport;
+	if (totalNightclubProduct > 180) {
+		transport = "Pounder";
 	}
+	else if (totalNightclubProduct > 90) {
+		transport = "Mule";
+	}
+	else {
+		transport = "Speedo";
+	}
+	
+	var totalProduct = $("#nightclubGUI .total" +" td").eq(1);
+	totalProduct.html(totalNightclubProduct+"</br>("+ transport+")");
 	
 	// setupGUI buttons
 	// Main Setup
@@ -1137,11 +1230,11 @@ function redrawScreen() {
 	$("#mainSetup .progressBarStyle button").eq(0).prop("disabled", progress_bar_style == 0);
 	$("#mainSetup .progressBarStyle button").eq(1).prop("disabled", progress_bar_style == 1);
 	$("#mainSetup .progressBarStyle button").eq(2).prop("disabled", progress_bar_style == 2);
-    $("#mainSetup .progressBarStyle button").eq(3).prop("disabled", progress_bar_style == 3);
+	$("#mainSetup .progressBarStyle button").eq(3).prop("disabled", progress_bar_style == 3);
 
-    var app_style = changeInfo["app_style"];
-    $("#mainSetup .appStyle button").eq(0).prop("disabled", app_style == 0);
-    $("#mainSetup .appStyle button").eq(1).prop("disabled", app_style == 1);
+	var app_style = changeInfo["app_style"];
+	$("#mainSetup .appStyle button").eq(0).prop("disabled", app_style == 0);
+	$("#mainSetup .appStyle button").eq(1).prop("disabled", app_style == 1);
 	
 	// Bunker Setup
 	var hide_research = changeInfo["hide_research"];
@@ -1254,15 +1347,15 @@ function redrawScreen() {
 			$("#"+business+" tr."+type+" .progress_bar span").html(remaining_string);
 			$("#"+business+" tr."+type+" .progress_bar span").show();
 		}
-    }
+	}
 
-    // App style
-    app_style = userInfo.settings["app_style"];
-    if (app_style == 0) {
-        $("body").removeClass("darkMode");
-    } else if (app_style == 1) {
-        $("body").addClass("darkMode");
-    }
+	// App style
+	app_style = userInfo.settings["app_style"];
+	if (app_style == 0) {
+		$("body").removeClass("darkMode");
+	} else if (app_style == 1) {
+		$("body").addClass("darkMode");
+	}
 
 	// I/E cooldown
 	if (userInfo["importExport"]["cooldown"] <= 0) {
