@@ -1025,33 +1025,39 @@ function tick() {
 	var currentTime = new Date().getTime();
 	var deltaSec = (currentTime - lastTickTime) / 1000;
 	lastTickTime = currentTime;
+//	console.log(deltaSec);
 	
 	if (running) {
 		// Bunker
 		if (userInfo["bunker"]["owned"] && userInfo["bunker"]["supplies"] > 0) {
 			// Manufacturing
 			if (userInfo["bunker"]["mode"] == 0) {
-				if (userInfo["bunker"]["product"] < staticInfo["bunker"]["maxProduct"]) {
-					userInfo["bunker"]["product"] += deltaSec/60;
-					userInfo["bunker"]["supplies"] -= deltaSec/60;
+				for (var bp = 0; bp < deltaSec; bp++) {
+					if (userInfo["bunker"]["product"] < staticInfo["bunker"]["maxProduct"]) {
+						userInfo["bunker"]["product"] += 1/60;
+						userInfo["bunker"]["supplies"] -= 1/60;
+					}
 				}
 			}
 			// Research
 			else if (userInfo["bunker"]["mode"] == 2) {
-				if (userInfo["bunker"]["research"] < staticInfo["bunker"]["maxResearch"]) {
-					userInfo["bunker"]["research"] += deltaSec/60;
-					userInfo["bunker"]["supplies"] -= deltaSec/60 * 150/350;
+				for (var br = 0; br < deltaSec; br++) {
+					if (userInfo["bunker"]["research"] < staticInfo["bunker"]["maxResearch"]) {
+						userInfo["bunker"]["research"] += 1/60;
+						userInfo["bunker"]["supplies"] -= 1/60 * 150/350;
+					}
 				}
 			}
 			// Both
 			else {
-				if (userInfo["bunker"]["product"] < staticInfo["bunker"]["maxProduct"]) {
-					userInfo["bunker"]["product"] += deltaSec/120;
-					userInfo["bunker"]["supplies"] -= deltaSec/120;
-				}
-				if (userInfo["bunker"]["research"] < staticInfo["bunker"]["maxResearch"]) {
-					userInfo["bunker"]["research"] += deltaSec/120;
-					userInfo["bunker"]["supplies"] -= deltaSec/120 * 150/350;
+				for (var bPr = 0; bPr < deltaSec; bPr++) {
+					if (userInfo["bunker"]["product"] < staticInfo["bunker"]["maxProduct"]) {
+						userInfo["bunker"]["product"] += 1/120;
+						userInfo["bunker"]["supplies"] -= 1/120;
+					
+						userInfo["bunker"]["research"] += 1/120;
+						userInfo["bunker"]["supplies"] -= 1/120 * 150/350;
+					}
 				}
 				
 			}
@@ -1061,10 +1067,10 @@ function tick() {
 		var mcbusinesses = staticInfo["mcbusinesses"];
 		for (var i = 0; i < mcbusinesses.length; i++) {
 			var business = mcbusinesses[i];
-			if (userInfo[business]["owned"] && userInfo[business]["product"] < staticInfo[business]["maxProduct"]) {
-				if (userInfo[business]["supplies"] > 0) {
-					userInfo[business]["product"] += deltaSec/60;
-					userInfo[business]["supplies"] -= deltaSec/60;
+			for (var mcb = 0; mcb < deltaSec; mcb++) {
+				if (userInfo[business]["owned"] && userInfo[business]["product"] < staticInfo[business]["maxProduct"] && userInfo[business]["supplies"] > 0) {
+					userInfo[business]["product"] += 1/60;
+					userInfo[business]["supplies"] -= 1/60;
 				}
 			}
 		}
@@ -1164,6 +1170,7 @@ function redrawBusinessTabs() {
 
 function redrawScreen() {	
 	// Nightclub manager values
+	var totalNightClubProduct = 0;
 	var products = staticInfo["nightclub"]["products"];
 	for (var i = 0; i < products.length; i++) {
 		var product = products[i];
@@ -1171,7 +1178,27 @@ function redrawScreen() {
 		var current = Math.round(userInfo["nightclub"][product]);
 		var maxProduct = staticInfo["nightclub"]["max"+capitalize(product)];
 		td.html(current+"/"+maxProduct);
-	}
+		
+		totalNightClubProduct = parseInt(totalNightClubProduct + current);
+		var totalProduct = $("#nightclubGUI .total" +" td").eq(1);
+	}	
+	var transport;
+	switch (true){
+		case (totalNightClubProduct > 180):
+			transport = "Pounder";
+			break;
+		case (totalNightClubProduct > 90):
+			transport = "Mule";
+			break;
+		case (totalNightClubProduct <= 90):
+			transport = "speedo";
+			break;
+		default:
+			transport = "what";
+			break;
+	}	
+	totalProduct.html(totalNightClubProduct +"/"+ transport);
+		
 	
 	// setupGUI buttons
 	// Main Setup
