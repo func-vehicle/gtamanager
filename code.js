@@ -2,7 +2,7 @@ var userInfo;
 
 // The current format of user's data.
 var defaultUserInfo = {
-	version: "1.7.3",
+	version: "1.8.0",
 	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
@@ -306,7 +306,59 @@ function update() {
 	if (userInfo.version == "1.7.2") {
 		userInfo.version = "1.7.3";
 	}
+	if (userInfo.version == "1.7.3") {
+		userInfo.version = "1.8.0";
+	}
 }
+
+var PatchModule = (function () {
+	var patchnotes = null;
+	var patchIndex = null;
+	var updateScreen = function (b_left) {
+		if (b_left) {
+			patchIndex--;
+			if (patchIndex < 0)
+				patchIndex = 0;
+		}
+		else {
+			patchIndex++;
+			if (patchIndex >= patchnotes.length)
+				patchIndex = patchnotes.length - 1;
+		}
+		var noteSet = $(patchnotes.get(patchIndex));
+		$("#updateNotice .main").html(noteSet.html());
+		redraw();
+	};
+	var redraw = function () {
+		if (patchIndex == null)
+		{
+			// Haven't loaded external file, assume on latest and there is a previous patch
+			$("#updateNotice .pageSwap button[data-value=1]").prop("disabled", true);
+		}
+		else
+		{
+			$("#updateNotice .pageSwap button[data-value=0]").prop("disabled", patchIndex == 0);
+			$("#updateNotice .pageSwap button[data-value=1]").prop("disabled", patchIndex == patchnotes.length - 1);
+		}
+	};
+	return {
+		clickMethod: function (b_left) {
+			// Check if we need to GET the patchnotes
+			if (patchnotes == null) {
+				$.get("patchnotes.html", {"_": $.now()}, function(html) {
+					html = html.replace(/>\s+</g,'><');  // Strip whitespace between html tags
+					patchnotes = $(html);
+					patchIndex = patchnotes.length - 1;
+					updateScreen(b_left);
+				});
+			}
+			else {
+				updateScreen(b_left);
+			}
+		},
+		redraw: redraw,
+	};
+})();
 
 $(document).ready(function() {
 	// Multiple instance check
@@ -357,6 +409,7 @@ $(document).ready(function() {
 		displayPopup("newWeekNotice");
 	}
 	if (needsUpdate) {
+		PatchModule.redraw();
 		displayPopup("updateNotice");
 	}
 	if (newUser) {
@@ -465,55 +518,6 @@ $(document).ready(function() {
 	});
 	
 	// Patch notes buttons
-	var PatchModule = (function () {
-		var patchnotes = null;
-		var patchIndex = null;
-		var updateScreen = function (b_left) {
-			if (b_left) {
-				patchIndex--;
-				if (patchIndex < 0)
-					patchIndex = 0;
-			}
-			else {
-				patchIndex++;
-				if (patchIndex >= patchnotes.length)
-					patchIndex = patchnotes.length - 1;
-			}
-			var noteSet = $(patchnotes.get(patchIndex));
-			$("#updateNotice .main").html(noteSet.html());
-			redraw();
-		};
-		var redraw = function () {
-			if (patchIndex == null)
-			{
-				// Haven't loaded external file, assume on latest and there is a previous patchnote
-				$("#updateNotice .pageSwap button[data-value=1]").prop("disabled", true);
-			}
-			else
-			{
-				$("#updateNotice .pageSwap button[data-value=0]").prop("disabled", patchIndex == 0);
-				$("#updateNotice .pageSwap button[data-value=1]").prop("disabled", patchIndex == patchnotes.length - 1);
-			}
-		};
-		return {
-			clickMethod: function (b_left) {
-				// Check if we need to GET the patchnotes
-				if (patchnotes == null) {
-					$.get("patchnotes.html", {"_": $.now()}, function(html) {
-						html = html.replace(/>\s+</g,'><');  // Strip whitespace between html tags
-						patchnotes = $(html);
-						patchIndex = patchnotes.length - 1;
-						updateScreen(b_left);
-					});
-				}
-				else {
-					updateScreen(b_left);
-				}
-			},
-			redraw: redraw,
-		};
-	})();
-	
 	$("#updateNotice .pageSwap button").on("click", function(event) {
 		var b_left = $(event.target).attr("data-value") == 0;
 		PatchModule.clickMethod(b_left);
@@ -1027,7 +1031,7 @@ function tick() {
 	lastTickTime = currentTime;
 	var maxSeconds;
 	var secondsRun;
-	console.log(deltaSec);
+	//console.log(deltaSec);
 	
 	if (running) {
 		// Bunker
@@ -1200,7 +1204,7 @@ function redrawScreen() {
 	}
 	
 	var totalProduct = $("#nightclubGUI .total" +" td").eq(1);
-	totalProduct.html(totalNightclubProduct+" ("+ transport+")");
+	totalProduct.html(totalNightclubProduct+"</br>("+ transport+")");
 	
 	// setupGUI buttons
 	// Main Setup
