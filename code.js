@@ -1566,7 +1566,7 @@ window.notify = {
 			var id = notify.id;
 			notify.list[id] = new Notification(title, {
 				body: body,
-				tag: id,
+				tag: business,
 				icon: "img/"+business+".png",
 				lang: "",
 				dir: "auto",
