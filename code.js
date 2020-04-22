@@ -1183,6 +1183,7 @@ function redrawBusinessTabs() {
 function redrawScreen() {	
 	// Nightclub manager values
 	var totalNightclubProduct = 0;
+	var totalNightClubValue = 0;
 	var products = staticInfo["nightclub"]["products"];
 	for (var i = 0; i < products.length; i++) {
 		var product = products[i];
@@ -1191,6 +1192,34 @@ function redrawScreen() {
 		var maxProduct = staticInfo["nightclub"]["max"+capitalize(product)];
 		td.html(current+"/"+maxProduct);
 		totalNightclubProduct += current;
+
+		switch (true){
+			case (products[i] == "cargo"):
+				totalNightClubValue = totalNightClubValue + (current * 10000);
+				break;
+			case (product == "sporting"):
+				totalNightClubValue = totalNightClubValue + (current * 5000);
+				break;
+			case (product == "imports"):
+				totalNightClubValue = totalNightClubValue + (current * 20000);
+				break;
+			case (product == "pharma"):
+				totalNightClubValue = totalNightClubValue + (current * 8500);
+				break;
+			case (product == "creation"):
+				totalNightClubValue = totalNightClubValue + (current * 3500);
+				break;
+			case (product == "organic"):
+				totalNightClubValue = totalNightClubValue + (current * 1500);
+				break;
+			case (product == "copying"):
+				totalNightClubValue = totalNightClubValue + (current * 1000);
+				break;
+			default:
+				totalNightClubValue = 0;
+				break;
+		}
+
 	}	
 	var transport;
 	if (totalNightclubProduct > 180) {
@@ -1202,9 +1231,10 @@ function redrawScreen() {
 	else {
 		transport = "Speedo";
 	}
-	
+
+	var tonyTax = .1 // 10%	
 	var totalProduct = $("#nightclubGUI .total" +" td").eq(1);
-	totalProduct.html(totalNightclubProduct+"</br>("+ transport+")");
+	totalProduct.html(totalNightclubProduct+"</br>("+ transport+")</br>"+formatter.format(totalNightClubValue-totalNightClubValue*tonyTax));
 	
 	// setupGUI buttons
 	// Main Setup
@@ -1584,4 +1614,10 @@ window.notify = {
 	logEvent: function(id, event) {
 		notify.log("Notification #"+id+" "+event);
 	}
-};
+}
+// Curency formatter
+const formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 0
+});
