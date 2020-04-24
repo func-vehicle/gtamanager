@@ -453,9 +453,13 @@ input[type=range]::-ms-fill-upper {
 }
 #notification .buttons {
 	padding-bottom: 5px;
-	margin: auto;
+	display: flex;
+	flex-flow: row;
+	flex-wrap: wrap;
+	justify-content: center;
 }
 #notification .buttons .button {
+	/*flex-shrink: 1;*/
 	margin-top: 5px;
 	min-width: 100px;
 }

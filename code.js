@@ -808,7 +808,7 @@ $(document).ready(function() {
 		reader.readAsText(file);
 	});
 	
-	$("#mainSetup .about button").on("click", function(event) {
+	$("#mainSetup .about button[data-value=0]").on("click", function(event) {
 		PatchModule.redraw();
 		displayPopup("updateNotice");
 		redrawScreen();
@@ -1317,6 +1317,7 @@ function redrawScreen() {
 			else if (type == "supplies") {
 				remaining_ms = (percentage/100)*staticInfo[business]["max"+capitalize(type)]*60*1000;
 				if (business == "bunker" && userInfo.bunker.mode == 2) {
+					// Fix for time remaining in research mode
 					remaining_ms *= 350/150;
 				}
 			}
