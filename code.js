@@ -963,6 +963,8 @@ function displayPopup(divName, clearExisting) {
 	$("#"+divName).show();
 	$("#notification").show();
 	$("#overlay").show();
+	$("body").addClass("popupOpen");
+	
 	if (clearExisting) {
 		windowStack = [divName];
 	}
@@ -974,6 +976,7 @@ function displayPopup(divName, clearExisting) {
 function hidePopup(hideAll) {
 	$("#notification").hide();
 	$("#overlay").hide();
+	$("body").removeClass("popupOpen");
 	if (hideAll) {
 		windowStack = [];
 	}

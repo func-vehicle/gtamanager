@@ -28,6 +28,9 @@ body.mobile {
 	overflow-x: auto;
 	overflow-y: scroll;
 }
+body.mobile.popupOpen {
+	overflow-y: hidden;
+}
 body.darkMode {
     background-color: #050505;
 }
@@ -495,7 +498,7 @@ input[type=range]::-ms-fill-upper {
 	width: 80px;
 }
 #nightclubGUI td:last-child {
-	width: 120px;
+	width: 115px;
 }
 #nightclubGUI .main input {
 	margin-top: 0;
