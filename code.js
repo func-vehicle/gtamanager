@@ -1034,7 +1034,6 @@ function tick() {
 	lastTickTime = currentTime;
 	var maxSeconds;
 	var secondsRun;
-	//console.log(deltaSec);
 	
 	if (running) {
 		// Bunker
