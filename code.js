@@ -341,21 +341,22 @@ var PatchModule = (function () {
 			$("#updateNotice .pageSwap button[data-value=1]").prop("disabled", patchIndex == patchnotes.length - 1);
 		}
 	};
-	return {
-		clickMethod: function (b_left) {
-			// Check if we need to GET the patchnotes
-			if (patchnotes == null) {
-				$.get("patchnotes.html", {"_": $.now()}, function(html) {
-					html = html.replace(/>\s+</g,'><');  // Strip whitespace between html tags
-					patchnotes = $(html);
-					patchIndex = patchnotes.length - 1;
-					updateScreen(b_left);
-				});
-			}
-			else {
+	var clickMethod = function (b_left) {
+		// Check if we need to GET the patchnotes
+		if (patchnotes == null) {
+			$.get("patchnotes.html", {"_": $.now()}, function(html) {
+				html = html.replace(/>\s+</g,'><');  // Strip whitespace between html tags
+				patchnotes = $(html);
+				patchIndex = patchnotes.length - 1;
 				updateScreen(b_left);
-			}
-		},
+			});
+		}
+		else {
+			updateScreen(b_left);
+		}
+	};
+	return {
+		clickMethod: clickMethod,
 		redraw: redraw,
 	};
 })();
@@ -397,7 +398,6 @@ $(document).ready(function() {
 	recentFriday.setUTCMinutes(0);
 	recentFriday.setUTCSeconds(0);
 	recentFriday.setUTCMilliseconds(0);
-	//console.log(recentFriday.toUTCString());
 	if (recentFriday.toUTCString() != userInfo.recentFriday) {
 		userInfo.recentFriday = recentFriday.toUTCString();
 		remindFriday = true;
@@ -1553,7 +1553,7 @@ window.notify = {
 					$("#mainSetup .notificationSettings button[data-value=push]").removeClass("off");
 					changeInfo.push_notifications = true;
 				}
-				if (permission === "denied") {
+				if (permission === "denied" || permission === "default") {
 					displayPopup("pushDeniedNotice");
 				}
 			});
