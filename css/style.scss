@@ -46,10 +46,6 @@ body {
 .desktop .mobile-only, .mobile .desktop-only {
 	display: none;
 }
-/* TODO: not needed? */
-.span_1_of_2 {
-	width: 50%;
-}
 .col {
 	display: block;
 	float: left;
@@ -134,7 +130,7 @@ input {
 
     /* Slider input */
     &[type=range] {
-        /* Hide default */
+        /* Generic */
         -webkit-appearance: none;	/* Hides the slider so that custom slider can be made */
 	    width: 110px;				/* Specific width is required for Firefox. */
 	    height: 30px;
@@ -358,9 +354,10 @@ input {
 	    background-color: rgba(0, 0, 0, 0);
 	    padding: 5px;
 	    border: 1px solid #000;
+        display: flex;
 
         button {
-            width: calc((100% - 10px) / 3);
+            flex: 1 1 0;
         }
     }
     .mobile.darkMode & {

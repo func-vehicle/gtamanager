@@ -46,11 +46,6 @@ body.darkMode {
   display: none;
 }
 
-/* TODO: not needed? */
-.span_1_of_2 {
-  width: 50%;
-}
-
 .col {
   display: block;
   float: left;
@@ -124,7 +119,7 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
   -webkit-appearance: none;
 }
 input[type=range] {
-  /* Hide default */
+  /* Generic */
   -webkit-appearance: none;
   /* Hides the slider so that custom slider can be made */
   width: 110px;
@@ -351,9 +346,10 @@ input[type=range]::-ms-thumb {
   background-color: rgba(0, 0, 0, 0);
   padding: 5px;
   border: 1px solid #000;
+  display: flex;
 }
 .mobile #options button {
-  width: calc((100% - 10px) / 3);
+  flex: 1 1 0;
 }
 .mobile.darkMode #options {
   border-color: #777;
