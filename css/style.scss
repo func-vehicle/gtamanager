@@ -117,9 +117,8 @@ input {
 	width: 100px;
 	outline: none;
 
-    &.invalid-value {
-        border: 1px solid red;
-        //box-shadow: inset 0 0 3px 3px #CC0000;
+    .invalid-value &, .incDecButtons.invalid-value & {
+        border-color: #CC212C;
     }
 
     /* Numeric input */
@@ -517,11 +516,17 @@ input {
 	    -webkit-appearance: none;
 	    vertical-align: bottom;
 	    margin: 0;
+        transition: color 0.2s, border-color 0.2s;
     }
 
     button {
         margin-top: 0;
         font-size: 16px;
+    }
+
+    &.invalid-value button {
+        color: #CC212C;
+        border-color: #CC212C;
     }
 
     input {

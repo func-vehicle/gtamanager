@@ -110,8 +110,8 @@ input {
   /* Numeric input */
   /* Slider input */
 }
-input.invalid-value {
-  border: 1px solid red;
+.invalid-value input, .incDecButtons.invalid-value input {
+  border-color: #CC212C;
 }
 input[type=number] {
   -webkit-appearance: textfield;
@@ -488,10 +488,15 @@ input[type=range]::-ms-thumb {
   -webkit-appearance: none;
   vertical-align: bottom;
   margin: 0;
+  transition: color 0.2s, border-color 0.2s;
 }
 .incDecButtons button {
   margin-top: 0;
   font-size: 16px;
+}
+.incDecButtons.invalid-value button {
+  color: #CC212C;
+  border-color: #CC212C;
 }
 .incDecButtons input {
   -moz-appearance: textfield;

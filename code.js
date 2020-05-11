@@ -483,7 +483,7 @@ $(document).ready(function() {
 	$(".incDecButtons button.minus").on("click", function(event) {
 		let inputField = $(event.target).siblings("input");
 		inputField.val(function(i, oldval) {
-			inputField.removeClass("invalid-value");
+			inputField.parent().removeClass("invalid-value");
 			let minVal = parseInt($(this).attr("min"), 10);
 			let value = parseInt(oldval, 10);
 			if (isNaN(value)) {
@@ -496,7 +496,7 @@ $(document).ready(function() {
 	$(".incDecButtons button.plus").on("click", function(event) {
 		let inputField = $(event.target).siblings("input");
 		inputField.val(function(i, oldval) {
-			inputField.removeClass("invalid-value");
+			inputField.parent().removeClass("invalid-value");
 			let maxVal = parseInt($(this).attr("max"), 10);
 			let value = parseInt(oldval, 10);
 			if (isNaN(value)) {
@@ -507,10 +507,11 @@ $(document).ready(function() {
 	});
 	
 	$("input").on("focus", function() {
-		$(this).removeClass("invalid-value");
+		$(this).parent().removeClass("invalid-value");
 	});
 	
 	$("input.integer_only").on("keydown", function(event) {
+		// Only allow digits and backspace
 		let digitRegexp = /^[0-9]?(?:Backspace)?$/;
 		let result = digitRegexp.test(event.key);
 		return result;
@@ -522,7 +523,7 @@ $(document).ready(function() {
 			let current = parseInt(input.val(), 10);
 			console.log(current);
 			if (isNaN(current)) {
-				input.addClass("invalid-value");
+				input.parent().addClass("invalid-value");
 				return false
 			}
 		}
