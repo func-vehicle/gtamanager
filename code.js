@@ -69,8 +69,8 @@ var defaultUserInfo = {
 		product: 0,
 		supplies: 0,
 		map_position: {
-			x: 64.02,
-			y: 51.74,
+			x: 68.87,
+			y: 31.02,
 		},
 	},
 	forgery: {
@@ -80,8 +80,8 @@ var defaultUserInfo = {
 		product: 0,
 		supplies: 0,
 		map_position: {
-			x: 64.67,
-			y: 38.59,
+			x: 59.28,
+			y: 28.46,
 		},
 	},
 	nightclub: {
@@ -481,30 +481,55 @@ $(document).ready(function() {
 	
 	// General input field settings
 	$(".incDecButtons button.minus").on("click", function(event) {
-		var inputField = $(event.target).siblings("input");
+		let inputField = $(event.target).siblings("input");
 		inputField.val(function(i, oldval) {
-			var minVal = parseInt($(this).attr("min"), 10);
-			return Math.max(parseInt(oldval, 10) - 1, minVal);
+			inputField.removeClass("invalid-value");
+			let minVal = parseInt($(this).attr("min"), 10);
+			let value = parseInt(oldval, 10);
+			if (isNaN(value)) {
+				return minVal;
+			}
+			return Math.max(value - 1, minVal);
 		});
-		inputField.trigger("keyup");
 	});
 	
 	$(".incDecButtons button.plus").on("click", function(event) {
-		var inputField = $(event.target).siblings("input");
+		let inputField = $(event.target).siblings("input");
 		inputField.val(function(i, oldval) {
-			var maxVal = parseInt($(this).attr("max"), 10);
-			return Math.min(parseInt(oldval, 10) + 1, maxVal);
+			inputField.removeClass("invalid-value");
+			let maxVal = parseInt($(this).attr("max"), 10);
+			let value = parseInt(oldval, 10);
+			if (isNaN(value)) {
+				return maxVal;
+			}
+			return Math.min(value + 1, maxVal);
 		});
-		inputField.trigger("keyup");
 	});
 	
-	$(".integer_only").on("keyup", function(event) {
-		var current = Math.round(parseInt($(this).val(), 10));
-		if (isNaN(current)) {
-			return;
-		}
-		$(this).val(current);
+	$("input").on("focus", function() {
+		$(this).removeClass("invalid-value");
 	});
+	
+	$("input.integer_only").on("keydown", function(event) {
+		let digitRegexp = /^[0-9]?(?:Backspace)?$/;
+		let result = digitRegexp.test(event.key);
+		return result;
+	});
+	
+	let inputChecker = function(event) {
+		let input = $(event.target);
+		if (input.attr("type") == "number") {
+			let current = parseInt(input.val(), 10);
+			console.log(current);
+			if (isNaN(current)) {
+				input.addClass("invalid-value");
+				return false
+			}
+		}
+		return true;
+	};
+	
+	$("input").on("focusout", inputChecker);
 	
 	$(".range_enforced").on("keyup", function(event) {
 		var minVal = parseInt($(this).attr("min"), 10);
@@ -513,8 +538,8 @@ $(document).ready(function() {
 		if (isNaN(current)) {
 			return;
 		}
-		if (current > maxVal) { $(this).val(maxVal); var changed = true; }
-		if (current < minVal) { $(this).val(minVal); var changed = true; }
+		if (current > maxVal) { $(this).val(maxVal); }
+		if (current < minVal) { $(this).val(minVal); }
 	});
 	
 	// Patch notes buttons
@@ -664,8 +689,23 @@ $(document).ready(function() {
 	});
 	
 	$(".setupGUI button.apply").on("click", function(event) {
+		let valid = true;
 		var gui = $(event.target).parents(".setupGUI").prop("id");
 		var business = businessRegexp.exec($("#"+gui).prop("class"))[1];
+		inputs = $("#"+gui + " input");
+		for (let i = 0; i < inputs.length; i++) {
+			input = $(inputs[i]);
+			if (input.attr("type") == "number") {
+				let current = parseInt(input.val(), 10);
+				if (isNaN(current)) {
+					input.addClass("invalid-value");
+					valid = false;
+				}
+			}
+		}
+		if (!valid) {
+			return false;
+		}
 		userInfo[business] = changeInfo;
 		hidePopup();
 		redrawBusinessTabs();

@@ -110,6 +110,9 @@ input {
   /* Numeric input */
   /* Slider input */
 }
+input.invalid-value {
+  border: 1px solid red;
+}
 input[type=number] {
   -webkit-appearance: textfield;
   -moz-appearance: textfield;
@@ -123,7 +126,7 @@ input[type=range] {
   -webkit-appearance: none;
   /* Hides the slider so that custom slider can be made */
   width: 110px;
-  /* Specific width is required for Firefox. */
+  /* Specific width is required for Firefox */
   height: 30px;
   background: transparent;
   /* Otherwise white in Chrome */
