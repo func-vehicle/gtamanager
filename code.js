@@ -553,15 +553,14 @@ $(document).ready(function() {
 	
 	// Nightclub Manager buttons
 	$("#nightclubGUI button.sellsome").on("click", function(event) {
+		// TODO: fix ultra-hack validation
 		let valid = true;
 		let products = staticInfo["nightclub"]["products"];
 		// First check if all fields are valid
 		for (let i = 0; i < products.length; i++) {
 			let product = products[i];
-			let toSell = $("#nightclubGUI ."+product+" input").val();
-			console.log(product +": "+toSell);
+			let toSell = parseInt($("#nightclubGUI ."+product+" input[type=number]").val(), 10);
 			if (isNaN(toSell)) {
-				console.log("not valid");
 				valid = false;
 			}
 		}
@@ -571,7 +570,7 @@ $(document).ready(function() {
 		// Then do actual modifications
 		for (let i = 0; i < products.length; i++) {
 			let product = products[i];
-			let toSell = $("#nightclubGUI ."+product+" input").val();
+			let toSell = parseInt($("#nightclubGUI ."+product+" input").val(), 10);
 			userInfo["nightclub"][product] = Math.max(userInfo["nightclub"][product] - toSell, 0);
 			$("#nightclubGUI ."+product+" input").val("0");
 		}
@@ -707,10 +706,11 @@ $(document).ready(function() {
 	});
 	
 	$(".setupGUI button.apply").on("click", function(event) {
+		// TODO: fix ultra-hack validation
 		let valid = true;
 		var gui = $(event.target).parents(".setupGUI").prop("id");
 		var business = businessRegexp.exec($("#"+gui).prop("class"))[1];
-		inputs = $("#"+gui + " input");
+		inputs = $("#"+gui + " input[type=number]");
 		for (let i = 0; i < inputs.length; i++) {
 			input = $(inputs[i]);
 			if (input.attr("type") == "number") {
@@ -781,6 +781,20 @@ $(document).ready(function() {
 	});
 	
 	$("#mainSetup .buttons button.apply").on("click", function(event) {
+		// TODO: fix ultra-hack validation
+		let valid = true;
+		inputs = $("#mainSetup" + " input[type=number]");
+		for (let i = 0; i < inputs.length; i++) {
+			input = $(inputs[i]);
+			let current = parseInt(input.val(), 10);
+			if (isNaN(current)) {
+				input.addClass("invalid-value");
+				valid = false;
+			}
+		}
+		if (!valid) {
+			return false;
+		}
 		userInfo.settings = changeInfo;
 		notifications.lastPlayed = 0;
 		redrawBusinessTabs();
@@ -1431,7 +1445,9 @@ function redrawScreen() {
 		$("#importExport button.sell").html(s);
 	}
 	var highend_cars = userInfo["importExport"]["highend_cars"];
-	$("#importExport button.source").html("Source ("+highend_cars+")");
+	if (!isNaN(highend_cars)) {
+		$("#importExport button.source").html("Source ("+highend_cars+")");
+	}
 	
 	// Wheel cooldown
 	if (new Date().getTime() - userInfo["wheel"]["timestamp"] > 86400000) {
