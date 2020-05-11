@@ -1,4 +1,6 @@
 /* GENERAL */
+$default-font-size: 16px;
+
 * {
 	box-sizing: border-box;
 }
@@ -9,6 +11,7 @@ body {
     line-height: 1.15;
     background: #FFF;
     font-family: 'Open Sans', sans-serif;
+    font-size: $default-font-size;
     height: 100%;
     margin: 0;
     padding: 0;
@@ -113,6 +116,7 @@ input {
 	border: 1px solid #FFF;
 	color: #FFF;
 	background-color: #000;
+    font-size: $default-font-size;
 	padding: 5px 10px;
 	width: 100px;
 	outline: none;
@@ -522,6 +526,10 @@ input {
     button {
         margin-top: 0;
         font-size: 16px;
+    }
+
+    @at-root #notification td.incDecButtons button {
+        margin-top: 0;
     }
 
     &.invalid-value button {

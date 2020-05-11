@@ -491,6 +491,7 @@ $(document).ready(function() {
 			}
 			return Math.max(value - 1, minVal);
 		});
+		inputField.trigger("keyup");
 	});
 	
 	$(".incDecButtons button.plus").on("click", function(event) {
@@ -504,6 +505,7 @@ $(document).ready(function() {
 			}
 			return Math.min(value + 1, maxVal);
 		});
+		inputField.trigger("keyup");
 	});
 	
 	$("input").on("focus", function() {
@@ -551,10 +553,25 @@ $(document).ready(function() {
 	
 	// Nightclub Manager buttons
 	$("#nightclubGUI button.sellsome").on("click", function(event) {
-		var products = staticInfo["nightclub"]["products"];
-		for (var i = 0; i < products.length; i++) {
-			var product = products[i];
-			var toSell = $("#nightclubGUI ."+product+" input").val();
+		let valid = true;
+		let products = staticInfo["nightclub"]["products"];
+		// First check if all fields are valid
+		for (let i = 0; i < products.length; i++) {
+			let product = products[i];
+			let toSell = $("#nightclubGUI ."+product+" input").val();
+			console.log(product +": "+toSell);
+			if (isNaN(toSell)) {
+				console.log("not valid");
+				valid = false;
+			}
+		}
+		if (!valid) {
+			return;
+		}
+		// Then do actual modifications
+		for (let i = 0; i < products.length; i++) {
+			let product = products[i];
+			let toSell = $("#nightclubGUI ."+product+" input").val();
 			userInfo["nightclub"][product] = Math.max(userInfo["nightclub"][product] - toSell, 0);
 			$("#nightclubGUI ."+product+" input").val("0");
 		}
@@ -1018,6 +1035,7 @@ function hidePopup(hideAll) {
 	$("#notification").hide();
 	$("#overlay").hide();
 	$("body").removeClass("popupOpen");
+	$(".invalid-value").removeClass("invalid-value");  // TODO: less hacky!
 	if (hideAll) {
 		windowStack = [];
 	}

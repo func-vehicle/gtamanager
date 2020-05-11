@@ -11,6 +11,7 @@ body {
   line-height: 1.15;
   background: #FFF;
   font-family: "Open Sans", sans-serif;
+  font-size: 16px;
   height: 100%;
   margin: 0;
   padding: 0;
@@ -104,6 +105,7 @@ input {
   border: 1px solid #FFF;
   color: #FFF;
   background-color: #000;
+  font-size: 16px;
   padding: 5px 10px;
   width: 100px;
   outline: none;
@@ -494,6 +496,10 @@ input[type=range]::-ms-thumb {
   margin-top: 0;
   font-size: 16px;
 }
+#notification td.incDecButtons button {
+  margin-top: 0;
+}
+
 .incDecButtons.invalid-value button {
   color: #CC212C;
   border-color: #CC212C;
