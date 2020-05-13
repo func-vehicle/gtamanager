@@ -174,28 +174,196 @@ var staticInfo = {
 		maxProduct: 750,
 		maxResearch: 210,
 		maxSupplies: 150,
+		locations: [
+			{
+				name: "Paleto Forest",
+				x: 39.23,
+				y: 19.51,
+			},
+			{
+				name: "Raton Canyon",
+				x: 42.75,
+				y: 32.41,
+			},
+			{
+				name: "Lago Zancudo",
+				x: 21.43,
+				y: 40.72,
+			},
+			{
+				name: "Chumash",
+				x: 20.36,
+				y: 55.97,
+			},
+			{
+				name: "Grapeseed",
+				x: 60.02,
+				y: 29.64,
+			},
+			{
+				name: "Route 68",
+				x: 45.31,
+				y: 43.71,
+			},
+			{
+				name: "Grand Senora Oilfields",
+				x: 49.79,
+				y: 43.28,
+			},
+			{
+				name: "Grand Senora Desert",
+				x: 52.99,
+				y: 43.07,
+			},
+			{
+				name: "Smoke Tree Road",
+				x: 62.90,
+				y: 40.30,
+			},
+			{
+				name: "Thomson Scrapyard",
+				x: 65.99,
+				y: 41.68,
+			},
+			{
+				name: "Farmhouse",
+				x: 58.47,
+				y: 49.49,
+			},
+		],
 	},
 	coke: {
 		maxProduct: 300,
 		maxSupplies: 120,
+		locations: [
+			{
+				name: "Morningwood",
+				x: 33.37,
+				y: 70.90,
+			},
+			{
+				name: "Elysian Island",
+				x: 43.82,
+				y: 87.95,
+			},
+			{
+				name: "Paleto Bay",
+				x: 46.27,
+				y: 14.82,
+			},
+			{
+				name: "Alamo Sea",
+				x: 48.94,
+				y: 38.73,
+			},
+		],
 	},
 	meth: {
 		maxProduct: 360,
 		maxSupplies: 144,
+		locations: [
+			{
+				name: "El Burro Heights",
+				x: 57.57,
+				y: 80.70,
+			},
+			{
+				name: "Terminal",
+				x: 55.65,
+				y: 92.43,
+			},
+			{
+				name: "Paleto Bay",
+				x: 46.70,
+				y: 16.10,
+			},
+			{
+				name: "Grand Senora Desert",
+				x: 47.40,
+				y: 47.62,
+			},
+		],
 	},
 	cash: {
 		maxProduct: 320,
 		maxSupplies: 160,
+		locations: [
+			{
+				name: "Vespucci Canals",
+				x: 36.46,
+				y: 79.10,
+			},
+			{
+				name: "Cypress Flats",
+				x: 51.17,
+				y: 89.66,
+			},
+			{
+				name: "Paleto Bay",
+				x: 42.22,
+				y: 18.12,
+			},
+			{
+				name: "Grand Senora Desert",
+				x: 50.92,
+				y: 45.00,
+			},
+		],
 	},
 	weed: {
 		maxProduct: 320,
 		maxSupplies: 144,
+		locations: [
+			{
+				name: "Downtown Vinewood",
+				x: 46.59,
+				y: 65.78,
+			},
+			{
+				name: "Elysian Island",
+				x: 47.23,
+				y: 87.10,
+			},
+			{
+				name: "Mount Chilliad",
+				x: 49.25,
+				y: 14.71,
+			},
+			{
+				name: "San Chianski Mountain Range",
+				x: 49.25,
+				y: 14.71,
+			},
+		],
 	},
 	forgery: {
 		maxProduct: 180,
 		maxSupplies: 150,
+		locations: [
+			{
+				name: "Textile City",
+				x: 47.87,
+				y: 73.56,
+			},
+			{
+				name: "Elysian Island",
+				x: 43.18,
+				y: 89.77,
+			},
+			{
+				name: "Paleto Bay",
+				x: 44.24,
+				y: 16.84,
+			},
+			{
+				name: "Grapeseed",
+				x: 59.28,
+				y: 28.46,
+			},
+		],
 	},
 	nightclub: {
+		// Here max is max capacity of product, accrue is the time per product in minutes
 		products: ["cargo", "sporting", "imports", "pharma", "creation", "organic", "copying"],
 		maxCargo: 50,
 		maxSporting: 100,
@@ -211,7 +379,108 @@ var staticInfo = {
 		accrueCreation: 30,
 		accrueOrganic: 20,
 		accrueCopying: 15,
+		locations: [
+			{
+				name: "West Vinewood",
+				x: 46.27,
+				y: 65.88,
+			},
+			{
+				name: "Downtown Vinewood",
+				x: 48.72,
+				y: 65.57,
+			},
+			{
+				name: "Del Perro",
+				x: 35.93,
+				y: 72.92,
+			},
+			{
+				name: "Strawberry",
+				x: 44.78,
+				y: 78.04,
+			},
+			{
+				name: "La Mesa",
+				x: 51.92,
+				y: 78.14,
+			},
+			{
+				name: "Mission Row",
+				x: 48.51,
+				y: 75.37,
+			},
+			{
+				name: "Cypress Flats",
+				x: 52.88,
+				y: 84.33,
+			},
+			{
+				name: "Vespucci Canals",
+				x: 36.30,
+				y: 76.79,
+			},
+			{
+				name: "LSIA",
+				x: 40.30,
+				y: 87.63,
+			},
+			{
+				name: "Elysian Island",
+				x: 47.55,
+				y: 93.07,
+			},
+		],
 	},
+	importExport: {
+		locations: [
+			{
+				name: "La Mesa",
+				x: 53.86,
+				y: 82.30,
+			},
+			{
+				name: "El Burro Heights",
+				x: 47.55,
+				y: 93.07,
+			},
+			{
+				name: "Elysian Island",
+				x: 47.12,
+				y: 91.58,
+			},
+			{
+				name: "LSIA 1",
+				x: 36.57,
+				y: 84.65,
+			},
+			{
+				name: "LSIA 2",
+				x: 41.90,
+				y: 85.07,
+			},
+			{
+				name: "Davis",
+				x: 45.31,
+				y: 81.98,
+			},
+			{
+				name: "Cypress Flats",
+				x: 52.35,
+				y: 85.61,
+			},
+			{
+				name: "La Puerta",
+				x: 41.15,
+				y: 81.88,
+			},
+			{
+				name: "Murrieta Heights",
+				x: 55.54,
+				y: 77.51,
+			},
+		],
+	}
 }
 
 // Useful regexp
@@ -222,13 +491,14 @@ var businessRegexp = /^.*(bunker|coke|meth|cash|weed|forgery|nightclub|importExp
 var intervalID = setInterval(tick, 1000);
 var running = 0;
 
+// Useful generic functions
 function capitalize(s) {
 	return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 Number.prototype.mod = function(b) { 
     return ((this % b) + b) % b; 
-} 
+}
 
 function update() {
 	if (userInfo.version == "1.0.0") {
