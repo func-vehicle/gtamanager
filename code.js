@@ -16,7 +16,6 @@ var defaultUserInfo = {
 		app_style: 0,
 	},
 	bunker: {
-		name: "Bunker",
 		owned: false,
 		muted: false,
 		product: 0,
@@ -30,7 +29,6 @@ var defaultUserInfo = {
 		},
 	},
 	coke: {
-		name: "Cocaine",
 		owned: false,
 		muted: false,
 		product: 0,
@@ -41,7 +39,6 @@ var defaultUserInfo = {
 		},
 	},
 	meth: {
-		name: "Meth",
 		owned: false,
 		muted: false,
 		product: 0,
@@ -52,7 +49,6 @@ var defaultUserInfo = {
 		},
 	},
 	cash: {
-		name: "Counterfeit Cash",
 		owned: false,
 		muted: false,
 		product: 0,
@@ -63,7 +59,6 @@ var defaultUserInfo = {
 		},
 	},
 	weed: {
-		name: "Weed",
 		owned: false,
 		muted: false,
 		product: 0,
@@ -74,7 +69,6 @@ var defaultUserInfo = {
 		},
 	},
 	forgery: {
-		name: "Document Forgery",
 		owned: false,
 		muted: false,
 		product: 0,
@@ -85,7 +79,6 @@ var defaultUserInfo = {
 		},
 	},
 	nightclub: {
-		name: "Nightclub",
 		owned: false,
 		muted: false,
 		sidebar: true,
@@ -111,7 +104,6 @@ var defaultUserInfo = {
 		},
 	},
 	importExport: {
-		name: "Import / Export",
 		owned: false,
 		highend_cars: 0,
 		cooldown: 0,
@@ -121,7 +113,6 @@ var defaultUserInfo = {
 		},
 	},
 	wheel: {
-		name: "Lucky Wheel",
 		owned: true,
 		muted: false,
 		notify_while_paused: false, 
@@ -171,6 +162,8 @@ var flashIconState = true;
 var staticInfo = {
 	mcbusinesses: ["coke", "meth", "cash", "weed", "forgery"],
 	bunker: {
+		fullName: "Bunker",
+		shortName: "Bunker",
 		maxProduct: 750,
 		maxResearch: 210,
 		maxSupplies: 150,
@@ -233,6 +226,8 @@ var staticInfo = {
 		],
 	},
 	coke: {
+		fullName: "Cocaine",
+		shortName: "Cocaine",
 		maxProduct: 300,
 		maxSupplies: 120,
 		locations: [
@@ -259,6 +254,8 @@ var staticInfo = {
 		],
 	},
 	meth: {
+		fullName: "Methamphetamine",
+		shortName: "Meth",
 		maxProduct: 360,
 		maxSupplies: 144,
 		locations: [
@@ -285,6 +282,8 @@ var staticInfo = {
 		],
 	},
 	cash: {
+		fullName: "Counterfeit Cash",
+		shortName: "Counterfeit Cash",
 		maxProduct: 320,
 		maxSupplies: 160,
 		locations: [
@@ -311,6 +310,8 @@ var staticInfo = {
 		],
 	},
 	weed: {
+		fullName: "Weed",
+		shortName: "Weed",
 		maxProduct: 320,
 		maxSupplies: 144,
 		locations: [
@@ -337,6 +338,8 @@ var staticInfo = {
 		],
 	},
 	forgery: {
+		fullName: "Document Forgery",
+		shortName: "Doc. Forgery",
 		maxProduct: 180,
 		maxSupplies: 150,
 		locations: [
@@ -363,6 +366,8 @@ var staticInfo = {
 		],
 	},
 	nightclub: {
+		fullName: "Nightclub",
+		shortName: "Nightclub",
 		// Here max is max capacity of product, accrue is the time per product in minutes
 		products: ["cargo", "sporting", "imports", "pharma", "creation", "organic", "copying"],
 		maxCargo: 50,
@@ -433,6 +438,8 @@ var staticInfo = {
 		],
 	},
 	importExport: {
+		fullName: "Import / Export",
+		shortName: "Import / Export",
 		locations: [
 			{
 				name: "La Mesa",
@@ -480,6 +487,10 @@ var staticInfo = {
 				y: 77.51,
 			},
 		],
+	},
+	wheel: {
+		fullName: "Lucky Wheel",
+		shortName: "Lucky Wheel",
 	}
 }
 
@@ -578,6 +589,15 @@ function update() {
 	}
 	if (userInfo.version == "1.7.3") {
 		userInfo.version = "1.8.0";
+	}
+	if (userInfo.version == "1.8.0") {
+		// THE BIG UPDATE!
+		let toUpdate = ["bunker", "coke", "meth", "cash", "weed", "forgery", "nightclub", "importExport", "wheel"];
+		for (let i = 0; i < toUpdate.length; i++) {
+			let business = toUpdate[i];
+			delete userInfo[business].name;
+		}
+		userInfo.version = "1.9.0";
 	}
 }
 
@@ -869,7 +889,7 @@ $(document).ready(function() {
 	
 	$(".mcbusiness button.setup").on("click", function(event) {
 		var business = $(event.target).parents(".mcbusiness").attr("id");
-		$("#mcbusinessSetupGUI .heading h1").html(userInfo[business].name+" Setup");
+		$("#mcbusinessSetupGUI .heading h1").html(staticInfo[business].fullName+" Setup");
 		$("#mcbusinessSetupGUI").prop("class", "setupGUI "+business);
 		createBackup(business);
 		
@@ -1804,11 +1824,11 @@ function checkNotify() {
 		if (userInfo[business].owned) {
 			if (userInfo[business].product >= staticInfo[business].maxProduct) {
 				flashIcon(business);
-				playNotification(business, "GTA V Business Manager", "Your "+userInfo[business].name+" business has reached maximum product and is ready to sell.");
+				playNotification(business, "GTA V Business Manager", "Your "+staticInfo[business].fullName+" business has reached maximum product and is ready to sell.");
 			}
 			else if (userInfo[business].supplies <= 0) {
 				flashIcon(business);
-				playNotification(business, "GTA V Business Manager", "Your "+userInfo[business].name+" business has run out of supplies.");
+				playNotification(business, "GTA V Business Manager", "Your "+staticInfo[business].fullName+" business has run out of supplies.");
 			}
 			else {
 				flashIcon(business, false);
