@@ -1058,11 +1058,6 @@ $(document).ready(function() {
 	$("#mainSetup .buttons button.cancel").off("click");
 	$("#mainSetup .buttons button.apply").off("click");
 	
-	$("#mainSetup .buttons button.reset").on("click", function(event) {
-		displayPopup("resetWarning");
-		redrawScreen();
-	});
-	
 	$("#mainSetup .buttons button.cancel").on("click", function(event) {
 		loadBackup();
 		redrawBusinessTabs();
@@ -1168,6 +1163,11 @@ $(document).ready(function() {
 			window.location.reload(false);
 		}
 		reader.readAsText(file);
+	});
+
+	$("#mainSetup .dataDownload button[data-value=reset]").on("click", function(event) {
+		displayPopup("resetWarning");
+		redrawScreen();
 	});
 	
 	$("#mainSetup .about button[data-value=0]").on("click", function(event) {
