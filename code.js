@@ -254,7 +254,7 @@ var staticInfo = {
 		],
 	},
 	meth: {
-		fullName: "Methamphetamine",
+		fullName: "Meth",
 		shortName: "Meth",
 		maxProduct: 360,
 		maxSupplies: 144,
@@ -368,8 +368,8 @@ var staticInfo = {
 	nightclub: {
 		fullName: "Nightclub",
 		shortName: "Nightclub",
-		// Here max is max capacity of product, accrue is the time per product in minutes
 		products: ["cargo", "sporting", "imports", "pharma", "creation", "organic", "copying"],
+		// Here max is max capacity of product, accrue is the time per product in minutes
 		maxCargo: 50,
 		maxSporting: 100,
 		maxImports: 10,
@@ -1316,7 +1316,7 @@ $(document).ready(function() {
 });
 
 $(window).on('load', function() {
-	// Fix transparent overlay not appearing because image was not loaded in time
+	// Fix transparent overlay not appearing because background image was not loaded in time
 	window.dispatchEvent(new Event("resize"));
 });
 
@@ -1699,15 +1699,17 @@ function redrawScreen() {
 				}
 			}
 			else {
+				// TODO: move this to timeFormat
 				var timeArray = msFormat(remaining_ms);
+				remaining_string = "";
 				if (timeArray[0] > 0) {
-					remaining_string = timeArray[0] + "+ H";
+					remaining_string += timeArray[0] + " H ";
 				}
-				else if (timeArray[1] > 0) {
-					remaining_string = timeArray[1] + " M";
+				if (timeArray[1] > 0) {
+					remaining_string += timeArray[1] + " M";
 				}
-				else {
-					remaining_string = timeArray[2] + " S";
+				else if (timeArray[0] <= 0) {
+					remaining_string += timeArray[2] + " S";
 				}
 			}
 			$("#"+business+" tr."+type+" .progress_bar span").html(remaining_string);
