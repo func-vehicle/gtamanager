@@ -1362,7 +1362,7 @@ function loadBackup() {
 
 function msFormat(msTime) {
 	// Returns the time in hours, minutes, seconds, (ms)
-	var timeArray = [0, 0, 0, 0];
+	let timeArray = [0, 0, 0, 0];
 	timeArray[0] = Math.floor(msTime / (1000*60*60));
 	timeArray[1] = Math.floor((msTime % (1000*60*60)) / (1000*60));
 	timeArray[2] = Math.floor((msTime % (1000*60)) / 1000);
@@ -1370,19 +1370,43 @@ function msFormat(msTime) {
 	return timeArray;
 }
 
-function timeFormat(timeArray) {
-	// Convert to string
-	var hours = (timeArray[0]).toLocaleString(undefined, {minimumIntegerDigits: 2});
-	var minutes = (timeArray[1]).toLocaleString(undefined, {minimumIntegerDigits: 2});
-	var seconds = (timeArray[2]).toLocaleString(undefined, {minimumIntegerDigits: 2});
-	var s = "";
-	if (hours > 0) {
-		s += hours + "H ";
+function timeFormat(timeArray, maxFigures) {
+	// Converts to a string, only shows hours / minutes if necessary
+	// Optionally will only show maxFigures significant parts
+	// For example, maxFigures = 2 cuts off seconds if time is longer than 1 hour
+	let hours = timeArray[0];
+	let minutes = timeArray[1];
+	let seconds = timeArray[2];
+
+	let digits = 1;
+	if (typeof maxFigures === 'undefined') {
+		maxFigures = 3;
+		digits = 2;
 	}
-	if (hours > 0 || minutes > 0) {
-		s += minutes + "M ";
+	
+	let s = "";
+
+	if (hours > 0 && maxFigures > 0) {
+		s += hours.toLocaleString(undefined, {minimumIntegerDigits: digits});
+		s += "H ";
+		maxFigures--;
+		digits = 2;
 	}
-	s += seconds + "S";
+	if ((hours > 0 || minutes > 0) && maxFigures > 0) {
+		s += minutes.toLocaleString(undefined, {minimumIntegerDigits: digits});
+		s += "M ";
+		maxFigures--;
+		digits = 2;
+	}
+	if (maxFigures > 0) {
+		s += seconds.toLocaleString(undefined, {minimumIntegerDigits: digits});
+		s += "S ";
+		maxFigures--;
+		digits = 2;
+	}
+
+	// Remove last space
+	s = s.slice(0, s.length - 1);
 	
 	return s;
 }
@@ -1699,18 +1723,8 @@ function redrawScreen() {
 				}
 			}
 			else {
-				// TODO: move this to timeFormat
 				var timeArray = msFormat(remaining_ms);
-				remaining_string = "";
-				if (timeArray[0] > 0) {
-					remaining_string += timeArray[0] + " H ";
-				}
-				if (timeArray[1] > 0) {
-					remaining_string += timeArray[1] + " M";
-				}
-				else if (timeArray[0] <= 0) {
-					remaining_string += timeArray[2] + " S";
-				}
+				remaining_string = timeFormat(timeArray, 2);
 			}
 			$("#"+business+" tr."+type+" .progress_bar span").html(remaining_string);
 			$("#"+business+" tr."+type+" .progress_bar span").show();
