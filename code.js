@@ -601,6 +601,7 @@ function update() {
 	}
 }
 
+// Modules
 var PatchModule = (function () {
 	var patchnotes = null;
 	var patchIndex = null;
@@ -650,6 +651,196 @@ var PatchModule = (function () {
 		redraw: redraw,
 	};
 })();
+
+var MiniNotifModule = (function() {
+	// TODO: convert this to one function when done
+	var displayPaused = function() {
+		$("#mini_notif > *").hide();
+		$("#pausedMiniNotif").show();
+	};
+	var displaySelectLocation = function() {
+		$("#mini_notif > *").hide();
+		$("#selectLocation").show();
+	};
+	var displayCustomLocation = function() {
+		$("#mini_notif > *").hide();
+		$("#customLocation").show();
+	};
+	var show = function() {
+		$("#mini_notif").show();
+	};
+	var hide = function() {
+		$("#mini_notif").hide();
+	};
+	return {
+		displayPaused: displayPaused,
+		displaySelectLocation: displaySelectLocation,
+		displayCustomLocation: displayCustomLocation,
+		show: show,
+		hide: hide,
+	};
+})();
+
+var SelectLocationModule = (function() {
+	var index;
+	var toMove;
+	var toMoveMute;
+	var locations;
+	var templateIcon;
+
+	var beginSelection = function(business) {
+		toMove = $("#"+business+"_map");
+		toMoveMute = $("#"+business+"_mute");
+
+		toMove.hide();
+		toMoveMute.hide();
+
+		locations = staticInfo[business].locations;
+
+		templateIcon = toMove.clone();
+		templateIcon.removeAttr("id");
+		templateIcon.addClass("faded");
+
+		hidePopup();
+		MiniNotifModule.displaySelectLocation();
+		MiniNotifModule.show();
+		$('html, body').animate({
+			scrollTop: $("#mapscreen").offset().top
+		}, 300);
+
+		// TODO: register click handler to check that user is not clicking buttons outside of map
+		$("#infotab button, #options button").on("click", cancelSelection);
+
+		index = 0;
+		swapToIndex(0);
+	};
+	var swapToIndex = function(idx) {
+		index = idx;
+		$(".potential_spot").remove();
+		for (let i = 0; i < locations.length; i++) {
+			let fadedIcon = templateIcon.clone();
+
+			fadedIcon.css({
+				left: locations[i].x + "%",
+				top: locations[i].y + "%",
+			});
+			fadedIcon.addClass("clickable potential_spot");
+			fadedIcon.attr("data-value", i);
+			fadedIcon.insertAfter("#bunker_map");
+			fadedIcon.show();
+
+			if (i == index) {
+				fadedIcon.removeClass("faded");
+				$("#selectLocation span").html(locations[i].name);
+			}
+		}
+	};
+	var incrementIndex = function() {
+		index = (index + 1).mod(locations.length);
+		swapToIndex(index);
+	};
+	var decrementIndex = function() {
+		index = (index - 1).mod(locations.length);
+		swapToIndex(index);
+	};
+	var confirmCurrentLocation = function() {
+		changeInfo.map_position.x = locations[index].x;
+		changeInfo.map_position.y = locations[index].y;
+		showSettings();
+	};
+	var showSettings = function() {
+		$("#infotab button, #options button").off("click", cancelSelection);
+		$(".potential_spot").remove();
+		$("#notification").show();
+		$("#overlay").show();
+		redrawBusinessTabs();
+		toMove.show();
+		toMoveMute.show();
+		MiniNotifModule.displayPaused();
+		if (running) {
+			MiniNotifModule.hide();
+		}
+	};
+	var cancelSelection = function() {
+		showSettings();
+	};
+	var startManualSelection = function() {
+		var outerDiv = $("#map");
+		var outDim = outerDiv.offset();
+		outDim.right = (outDim.left + outerDiv.width() - 15);
+		outDim.bottom = (outDim.top + outerDiv.height() - 15);
+		outDim.left += 15;
+		outDim.top += 15;
+		
+		hidePopup();
+		$("#mapscreen .icons-map").off("click");
+		MiniNotifModule.displayCustomLocation();
+		MiniNotifModule.show();
+		$('html, body').animate({
+			scrollTop: $("#mapscreen").offset().top
+		}, 300);
+
+		$(".potential_spot").remove();
+		toMove.show();
+		toMoveMute.show();
+		
+		$(document).on("mousemove", function(e) {
+			var x = (e.clientX);
+			var y = (e.clientY);
+			var x_allowed = (x >= outDim.left && x <= outDim.right);
+			var y_allowed = (y >= outDim.top && y <= outDim.bottom);
+			if (x_allowed && y_allowed) {
+				toMove.css({
+				   left: e.pageX,
+				   top:  e.pageY,
+				});
+				toMoveMute.css({
+				   left: e.pageX + 8,
+				   top:  e.pageY - 8,
+				});
+			}
+		});
+		
+		var clicks = 0;
+		$("#mapscreen").on("click", function(e) {
+			var final_x = 100.0 * parseInt(toMove.css("left"), 10) / outerDiv.width();
+			var final_y = 100.0 * parseInt(toMove.css("top"), 10) / outerDiv.width();
+			changeInfo["map_position"].x = final_x;
+			changeInfo["map_position"].y = final_y;
+		});
+		
+		$("body").on("click", function(e) {
+			if (clicks == 0) {
+				clicks++;
+				return;
+			}
+			toMove.css("top", changeInfo["map_position"].y+"%");
+			toMove.css("left", changeInfo["map_position"].x+"%");
+			$("#mapscreen").off("click");
+			$("body").off("click");
+			$(document).off("mousemove");
+			showSettings();
+			$("#mapscreen .icons-map").on("click", muteBusiness);
+		});
+	};
+	return {
+		beginSelection: beginSelection,
+		incrementIndex: incrementIndex,
+		decrementIndex: decrementIndex,
+		confirmCurrentLocation: confirmCurrentLocation,
+		cancelSelection: cancelSelection,
+		startManualSelection: startManualSelection,
+	};
+})();
+
+// TODO: having this in global scope is awful, create notification module
+function muteBusiness(event) {
+	var business = businessRegexp.exec($(event.target).attr("id"))[1];
+	if (userInfo[business].hasOwnProperty("muted")) {
+		userInfo[business].muted = !userInfo[business].muted;
+	}
+	redrawBusinessTabs();
+}
 
 $(document).ready(function() {
 	// Multiple instance check
@@ -705,6 +896,9 @@ $(document).ready(function() {
 	if (newUser) {
 		displayPopup("newUserNotice", true);
 	}
+
+	// Display paused mini notif
+	MiniNotifModule.displayPaused();
 	
 	// Window resize function
 	$(window).resize(function() {
@@ -748,13 +942,7 @@ $(document).ready(function() {
 		}
 	});
 	
-	function muteBusiness(event) {
-		var business = businessRegexp.exec($(event.target).attr("id"))[1];
-		if (userInfo[business].hasOwnProperty("muted")) {
-			userInfo[business].muted = !userInfo[business].muted;
-		}
-		redrawBusinessTabs();
-	}
+	// Click icon to mute business
 	$("#mapscreen .icons-map").on("click", muteBusiness);
 	
 	// General notification settings
@@ -843,7 +1031,7 @@ $(document).ready(function() {
 	
 	// Nightclub Manager buttons
 	$("#nightclubGUI button.sellsome").on("click", function(event) {
-		// TODO: fix ultra-hack validation
+		// TODO: fix hacky validation
 		let valid = true;
 		let products = staticInfo["nightclub"]["products"];
 		// First check if all fields are valid
@@ -913,69 +1101,30 @@ $(document).ready(function() {
 		
 		redrawScreen();
 	});
-	
+
 	$(".setupGUI .position button").on("click", function(event) {
-		var business = businessRegexp.exec($(event.target).parents(".setupGUI").attr("class"))[1];
-		var toMove = $("#"+business+"_map");
-		var toMoveMute = $("#"+business+"_mute");
-		var outerDiv = $("#map");
-		var outDim = outerDiv.offset();
-		outDim.right = (outDim.left + outerDiv.width() - 15);
-		outDim.bottom = (outDim.top + outerDiv.height() - 15);
-		outDim.left += 15;
-		outDim.top += 15;
-		
-		hidePopup();
-		$("#mapscreen .icons-map").off("click");
-		$("#mini_notif p").html("Click to select the location.");  // TODO: make this less hacky
-		$("#mini_notif").show();
-		$('html, body').animate({
-			scrollTop: $("#mapscreen").offset().top
-		}, 300);
-		
-		$(document).on("mousemove", function(e) {
-			var x = (e.clientX);
-			var y = (e.clientY);
-			var x_allowed = (x >= outDim.left && x <= outDim.right);
-			var y_allowed = (y >= outDim.top && y <= outDim.bottom);
-			if (x_allowed && y_allowed) {
-				toMove.css({
-				   left: e.pageX,
-				   top:  e.pageY,
-				});
-				toMoveMute.css({
-				   left: e.pageX + 8,
-				   top:  e.pageY - 8,
-				});
-			}
-		});
-		
-		var clicks = 0;
-		$("#mapscreen").on("click", function(e) {
-			var final_x = 100.0 * parseInt(toMove.css("left"), 10) / outerDiv.width();
-			var final_y = 100.0 * parseInt(toMove.css("top"), 10) / outerDiv.width();
-			changeInfo["map_position"].x = final_x;
-			changeInfo["map_position"].y = final_y;
-		});
-		
-		$("body").on("click", function(e) {
-			if (clicks == 0) {
-				clicks++;
-				return;
-			}
-			toMove.css("top", changeInfo["map_position"].y+"%");
-			toMove.css("left", changeInfo["map_position"].x+"%");
-			$("#mapscreen").off("click");
-			$("body").off("click");
-			$(document).off("mousemove");
-			$("#notification").show();
-			$("#overlay").show();
-			$("#mini_notif p").html("The business manager is paused.");  // TODO: make this less hacky
-			if (running) {
-				$("#mini_notif").hide();
-			}
-			$("#mapscreen .icons-map").on("click", muteBusiness);
-		});
+		let business = businessRegexp.exec($(event.target).parents(".setupGUI").attr("class"))[1];
+		SelectLocationModule.beginSelection(business);
+	});
+
+	$("#selectLocation button[data-value=0]").on("click", function(event) {
+		SelectLocationModule.decrementIndex();
+	});
+
+	$("#selectLocation button[data-value=1]").on("click", function(event) {
+		SelectLocationModule.incrementIndex();
+	});
+
+	$("#selectLocation button[data-value=2]").on("click", function(event) {
+		SelectLocationModule.confirmCurrentLocation();
+	});
+
+	$("#selectLocation button[data-value=3]").on("click", function(event) {
+		SelectLocationModule.cancelSelection();
+	});
+
+	$("#selectLocation button[data-value=4]").on("click", function(event) {
+		SelectLocationModule.startManualSelection();
 	});
 	
 	$(".setupGUI .hide_research button").on("click", function(event) {
@@ -996,7 +1145,7 @@ $(document).ready(function() {
 	});
 	
 	$(".setupGUI button.apply").on("click", function(event) {
-		// TODO: fix ultra-hack validation
+		// TODO: fix hacky validation
 		let valid = true;
 		var gui = $(event.target).parents(".setupGUI").prop("id");
 		var business = businessRegexp.exec($("#"+gui).prop("class"))[1];
@@ -1066,7 +1215,7 @@ $(document).ready(function() {
 	});
 	
 	$("#mainSetup .buttons button.apply").on("click", function(event) {
-		// TODO: fix ultra-hack validation
+		// TODO: fix hacky validation
 		let valid = true;
 		inputs = $("#mainSetup" + " input[type=number]");
 		for (let i = 0; i < inputs.length; i++) {
@@ -1161,7 +1310,7 @@ $(document).ready(function() {
 			localStorage.setItem("userInfo", JSON.stringify(userInfo));
 			window.onbeforeunload = null;
 			window.location.reload(false);
-		}
+		};
 		reader.readAsText(file);
 	});
 
@@ -1276,7 +1425,7 @@ $(document).ready(function() {
 			$("#options button.toggle").html("Pause");
 			lastTickTime = null;
 			feesCooldown = 2880000;
-			$("#mini_notif").hide();
+			MiniNotifModule.hide();
 			window.onbeforeunload = function() {
 				return true;
 			};
@@ -1289,7 +1438,7 @@ $(document).ready(function() {
 			$("#options button.toggle").addClass("start");
 			$("#options button.toggle").addClass("green");
 			$("#options button.toggle").html("Start");
-			$("#mini_notif").show();
+			MiniNotifModule.show();
 			displayPopup("pauseNotice");
 			window.onbeforeunload = null;
 		}
@@ -1596,13 +1745,15 @@ function redrawScreen() {
 	totalProduct.html(totalNightclubProduct+"</br>("+ transport+")");
 	
 	// setupGUI buttons
-	// Main Setup
+	// TODO: check active dialog box, only update if active
+	// Generic
 	var owned = changeInfo["owned"];
 	$(".setupGUI .own button[data-value=1]").prop("disabled", owned);
 	$(".setupGUI .own button[data-value=0]").prop("disabled", !owned);
 	
 	$(".setupGUI .position button").prop("disabled", !owned);
-	
+
+	// Main Setup
 	var hide_unowned = changeInfo["hide_unowned"];
 	$("#mainSetup .hideUnowned button[data-value=1]").prop("disabled", hide_unowned);
 	$("#mainSetup .hideUnowned button[data-value=0]").prop("disabled", !hide_unowned);
@@ -1661,6 +1812,7 @@ function redrawScreen() {
 	for (var i = 0; i < progressBars.length; i++) {
 		var type = typeRegexp.exec($(progressBars[i]).parents("tr").attr("class"))[1];
 		var business = $(progressBars[i]).parents("div.information").attr("id");
+		// Hide bunker research bar if option selected
 		if (business == "bunker" && type == "research") {
 			if (userInfo["bunker"]["hide_research"]) {
 				$("#bunker tr.research").hide();
@@ -1668,6 +1820,7 @@ function redrawScreen() {
 			}
 			$("#bunker tr.research").show();
 		}
+		// Hide nightclub bars if option selected and product not being produced
 		else if (business == "nightclub") {
 			if (userInfo.nightclub.sidebar) {
 				if (!userInfo.nightclub.producing[type]) {
@@ -1677,25 +1830,30 @@ function redrawScreen() {
 			}
 			$("#nightclub tr."+type).show();
 		}
+		// Fill bar
 		progress_bar_style = userInfo.settings["progress_bar_style"];
 		var percentage = 100.0*userInfo[business][type]/staticInfo[business]["max"+capitalize(type)];
 		$("#"+business+" tr."+type+" .progress_bar .bar").css("width", percentage+"%");
+		// Plain
 		if (progress_bar_style == 0) {
 			$("#"+business+" tr."+type).removeClass("big");
 			$("#"+business+" tr."+type+" .progress_bar .fivetick").hide();
 			$("#"+business+" tr."+type+" .progress_bar span").hide();
 		}
+		// Five tick
 		else if (progress_bar_style == 1) {
 			$("#"+business+" tr."+type).removeClass("big");
 			$("#"+business+" tr."+type+" .progress_bar .fivetick").show();
 			$("#"+business+" tr."+type+" .progress_bar span").hide();
 		}
+		// Percentage
 		else if (progress_bar_style == 2) {
 			$("#"+business+" tr."+type).addClass("big");
 			$("#"+business+" tr."+type+" .progress_bar .fivetick").hide();
 			$("#"+business+" tr."+type+" .progress_bar span").html(Math.round(percentage)+"%");
 			$("#"+business+" tr."+type+" .progress_bar span").show();
 		}
+		// Time remaining
 		else if (progress_bar_style == 3) {
 			$("#"+business+" tr."+type).addClass("big");
 			$("#"+business+" tr."+type+" .progress_bar .fivetick").hide();

@@ -55,7 +55,25 @@
 				<img id="wheel_map" src="img/blank.png" class="icons icons-map icons-wheel clickable" alt="Lucky Wheel icon"/>
 			</div>
 			<div id="mini_notif">
-				<p>The business manager is paused.</p>
+				<div id="pausedMiniNotif">
+					<p>The business manager is paused.</p>
+				</div>
+				<div id="selectLocation">
+					<div class="left">
+						<button class="fa fa-arrow-left button red" data-value="0"></button><!--
+					 --><span>San Chianski Mountain Range</span><!--
+					 --><button class="fa fa-arrow-right button red" data-value="1"></button>
+					</div>
+					<div class="right">
+						<button class="fa fa-check button red" data-value="2"></button><!--
+					 --><button class="fa fa-times button red" data-value="3"></button><!--
+					 --><button class="fa fa-ellipsis-v button red" data-value="4"></button>
+					</div>
+				</div>
+				<div id="customLocation">
+					<p class="desktop-only">Click map to choose custom location.</p>
+					<p class="mobile-only">Tap map to choose custom location.</p>
+				</div>
 			</div>
 			<div id="options" class="fsz">
 				<button class="button toggle start green">Start</button>

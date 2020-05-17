@@ -312,6 +312,9 @@ input {
 .icons-wheel {
 	background-position: -199px -67px;
 }
+.faded {
+    opacity: 0.6;
+}
 #mini_notif {
 	background-color: #000;
 	border: 1px solid #CC212C;
@@ -324,10 +327,60 @@ input {
 	top: 15px;
 	left: 50%;
 	transform: translate(calc(-50% - 5px), 0);
-	text-align: center;
+    text-align: center;
+
+    #selectLocation {
+        display: flex;
+        flex-flow: row;
+    }
 
     .mobile & {
         top: 5px;
+    }
+
+    .button {
+        margin-top: 0;
+        margin-right: 3px;
+        padding: 1px;
+        height: 24px;
+        width: 24px;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+    
+    .left {
+        flex: 1 1 auto;
+        display: flex;
+        min-width: 0;
+
+        .button {
+            flex-shrink: 0;
+
+            &:last-child {
+                margin-left: 4px;
+            }
+        }
+
+        span {
+            flex: 1 1 auto;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: inline-block;
+            vertical-align: top;
+            padding-top: 3px;
+            padding-bottom: 3px;
+        }
+    }
+
+    .right {
+        display: inline-block;
+        margin-left: 20px;
+        flex: 0 0 auto;
+        text-align: right;
     }
 }
 #options {
