@@ -2,7 +2,7 @@ var userInfo;
 
 // The current format of user's data.
 var defaultUserInfo = {
-	version: "1.8.0",
+	version: "1.9.0",
 	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
@@ -16,7 +16,6 @@ var defaultUserInfo = {
 		app_style: 0,
 	},
 	bunker: {
-		name: "Bunker",
 		owned: false,
 		muted: false,
 		product: 0,
@@ -30,7 +29,6 @@ var defaultUserInfo = {
 		},
 	},
 	coke: {
-		name: "Cocaine",
 		owned: false,
 		muted: false,
 		product: 0,
@@ -41,7 +39,6 @@ var defaultUserInfo = {
 		},
 	},
 	meth: {
-		name: "Meth",
 		owned: false,
 		muted: false,
 		product: 0,
@@ -52,7 +49,6 @@ var defaultUserInfo = {
 		},
 	},
 	cash: {
-		name: "Counterfeit Cash",
 		owned: false,
 		muted: false,
 		product: 0,
@@ -63,29 +59,26 @@ var defaultUserInfo = {
 		},
 	},
 	weed: {
-		name: "Weed",
 		owned: false,
 		muted: false,
 		product: 0,
 		supplies: 0,
 		map_position: {
-			x: 64.02,
-			y: 51.74,
+			x: 68.87,
+			y: 31.02,
 		},
 	},
 	forgery: {
-		name: "Document Forgery",
 		owned: false,
 		muted: false,
 		product: 0,
 		supplies: 0,
 		map_position: {
-			x: 64.67,
-			y: 38.59,
+			x: 59.28,
+			y: 28.46,
 		},
 	},
 	nightclub: {
-		name: "Nightclub",
 		owned: false,
 		muted: false,
 		sidebar: true,
@@ -111,7 +104,6 @@ var defaultUserInfo = {
 		},
 	},
 	importExport: {
-		name: "Import / Export",
 		owned: false,
 		highend_cars: 0,
 		cooldown: 0,
@@ -121,7 +113,6 @@ var defaultUserInfo = {
 		},
 	},
 	wheel: {
-		name: "Lucky Wheel",
 		owned: true,
 		muted: false,
 		notify_while_paused: false, 
@@ -171,32 +162,214 @@ var flashIconState = true;
 var staticInfo = {
 	mcbusinesses: ["coke", "meth", "cash", "weed", "forgery"],
 	bunker: {
+		fullName: "Bunker",
+		shortName: "Bunker",
 		maxProduct: 750,
 		maxResearch: 210,
 		maxSupplies: 150,
+		locations: [
+			{
+				name: "Paleto Forest",
+				x: 39.23,
+				y: 19.51,
+			},
+			{
+				name: "Raton Canyon",
+				x: 42.75,
+				y: 32.41,
+			},
+			{
+				name: "Lago Zancudo",
+				x: 21.43,
+				y: 40.72,
+			},
+			{
+				name: "Chumash",
+				x: 20.36,
+				y: 55.97,
+			},
+			{
+				name: "Grapeseed",
+				x: 60.02,
+				y: 29.64,
+			},
+			{
+				name: "Route 68",
+				x: 45.31,
+				y: 43.71,
+			},
+			{
+				name: "Grand Senora Oilfields",
+				x: 49.79,
+				y: 43.28,
+			},
+			{
+				name: "Grand Senora Desert",
+				x: 52.99,
+				y: 43.07,
+			},
+			{
+				name: "Smoke Tree Road",
+				x: 62.90,
+				y: 40.30,
+			},
+			{
+				name: "Thomson Scrapyard",
+				x: 65.99,
+				y: 41.68,
+			},
+			{
+				name: "Farmhouse",
+				x: 58.47,
+				y: 49.49,
+			},
+		],
 	},
 	coke: {
+		fullName: "Cocaine",
+		shortName: "Cocaine",
 		maxProduct: 300,
 		maxSupplies: 120,
+		locations: [
+			{
+				name: "Morningwood",
+				x: 33.37,
+				y: 70.90,
+			},
+			{
+				name: "Elysian Island",
+				x: 43.82,
+				y: 87.95,
+			},
+			{
+				name: "Paleto Bay",
+				x: 46.27,
+				y: 14.82,
+			},
+			{
+				name: "Alamo Sea",
+				x: 48.94,
+				y: 38.73,
+			},
+		],
 	},
 	meth: {
+		fullName: "Meth",
+		shortName: "Meth",
 		maxProduct: 360,
 		maxSupplies: 144,
+		locations: [
+			{
+				name: "El Burro Heights",
+				x: 57.57,
+				y: 80.70,
+			},
+			{
+				name: "Terminal",
+				x: 55.65,
+				y: 92.43,
+			},
+			{
+				name: "Paleto Bay",
+				x: 46.70,
+				y: 16.10,
+			},
+			{
+				name: "Grand Senora Desert",
+				x: 47.40,
+				y: 47.62,
+			},
+		],
 	},
 	cash: {
+		fullName: "Counterfeit Cash",
+		shortName: "Counterfeit Cash",
 		maxProduct: 320,
 		maxSupplies: 160,
+		locations: [
+			{
+				name: "Vespucci Canals",
+				x: 36.46,
+				y: 79.10,
+			},
+			{
+				name: "Cypress Flats",
+				x: 51.17,
+				y: 89.66,
+			},
+			{
+				name: "Paleto Bay",
+				x: 42.22,
+				y: 18.12,
+			},
+			{
+				name: "Grand Senora Desert",
+				x: 50.92,
+				y: 45.00,
+			},
+		],
 	},
 	weed: {
+		fullName: "Weed",
+		shortName: "Weed",
 		maxProduct: 320,
 		maxSupplies: 144,
+		locations: [
+			{
+				name: "Downtown Vinewood",
+				x: 46.59,
+				y: 65.78,
+			},
+			{
+				name: "Elysian Island",
+				x: 47.23,
+				y: 87.10,
+			},
+			{
+				name: "Mount Chilliad",
+				x: 49.25,
+				y: 14.71,
+			},
+			{
+				name: "San Chianski Mountain Range",
+				x: 68.87,
+				y: 31.02,
+			},
+		],
 	},
 	forgery: {
+		fullName: "Document Forgery",
+		shortName: "Doc. Forgery",
 		maxProduct: 180,
 		maxSupplies: 150,
+		locations: [
+			{
+				name: "Textile City",
+				x: 47.87,
+				y: 73.56,
+			},
+			{
+				name: "Elysian Island",
+				x: 43.18,
+				y: 89.77,
+			},
+			{
+				name: "Paleto Bay",
+				x: 44.24,
+				y: 16.84,
+			},
+			{
+				name: "Grapeseed",
+				x: 59.28,
+				y: 28.46,
+			},
+		],
 	},
 	nightclub: {
+		fullName: "Nightclub",
+		shortName: "Nightclub",
 		products: ["cargo", "sporting", "imports", "pharma", "creation", "organic", "copying"],
+		// Here max is max capacity of product, accrue is the time per product in minutes
 		maxCargo: 50,
 		maxSporting: 100,
 		maxImports: 10,
@@ -211,7 +384,114 @@ var staticInfo = {
 		accrueCreation: 30,
 		accrueOrganic: 20,
 		accrueCopying: 15,
+		locations: [
+			{
+				name: "West Vinewood",
+				x: 46.27,
+				y: 65.88,
+			},
+			{
+				name: "Downtown Vinewood",
+				x: 48.72,
+				y: 65.57,
+			},
+			{
+				name: "Del Perro",
+				x: 35.93,
+				y: 72.92,
+			},
+			{
+				name: "Strawberry",
+				x: 44.78,
+				y: 78.04,
+			},
+			{
+				name: "La Mesa",
+				x: 51.92,
+				y: 78.14,
+			},
+			{
+				name: "Mission Row",
+				x: 48.51,
+				y: 75.37,
+			},
+			{
+				name: "Cypress Flats",
+				x: 52.88,
+				y: 84.33,
+			},
+			{
+				name: "Vespucci Canals",
+				x: 36.30,
+				y: 76.79,
+			},
+			{
+				name: "LSIA",
+				x: 40.30,
+				y: 87.63,
+			},
+			{
+				name: "Elysian Island",
+				x: 47.55,
+				y: 93.07,
+			},
+		],
 	},
+	importExport: {
+		fullName: "Import / Export",
+		shortName: "Import / Export",
+		locations: [
+			{
+				name: "La Mesa",
+				x: 53.86,
+				y: 82.30,
+			},
+			{
+				name: "El Burro Heights",
+				x: 47.55,
+				y: 93.07,
+			},
+			{
+				name: "Elysian Island",
+				x: 47.12,
+				y: 91.58,
+			},
+			{
+				name: "LSIA 1",
+				x: 36.57,
+				y: 84.65,
+			},
+			{
+				name: "LSIA 2",
+				x: 41.90,
+				y: 85.07,
+			},
+			{
+				name: "Davis",
+				x: 45.31,
+				y: 81.98,
+			},
+			{
+				name: "Cypress Flats",
+				x: 52.35,
+				y: 85.61,
+			},
+			{
+				name: "La Puerta",
+				x: 41.15,
+				y: 81.88,
+			},
+			{
+				name: "Murrieta Heights",
+				x: 55.54,
+				y: 77.51,
+			},
+		],
+	},
+	wheel: {
+		fullName: "Lucky Wheel",
+		shortName: "Lucky Wheel",
+	}
 }
 
 // Useful regexp
@@ -222,13 +502,14 @@ var businessRegexp = /^.*(bunker|coke|meth|cash|weed|forgery|nightclub|importExp
 var intervalID = setInterval(tick, 1000);
 var running = 0;
 
+// Useful generic functions
 function capitalize(s) {
 	return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 Number.prototype.mod = function(b) { 
     return ((this % b) + b) % b; 
-} 
+}
 
 function update() {
 	if (userInfo.version == "1.0.0") {
@@ -309,8 +590,17 @@ function update() {
 	if (userInfo.version == "1.7.3") {
 		userInfo.version = "1.8.0";
 	}
+	if (userInfo.version == "1.8.0") {
+		let toUpdate = ["bunker", "coke", "meth", "cash", "weed", "forgery", "nightclub", "importExport", "wheel"];
+		for (let i = 0; i < toUpdate.length; i++) {
+			let business = toUpdate[i];
+			delete userInfo[business].name;
+		}
+		userInfo.version = "1.9.0";
+	}
 }
 
+// Modules
 var PatchModule = (function () {
 	var patchnotes = null;
 	var patchIndex = null;
@@ -341,24 +631,202 @@ var PatchModule = (function () {
 			$("#updateNotice .pageSwap button[data-value=1]").prop("disabled", patchIndex == patchnotes.length - 1);
 		}
 	};
-	return {
-		clickMethod: function (b_left) {
-			// Check if we need to GET the patchnotes
-			if (patchnotes == null) {
-				$.get("patchnotes.html", {"_": $.now()}, function(html) {
-					html = html.replace(/>\s+</g,'><');  // Strip whitespace between html tags
-					patchnotes = $(html);
-					patchIndex = patchnotes.length - 1;
-					updateScreen(b_left);
-				});
-			}
-			else {
+	var clickMethod = function (b_left) {
+		// Check if we need to GET the patchnotes
+		if (patchnotes == null) {
+			$.get("patchnotes.html", {"_": $.now()}, function(html) {
+				html = html.replace(/>\s+</g,'><');  // Strip whitespace between html tags
+				patchnotes = $(html);
+				patchIndex = patchnotes.length - 1;
 				updateScreen(b_left);
-			}
-		},
+			});
+		}
+		else {
+			updateScreen(b_left);
+		}
+	};
+	return {
+		clickMethod: clickMethod,
 		redraw: redraw,
 	};
 })();
+
+var MiniNotifModule = (function() {
+	var setMessage = function(divName) {
+		$("#mini_notif > *").hide();
+		$("#"+divName).show();
+	};
+	var show = function() {
+		$("#mini_notif").show();
+	};
+	var hide = function() {
+		$("#mini_notif").hide();
+	};
+	return {
+		setMessage: setMessage,
+		show: show,
+		hide: hide,
+	};
+})();
+
+var SelectLocationModule = (function() {
+	var index;
+	var mapIcon;
+	var mapIconMute;
+	var locations;
+	var templateIcon;
+
+	var beginSelection = function(business) {
+		mapIcon = $("#"+business+"_map");
+		mapIconMute = $("#"+business+"_mute");
+
+		mapIcon.hide();
+		mapIconMute.hide();
+
+		locations = staticInfo[business].locations;
+
+		templateIcon = mapIcon.clone();
+		templateIcon.removeAttr("id");
+		templateIcon.addClass("faded");
+
+		hidePopup();
+		MiniNotifModule.setMessage("selectLocation");
+		MiniNotifModule.show();
+		$('html, body').animate({
+			scrollTop: $("#mapscreen").offset().top
+		}, 300);
+
+		$("#infotab button, #options button").on("click", cancelSelection);
+		$("#mapscreen .icons-map").off("click", muteBusiness);
+
+		index = 0;
+		swapToIndex(0);
+	};
+	var swapToIndex = function(idx) {
+		index = idx;
+		$(".potential_spot").remove();
+		for (let i = 0; i < locations.length; i++) {
+			let fadedIcon = templateIcon.clone();
+
+			fadedIcon.css({
+				left: locations[i].x + "%",
+				top: locations[i].y + "%",
+			});
+			fadedIcon.addClass("clickable potential_spot");
+			fadedIcon.attr("data-value", i);
+			fadedIcon.insertAfter("#bunker_map");
+			fadedIcon.show();
+
+			fadedIcon.on("click", function() {
+				swapToIndex(i);
+			});
+
+			if (i == index) {
+				fadedIcon.removeClass("faded");
+				$("#selectLocation span").html(locations[i].name);
+			}
+		}
+	};
+	var incrementIndex = function() {
+		index = (index + 1).mod(locations.length);
+		swapToIndex(index);
+	};
+	var decrementIndex = function() {
+		index = (index - 1).mod(locations.length);
+		swapToIndex(index);
+	};
+	var confirmCurrentLocation = function() {
+		changeInfo.map_position.x = locations[index].x;
+		changeInfo.map_position.y = locations[index].y;
+		showSettings();
+	};
+	var showSettings = function() {
+		$("#infotab button, #options button").off("click", cancelSelection);
+		$("#mapscreen .icons-map").on("click", muteBusiness);
+		$(".potential_spot").remove();
+		$("#notification").show();
+		$("#overlay").show();
+		redrawBusinessTabs();
+		mapIcon.show();
+		mapIconMute.show();
+		MiniNotifModule.setMessage("pausedMiniNotif");
+		if (running) {
+			MiniNotifModule.hide();
+		}
+	};
+	var cancelSelection = function() {
+		showSettings();
+	};
+	var startManualSelection = function() {
+		var outerDiv = $("#map");
+		var outDim = outerDiv.offset();
+		outDim.right = (outDim.left + outerDiv.width() - 15);
+		outDim.bottom = (outDim.top + outerDiv.height() - 15);
+		outDim.left += 15;
+		outDim.top += 15;
+		
+		hidePopup();
+		MiniNotifModule.setMessage("customLocation");
+		MiniNotifModule.show();
+		$('html, body').animate({
+			scrollTop: $("#mapscreen").offset().top
+		}, 300);
+
+		$(".potential_spot").remove();
+		mapIcon.show();
+		mapIconMute.show();
+		
+		$(document).on("mousemove", function(e) {
+			var x = (e.pageX);
+			var y = (e.pageY);
+			var x_allowed = (x >= outDim.left && x <= outDim.right);
+			var y_allowed = (y >= outDim.top && y <= outDim.bottom);
+			if (x_allowed && y_allowed) {
+				mapIcon.css({
+				   left: e.pageX,
+				   top:  e.pageY,
+				});
+				mapIconMute.css({
+				   left: e.pageX + 8,
+				   top:  e.pageY - 8,
+				});
+			}
+		});
+		
+		$("#map").on("click", function(e) {
+			var final_x = 100.0 * parseInt(mapIcon.css("left"), 10) / outerDiv.width();
+			var final_y = 100.0 * parseInt(mapIcon.css("top"), 10) / outerDiv.width();
+			changeInfo.map_position.x = final_x;
+			changeInfo.map_position.y = final_y;
+			cancelSelectionManual();
+		});
+
+		var cancelSelectionManual = function() {
+			$(document).off("mousemove");
+			$("#map").off("click");
+			$("#infotab button, #options button, #mini_notif button").off("click", cancelSelectionManual);
+			cancelSelection();
+		};
+		$("#infotab button, #options button, #mini_notif button").on("click", cancelSelectionManual);
+	};
+	return {
+		beginSelection: beginSelection,
+		incrementIndex: incrementIndex,
+		decrementIndex: decrementIndex,
+		confirmCurrentLocation: confirmCurrentLocation,
+		cancelSelection: cancelSelection,
+		startManualSelection: startManualSelection,
+	};
+})();
+
+// TODO: having this in global scope is awful, create notification module
+function muteBusiness(event) {
+	var business = businessRegexp.exec($(event.target).attr("id"))[1];
+	if (userInfo[business].hasOwnProperty("muted")) {
+		userInfo[business].muted = !userInfo[business].muted;
+	}
+	redrawBusinessTabs();
+}
 
 $(document).ready(function() {
 	// Multiple instance check
@@ -397,7 +865,6 @@ $(document).ready(function() {
 	recentFriday.setUTCMinutes(0);
 	recentFriday.setUTCSeconds(0);
 	recentFriday.setUTCMilliseconds(0);
-	//console.log(recentFriday.toUTCString());
 	if (recentFriday.toUTCString() != userInfo.recentFriday) {
 		userInfo.recentFriday = recentFriday.toUTCString();
 		remindFriday = true;
@@ -415,6 +882,9 @@ $(document).ready(function() {
 	if (newUser) {
 		displayPopup("newUserNotice", true);
 	}
+
+	// Display paused mini notif
+	MiniNotifModule.setMessage("pausedMiniNotif");
 	
 	// Window resize function
 	$(window).resize(function() {
@@ -438,6 +908,8 @@ $(document).ready(function() {
 			map_h = $("#mapscreen #bg").height();
 			$("#overlay").css("width", map_w);
 			$("#overlay").css("height", map_h);
+			// Limit max notification height
+			$("#notification .main").css("max-height", map_h - 100);
 			// Remain static
 			$("#notification").css("position", "absolute");
 			$("#overlay").css("position", "absolute");
@@ -452,19 +924,15 @@ $(document).ready(function() {
 			// Make transparent overlay cover screen
 			$("#overlay").css("width", "100%");
 			$("#overlay").css("height", "100%");
+			// Revert limit on max notification height
+			$("#notification .main").css("max-height", "");
 			// Move with screen
 			$("#notification").css("position", "fixed");
 			$("#overlay").css("position", "fixed");
 		}
 	});
 	
-	function muteBusiness(event) {
-		var business = businessRegexp.exec($(event.target).attr("id"))[1];
-		if (userInfo[business].hasOwnProperty("muted")) {
-			userInfo[business].muted = !userInfo[business].muted;
-		}
-		redrawBusinessTabs();
-	}
+	// Click icon to mute business
 	$("#mapscreen .icons-map").on("click", muteBusiness);
 	
 	// General notification settings
@@ -481,30 +949,58 @@ $(document).ready(function() {
 	
 	// General input field settings
 	$(".incDecButtons button.minus").on("click", function(event) {
-		var inputField = $(event.target).siblings("input");
+		let inputField = $(event.target).siblings("input");
 		inputField.val(function(i, oldval) {
-			var minVal = parseInt($(this).attr("min"), 10);
-			return Math.max(parseInt(oldval, 10) - 1, minVal);
+			inputField.parent().removeClass("invalid-value");
+			let minVal = parseInt($(this).attr("min"), 10);
+			let value = parseInt(oldval, 10);
+			if (isNaN(value)) {
+				return minVal;
+			}
+			return Math.max(value - 1, minVal);
 		});
 		inputField.trigger("keyup");
 	});
 	
 	$(".incDecButtons button.plus").on("click", function(event) {
-		var inputField = $(event.target).siblings("input");
+		let inputField = $(event.target).siblings("input");
 		inputField.val(function(i, oldval) {
-			var maxVal = parseInt($(this).attr("max"), 10);
-			return Math.min(parseInt(oldval, 10) + 1, maxVal);
+			inputField.parent().removeClass("invalid-value");
+			let maxVal = parseInt($(this).attr("max"), 10);
+			let value = parseInt(oldval, 10);
+			if (isNaN(value)) {
+				return maxVal;
+			}
+			return Math.min(value + 1, maxVal);
 		});
 		inputField.trigger("keyup");
 	});
 	
-	$(".integer_only").on("keyup", function(event) {
-		var current = Math.round(parseInt($(this).val(), 10));
-		if (isNaN(current)) {
-			return;
-		}
-		$(this).val(current);
+	$("input").on("focus", function() {
+		$(this).parent().removeClass("invalid-value");
 	});
+	
+	$("input.integer_only").on("keydown", function(event) {
+		// Only allow digits and backspace
+		let digitRegexp = /^[0-9]?(?:Backspace)?$/;
+		let result = digitRegexp.test(event.key);
+		return result;
+	});
+	
+	let inputChecker = function(event) {
+		let input = $(event.target);
+		if (input.attr("type") == "number") {
+			let current = parseInt(input.val(), 10);
+			console.log(current);
+			if (isNaN(current)) {
+				input.parent().addClass("invalid-value");
+				return false
+			}
+		}
+		return true;
+	};
+	
+	$("input").on("focusout", inputChecker);
 	
 	$(".range_enforced").on("keyup", function(event) {
 		var minVal = parseInt($(this).attr("min"), 10);
@@ -513,8 +1009,8 @@ $(document).ready(function() {
 		if (isNaN(current)) {
 			return;
 		}
-		if (current > maxVal) { $(this).val(maxVal); var changed = true; }
-		if (current < minVal) { $(this).val(minVal); var changed = true; }
+		if (current > maxVal) { $(this).val(maxVal); }
+		if (current < minVal) { $(this).val(minVal); }
 	});
 	
 	// Patch notes buttons
@@ -525,10 +1021,24 @@ $(document).ready(function() {
 	
 	// Nightclub Manager buttons
 	$("#nightclubGUI button.sellsome").on("click", function(event) {
-		var products = staticInfo["nightclub"]["products"];
-		for (var i = 0; i < products.length; i++) {
-			var product = products[i];
-			var toSell = $("#nightclubGUI ."+product+" input").val();
+		// TODO: fix hacky validation
+		let valid = true;
+		let products = staticInfo["nightclub"]["products"];
+		// First check if all fields are valid
+		for (let i = 0; i < products.length; i++) {
+			let product = products[i];
+			let toSell = parseInt($("#nightclubGUI ."+product+" input[type=number]").val(), 10);
+			if (isNaN(toSell)) {
+				valid = false;
+			}
+		}
+		if (!valid) {
+			return;
+		}
+		// Then do actual modifications
+		for (let i = 0; i < products.length; i++) {
+			let product = products[i];
+			let toSell = parseInt($("#nightclubGUI ."+product+" input").val(), 10);
 			userInfo["nightclub"][product] = Math.max(userInfo["nightclub"][product] - toSell, 0);
 			$("#nightclubGUI ."+product+" input").val("0");
 		}
@@ -557,7 +1067,7 @@ $(document).ready(function() {
 	
 	$(".mcbusiness button.setup").on("click", function(event) {
 		var business = $(event.target).parents(".mcbusiness").attr("id");
-		$("#mcbusinessSetupGUI .heading h1").html(userInfo[business].name+" Setup");
+		$("#mcbusinessSetupGUI .heading h1").html(staticInfo[business].fullName+" Setup");
 		$("#mcbusinessSetupGUI").prop("class", "setupGUI "+business);
 		createBackup(business);
 		
@@ -581,69 +1091,30 @@ $(document).ready(function() {
 		
 		redrawScreen();
 	});
-	
+
 	$(".setupGUI .position button").on("click", function(event) {
-		var business = businessRegexp.exec($(event.target).parents(".setupGUI").attr("class"))[1];
-		var toMove = $("#"+business+"_map");
-		var toMoveMute = $("#"+business+"_mute");
-		var outerDiv = $("#map");
-		var outDim = outerDiv.offset();
-		outDim.right = (outDim.left + outerDiv.width() - 15);
-		outDim.bottom = (outDim.top + outerDiv.height() - 15);
-		outDim.left += 15;
-		outDim.top += 15;
-		
-		hidePopup();
-		$("#mapscreen .icons-map").off("click");
-		$("#mini_notif p").html("Click to select the location.");  // TODO: make this less hacky
-		$("#mini_notif").show();
-		$('html, body').animate({
-			scrollTop: $("#mapscreen").offset().top
-		}, 300);
-		
-		$(document).on("mousemove", function(e) {
-			var x = (e.clientX);
-			var y = (e.clientY);
-			var x_allowed = (x >= outDim.left && x <= outDim.right);
-			var y_allowed = (y >= outDim.top && y <= outDim.bottom);
-			if (x_allowed && y_allowed) {
-				toMove.css({
-				   left: e.pageX,
-				   top:  e.pageY,
-				});
-				toMoveMute.css({
-				   left: e.pageX + 8,
-				   top:  e.pageY - 8,
-				});
-			}
-		});
-		
-		var clicks = 0;
-		$("#mapscreen").on("click", function(e) {
-			var final_x = 100.0 * parseInt(toMove.css("left"), 10) / outerDiv.width();
-			var final_y = 100.0 * parseInt(toMove.css("top"), 10) / outerDiv.width();
-			changeInfo["map_position"].x = final_x;
-			changeInfo["map_position"].y = final_y;
-		});
-		
-		$("body").on("click", function(e) {
-			if (clicks == 0) {
-				clicks++;
-				return;
-			}
-			toMove.css("top", changeInfo["map_position"].y+"%");
-			toMove.css("left", changeInfo["map_position"].x+"%");
-			$("#mapscreen").off("click");
-			$("body").off("click");
-			$(document).off("mousemove");
-			$("#notification").show();
-			$("#overlay").show();
-			$("#mini_notif p").html("The business manager is paused.");  // TODO: make this less hacky
-			if (running) {
-				$("#mini_notif").hide();
-			}
-			$("#mapscreen .icons-map").on("click", muteBusiness);
-		});
+		let business = businessRegexp.exec($(event.target).parents(".setupGUI").attr("class"))[1];
+		SelectLocationModule.beginSelection(business);
+	});
+
+	$("#selectLocation button[data-value=0]").on("click", function(event) {
+		SelectLocationModule.decrementIndex();
+	});
+
+	$("#selectLocation button[data-value=1]").on("click", function(event) {
+		SelectLocationModule.incrementIndex();
+	});
+
+	$("#selectLocation button[data-value=2]").on("click", function(event) {
+		SelectLocationModule.confirmCurrentLocation();
+	});
+
+	$("#selectLocation button[data-value=3]").on("click", function(event) {
+		SelectLocationModule.cancelSelection();
+	});
+
+	$("#selectLocation button[data-value=4]").on("click", function(event) {
+		SelectLocationModule.startManualSelection();
 	});
 	
 	$(".setupGUI .hide_research button").on("click", function(event) {
@@ -664,8 +1135,24 @@ $(document).ready(function() {
 	});
 	
 	$(".setupGUI button.apply").on("click", function(event) {
+		// TODO: fix hacky validation
+		let valid = true;
 		var gui = $(event.target).parents(".setupGUI").prop("id");
 		var business = businessRegexp.exec($("#"+gui).prop("class"))[1];
+		inputs = $("#"+gui + " input[type=number]");
+		for (let i = 0; i < inputs.length; i++) {
+			input = $(inputs[i]);
+			if (input.attr("type") == "number") {
+				let current = parseInt(input.val(), 10);
+				if (isNaN(current)) {
+					input.addClass("invalid-value");
+					valid = false;
+				}
+			}
+		}
+		if (!valid) {
+			return false;
+		}
 		userInfo[business] = changeInfo;
 		hidePopup();
 		redrawBusinessTabs();
@@ -710,11 +1197,6 @@ $(document).ready(function() {
 	$("#mainSetup .buttons button.cancel").off("click");
 	$("#mainSetup .buttons button.apply").off("click");
 	
-	$("#mainSetup .buttons button.reset").on("click", function(event) {
-		displayPopup("resetWarning");
-		redrawScreen();
-	});
-	
 	$("#mainSetup .buttons button.cancel").on("click", function(event) {
 		loadBackup();
 		redrawBusinessTabs();
@@ -723,6 +1205,20 @@ $(document).ready(function() {
 	});
 	
 	$("#mainSetup .buttons button.apply").on("click", function(event) {
+		// TODO: fix hacky validation
+		let valid = true;
+		inputs = $("#mainSetup" + " input[type=number]");
+		for (let i = 0; i < inputs.length; i++) {
+			input = $(inputs[i]);
+			let current = parseInt(input.val(), 10);
+			if (isNaN(current)) {
+				input.addClass("invalid-value");
+				valid = false;
+			}
+		}
+		if (!valid) {
+			return false;
+		}
 		userInfo.settings = changeInfo;
 		notifications.lastPlayed = 0;
 		redrawBusinessTabs();
@@ -804,11 +1300,16 @@ $(document).ready(function() {
 			localStorage.setItem("userInfo", JSON.stringify(userInfo));
 			window.onbeforeunload = null;
 			window.location.reload(false);
-		}
+		};
 		reader.readAsText(file);
 	});
+
+	$("#mainSetup .dataDownload button[data-value=reset]").on("click", function(event) {
+		displayPopup("resetWarning");
+		redrawScreen();
+	});
 	
-	$("#mainSetup .about button").on("click", function(event) {
+	$("#mainSetup .about button[data-value=0]").on("click", function(event) {
 		PatchModule.redraw();
 		displayPopup("updateNotice");
 		redrawScreen();
@@ -824,7 +1325,7 @@ $(document).ready(function() {
 		localStorage.setItem("userInfo", JSON.stringify(userInfo));
 		redrawBusinessTabs();
 		redrawScreen();
-		hidePopup();
+		hidePopup(true);
 	});
 	
 	// General sliders
@@ -914,7 +1415,7 @@ $(document).ready(function() {
 			$("#options button.toggle").html("Pause");
 			lastTickTime = null;
 			feesCooldown = 2880000;
-			$("#mini_notif").hide();
+			MiniNotifModule.hide();
 			window.onbeforeunload = function() {
 				return true;
 			};
@@ -927,7 +1428,7 @@ $(document).ready(function() {
 			$("#options button.toggle").addClass("start");
 			$("#options button.toggle").addClass("green");
 			$("#options button.toggle").html("Start");
-			$("#mini_notif").show();
+			MiniNotifModule.show();
 			displayPopup("pauseNotice");
 			window.onbeforeunload = null;
 		}
@@ -954,7 +1455,7 @@ $(document).ready(function() {
 });
 
 $(window).on('load', function() {
-	// Fix transparent overlay not appearing because image was not loaded in time
+	// Fix transparent overlay not appearing because background image was not loaded in time
 	window.dispatchEvent(new Event("resize"));
 });
 
@@ -963,6 +1464,8 @@ function displayPopup(divName, clearExisting) {
 	$("#"+divName).show();
 	$("#notification").show();
 	$("#overlay").show();
+	$("body").addClass("popupOpen");
+	
 	if (clearExisting) {
 		windowStack = [divName];
 	}
@@ -974,6 +1477,8 @@ function displayPopup(divName, clearExisting) {
 function hidePopup(hideAll) {
 	$("#notification").hide();
 	$("#overlay").hide();
+	$("body").removeClass("popupOpen");
+	$(".invalid-value").removeClass("invalid-value");  // TODO: less hacky!
 	if (hideAll) {
 		windowStack = [];
 	}
@@ -996,7 +1501,7 @@ function loadBackup() {
 
 function msFormat(msTime) {
 	// Returns the time in hours, minutes, seconds, (ms)
-	var timeArray = [0, 0, 0, 0];
+	let timeArray = [0, 0, 0, 0];
 	timeArray[0] = Math.floor(msTime / (1000*60*60));
 	timeArray[1] = Math.floor((msTime % (1000*60*60)) / (1000*60));
 	timeArray[2] = Math.floor((msTime % (1000*60)) / 1000);
@@ -1004,19 +1509,43 @@ function msFormat(msTime) {
 	return timeArray;
 }
 
-function timeFormat(timeArray) {
-	// Convert to string
-	var hours = (timeArray[0]).toLocaleString(undefined, {minimumIntegerDigits: 2});
-	var minutes = (timeArray[1]).toLocaleString(undefined, {minimumIntegerDigits: 2});
-	var seconds = (timeArray[2]).toLocaleString(undefined, {minimumIntegerDigits: 2});
-	var s = "";
-	if (hours > 0) {
-		s += hours + "H ";
+function timeFormat(timeArray, maxFigures) {
+	// Converts to a string, only shows hours / minutes if necessary
+	// Optionally will only show maxFigures significant parts
+	// For example, maxFigures = 2 cuts off seconds if time is longer than 1 hour
+	let hours = timeArray[0];
+	let minutes = timeArray[1];
+	let seconds = timeArray[2];
+
+	let digits = 1;
+	if (typeof maxFigures === 'undefined') {
+		maxFigures = 3;
+		digits = 2;
 	}
-	if (hours > 0 || minutes > 0) {
-		s += minutes + "M ";
+	
+	let s = "";
+
+	if (hours > 0 && maxFigures > 0) {
+		s += hours.toLocaleString(undefined, {minimumIntegerDigits: digits});
+		s += "H ";
+		maxFigures--;
+		digits = 2;
 	}
-	s += seconds + "S";
+	if ((hours > 0 || minutes > 0) && maxFigures > 0) {
+		s += minutes.toLocaleString(undefined, {minimumIntegerDigits: digits});
+		s += "M ";
+		maxFigures--;
+		digits = 2;
+	}
+	if (maxFigures > 0) {
+		s += seconds.toLocaleString(undefined, {minimumIntegerDigits: digits});
+		s += "S ";
+		maxFigures--;
+		digits = 2;
+	}
+
+	// Remove last space
+	s = s.slice(0, s.length - 1);
 	
 	return s;
 }
@@ -1031,7 +1560,6 @@ function tick() {
 	lastTickTime = currentTime;
 	var maxSeconds;
 	var secondsRun;
-	//console.log(deltaSec);
 	
 	if (running) {
 		// Bunker
@@ -1158,9 +1686,13 @@ function redrawBusinessTabs() {
 					var img = $("<img id='"+business+"_mute' class='icons icons-map icons-mute'>");
 					img.attr("src", "img/blank.png");
 					img.insertAfter("#"+business+"_map");
-					img.css("top", "calc("+y+"% - 8px");
-					img.css("left", "calc("+x+"% + 8px");
+					
 				}
+				else {
+					var img = $("#"+business+"_mute");
+				}
+				img.css("top", "calc("+y+"% - 8px");
+				img.css("left", "calc("+x+"% + 8px");
 			}
 			else {
 				$("#"+business+"_mute").remove();
@@ -1207,13 +1739,15 @@ function redrawScreen() {
 	totalProduct.html(totalNightclubProduct+"</br>("+ transport+")");
 	
 	// setupGUI buttons
-	// Main Setup
+	// TODO: check active dialog box, only update if active
+	// Generic
 	var owned = changeInfo["owned"];
 	$(".setupGUI .own button[data-value=1]").prop("disabled", owned);
 	$(".setupGUI .own button[data-value=0]").prop("disabled", !owned);
 	
 	$(".setupGUI .position button").prop("disabled", !owned);
-	
+
+	// Main Setup
 	var hide_unowned = changeInfo["hide_unowned"];
 	$("#mainSetup .hideUnowned button[data-value=1]").prop("disabled", hide_unowned);
 	$("#mainSetup .hideUnowned button[data-value=0]").prop("disabled", !hide_unowned);
@@ -1272,6 +1806,7 @@ function redrawScreen() {
 	for (var i = 0; i < progressBars.length; i++) {
 		var type = typeRegexp.exec($(progressBars[i]).parents("tr").attr("class"))[1];
 		var business = $(progressBars[i]).parents("div.information").attr("id");
+		// Hide bunker research bar if option selected
 		if (business == "bunker" && type == "research") {
 			if (userInfo["bunker"]["hide_research"]) {
 				$("#bunker tr.research").hide();
@@ -1279,6 +1814,7 @@ function redrawScreen() {
 			}
 			$("#bunker tr.research").show();
 		}
+		// Hide nightclub bars if option selected and product not being produced
 		else if (business == "nightclub") {
 			if (userInfo.nightclub.sidebar) {
 				if (!userInfo.nightclub.producing[type]) {
@@ -1288,25 +1824,30 @@ function redrawScreen() {
 			}
 			$("#nightclub tr."+type).show();
 		}
+		// Fill bar
 		progress_bar_style = userInfo.settings["progress_bar_style"];
 		var percentage = 100.0*userInfo[business][type]/staticInfo[business]["max"+capitalize(type)];
 		$("#"+business+" tr."+type+" .progress_bar .bar").css("width", percentage+"%");
+		// Plain
 		if (progress_bar_style == 0) {
 			$("#"+business+" tr."+type).removeClass("big");
 			$("#"+business+" tr."+type+" .progress_bar .fivetick").hide();
 			$("#"+business+" tr."+type+" .progress_bar span").hide();
 		}
+		// Five tick
 		else if (progress_bar_style == 1) {
 			$("#"+business+" tr."+type).removeClass("big");
 			$("#"+business+" tr."+type+" .progress_bar .fivetick").show();
 			$("#"+business+" tr."+type+" .progress_bar span").hide();
 		}
+		// Percentage
 		else if (progress_bar_style == 2) {
 			$("#"+business+" tr."+type).addClass("big");
 			$("#"+business+" tr."+type+" .progress_bar .fivetick").hide();
 			$("#"+business+" tr."+type+" .progress_bar span").html(Math.round(percentage)+"%");
 			$("#"+business+" tr."+type+" .progress_bar span").show();
 		}
+		// Time remaining
 		else if (progress_bar_style == 3) {
 			$("#"+business+" tr."+type).addClass("big");
 			$("#"+business+" tr."+type+" .progress_bar .fivetick").hide();
@@ -1317,6 +1858,7 @@ function redrawScreen() {
 			else if (type == "supplies") {
 				remaining_ms = (percentage/100)*staticInfo[business]["max"+capitalize(type)]*60*1000;
 				if (business == "bunker" && userInfo.bunker.mode == 2) {
+					// Fix for time remaining in research mode
 					remaining_ms *= 350/150;
 				}
 			}
@@ -1334,15 +1876,7 @@ function redrawScreen() {
 			}
 			else {
 				var timeArray = msFormat(remaining_ms);
-				if (timeArray[0] > 0) {
-					remaining_string = timeArray[0] + "+ H";
-				}
-				else if (timeArray[1] > 0) {
-					remaining_string = timeArray[1] + " M";
-				}
-				else {
-					remaining_string = timeArray[2] + " S";
-				}
+				remaining_string = timeFormat(timeArray, 2);
 			}
 			$("#"+business+" tr."+type+" .progress_bar span").html(remaining_string);
 			$("#"+business+" tr."+type+" .progress_bar span").show();
@@ -1369,7 +1903,9 @@ function redrawScreen() {
 		$("#importExport button.sell").html(s);
 	}
 	var highend_cars = userInfo["importExport"]["highend_cars"];
-	$("#importExport button.source").html("Source ("+highend_cars+")");
+	if (!isNaN(highend_cars)) {
+		$("#importExport button.source").html("Source ("+highend_cars+")");
+	}
 	
 	// Wheel cooldown
 	if (new Date().getTime() - userInfo["wheel"]["timestamp"] > 86400000) {
@@ -1456,11 +1992,11 @@ function checkNotify() {
 		if (userInfo[business].owned) {
 			if (userInfo[business].product >= staticInfo[business].maxProduct) {
 				flashIcon(business);
-				playNotification(business, "GTA V Business Manager", "Your "+userInfo[business].name+" business has reached maximum product and is ready to sell.");
+				playNotification(business, "GTA V Business Manager", "Your "+staticInfo[business].fullName+" business has reached maximum product and is ready to sell.");
 			}
 			else if (userInfo[business].supplies <= 0) {
 				flashIcon(business);
-				playNotification(business, "GTA V Business Manager", "Your "+userInfo[business].name+" business has run out of supplies.");
+				playNotification(business, "GTA V Business Manager", "Your "+staticInfo[business].fullName+" business has run out of supplies.");
 			}
 			else {
 				flashIcon(business, false);
@@ -1550,7 +2086,7 @@ window.notify = {
 					$("#mainSetup .notificationSettings button[data-value=push]").removeClass("off");
 					changeInfo.push_notifications = true;
 				}
-				if (permission === "denied") {
+				if (permission === "denied" || permission === "default") {
 					displayPopup("pushDeniedNotice");
 				}
 			});
@@ -1566,7 +2102,7 @@ window.notify = {
 			var id = notify.id;
 			notify.list[id] = new Notification(title, {
 				body: body,
-				tag: id,
+				tag: business,
 				icon: "img/"+business+".png",
 				lang: "",
 				dir: "auto",

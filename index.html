@@ -55,7 +55,30 @@
 				<img id="wheel_map" src="img/blank.png" class="icons icons-map icons-wheel clickable" alt="Lucky Wheel icon"/>
 			</div>
 			<div id="mini_notif">
-				<p>The business manager is paused.</p>
+				<div id="pausedMiniNotif">
+					<p>The business manager is paused.</p>
+				</div>
+				<div id="selectLocation" class="has-buttons" style="display:none;">
+					<div class="left">
+						<button class="fa fa-arrow-left button red" data-value="0"></button><!--
+					 --><span></span><!--
+					 --><button class="fa fa-arrow-right button red" data-value="1"></button>
+					</div>
+					<div class="right">
+						<button class="fa fa-check button red" data-value="2"></button><!--
+					 --><button class="fa fa-times button red" data-value="3"></button><!--
+					 --><button class="fa fa-ellipsis-v button red" data-value="4"></button>
+					</div>
+				</div>
+				<div id="customLocation" class="has-buttons" style="display:none;">
+					<div class="left">
+						<p class="desktop-only">Click map to choose custom location.</p>
+						<p class="mobile-only">Tap map to choose custom location.</p>
+					</div>
+					<div class="right">
+						<button class="fa fa-times button red" data-value="3"></button>
+					</div>
+				</div>
 			</div>
 			<div id="options" class="fsz">
 				<button class="button toggle start green">Start</button>
@@ -101,19 +124,33 @@
 						</div>
 					</div>
 					<div class="main">
-						<h1 style="padding-left: 3px;">Version 1.8.0</h1>
+						<h1 style="padding-left: 3px;">Version 1.9.0</h1>
 						<div class="indent">
 							<h2>Improvements</h2>
 							<ul>
-								<li>Added the ability to view previous patch notes (available in the top right of this window!).</li>
-								<li>Added favicon.</li>
-								<li>The total Nightclub stock is now shown in the modify menu, along with the vehicle required to sell all stock.</li>
+								<li>Added preplaced locations when setting the location of a business.</li>
+								<ul>
+									<li>Click a location to select it or use the arrows to cycle through locations.</li>
+									<li>Confirm the location with the tick, or cancel with the cross.</li>
+									<li>Swap back to manual placement using the three dot button.</li>
+								</ul>
+								<li>'Time remaining' progress style now always shows minutes.</li>
+								<li>Added button to view the business manager's GitHub project in the main setup.</li>
+								<ul>
+									<li>Post bugs and suggest improvements here!</li>
+								</ul>
+								<li>Added missing older patch notes.</li>
 							</ul>
 							<h2>Fixes</h2>
 							<ul>
-								<li>Fixed bug where supplies could go under 0% and product could go over 100% if the device was asleep for too long.</li>
-								<li>Fixed bug where the session timer would become out of sync after reaching 0 if the device was asleep.</li>
-								<li>Fixed Nightclub modify menu on mobile.</li>
+								<li>Fixed entering numbers into number only text fields.</li>
+								<li>Fixed applying changes to settings menus with invalid text field entries.</li>
+								<li>Fixed main dialog box buttons on thin mobile displays.</li>
+								<li>Removed ability to scroll background while a dialog box is open on mobile.</li>
+								<li>Moved Weed and Document Forgery default locations to more appropriate locations.</li>
+								<li>Moved Reset Everything button to data section in main settings.</li>
+								<li>Fixed large dialog boxes going off screen on thin width desktop displays.</li>
+								<li>Fixed various display issues on Microsoft Edge.</li>
 							</ul>
 						</div>
 					</div>
@@ -202,7 +239,7 @@
                                 </td>
                             </tr>
                             <tr class="appStyle">
-                                <td>App style:</td>
+                                <td>Theme:</td>
                                 <td class="onechoice fsz">
                                     <button class="button white" data-value="0">Light</button>
                                     <button class="button grey" data-value="1">Dark</button>
@@ -212,7 +249,8 @@
                                 <td>Data:</td>
                                 <td class="fsz">
                                     <button class="button orange" data-value="0">Download</button>
-                                    <button class="button orange" data-value="1">Load from file</button>
+									<button class="button orange" data-value="1">Load from file</button>
+									<button class="button orange" data-value="reset">Reset Everything</button>
                                     <a id="dataDownloadLink" style="display: none;"></a>
                                     <input id="fileInput" type="file" accept=".json, application/json" style="display: none;" />
                                 </td>
@@ -221,12 +259,12 @@
                                 <td>About:</td>
                                 <td class="fsz">
                                     <button class="button orange" data-value="0">Patch notes</button>
+									<a target="_blank" rel="noopener noreferrer" href="https://github.com/func-vehicle/gtamanager"><button class="button orange">GitHub</button></a>
                                 </td>
                             </tr>
                         </table>
 					</div>
 					<div class="buttons fsz">
-						<button class="button reset red">Reset Everything</button>
 						<button class="button cancel red">Cancel</button>
 						<button class="button apply red">Apply</button>
 					</div>
@@ -294,7 +332,7 @@
 							<tr class="creation">
 								<td>Cash Creation</td>
 								<td></td>
-								<td class="incDecButtons fsz">
+								<td class="incDecButtons">
 									<button class="fa fa-minus button minus"></button>
 									<input type="number" class="range_enforced integer_only" name="quantity" value="0" min="0" max="40"/>
 									<button class="fa fa-plus button plus"></button>
@@ -303,7 +341,7 @@
 							<tr class="organic">
 								<td>Organic Produce</td>
 								<td></td>
-								<td class="incDecButtons fsz">
+								<td class="incDecButtons">
 									<button class="fa fa-minus button minus"></button>
 									<input type="number" class="range_enforced integer_only" name="quantity" value="0" min="0" max="80"/>
 									<button class="fa fa-plus button plus"></button>
@@ -312,7 +350,7 @@
 							<tr class="copying">
 								<td>Printing and Copying</td>
 								<td></td>
-								<td class="incDecButtons fsz">
+								<td class="incDecButtons">
 									<button class="fa fa-minus button minus"></button>
 									<input type="number" class="range_enforced integer_only" name="quantity" value="0" min="0" max="60"/>
 									<button class="fa fa-plus button plus"></button>
@@ -322,7 +360,6 @@
 								<td>Total</td>
 								<td></td>
 								<td></td>
-
 						</table>
 					</div>
 					<div class="buttons fsz">
@@ -474,7 +511,7 @@
 								<td>High-end cars:</td>
 								<td class="incDecButtons fsz">
 									<button class="fa fa-minus button minus"></button>
-									<input type="number" class="range_enforced" name="quantity" value="0" min="0" max="20"/>
+									<input type="number" class="range_enforced integer_only" name="quantity" value="0" min="0" max="20"/>
 									<button class="fa fa-plus button plus"></button>
 								</td>
 							</tr>
@@ -493,7 +530,6 @@
 				</div>
 <!-- }}} -->
 <!-- {{{ wheelSetupGUI -->
-
 				<div id="wheelSetupGUI" class="setupGUI wheel">
 					<div class="heading">
 						<h1>Lucky Wheel Setup</h1>
@@ -714,7 +750,6 @@
 							<img src="img/blank.png" class="icons icons-info icons-weed" alt="Weed icon"/>
 						</div>
 						<h1>Weed</h1> <!-- FIXME: id naming convention to weed -->
-
 						<button class="fa fa-cog button setup"></button>
 					</div>
 					<div class="content">
