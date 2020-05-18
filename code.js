@@ -2,7 +2,7 @@ var userInfo;
 
 // The current format of user's data.
 var defaultUserInfo = {
-	version: "1.8.0",
+	version: "1.9.0",
 	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
@@ -908,6 +908,8 @@ $(document).ready(function() {
 			map_h = $("#mapscreen #bg").height();
 			$("#overlay").css("width", map_w);
 			$("#overlay").css("height", map_h);
+			// Limit max notification height
+			$("#notification .main").css("max-height", map_h - 100);
 			// Remain static
 			$("#notification").css("position", "absolute");
 			$("#overlay").css("position", "absolute");
@@ -922,6 +924,8 @@ $(document).ready(function() {
 			// Make transparent overlay cover screen
 			$("#overlay").css("width", "100%");
 			$("#overlay").css("height", "100%");
+			// Revert limit on max notification height
+			$("#notification .main").css("max-height", "");
 			// Move with screen
 			$("#notification").css("position", "fixed");
 			$("#overlay").css("position", "fixed");
