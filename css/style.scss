@@ -47,7 +47,7 @@ body {
     }
 }
 .desktop .mobile-only, .mobile .desktop-only {
-	display: none;
+	display: none !important;
 }
 .col {
 	display: block;
@@ -329,7 +329,7 @@ input {
 	transform: translate(calc(-50% - 5px), 0);
     text-align: center;
 
-    #selectLocation {
+    .has-buttons {
         display: flex;
         flex-flow: row;
     }
@@ -363,7 +363,7 @@ input {
             }
         }
 
-        span {
+        span, p {
             flex: 1 1 auto;
             text-align: center;
             overflow: hidden;

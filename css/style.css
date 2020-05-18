@@ -44,7 +44,7 @@ body.darkMode {
 }
 
 .desktop .mobile-only, .mobile .desktop-only {
-  display: none;
+  display: none !important;
 }
 
 .col {
@@ -324,7 +324,7 @@ input[type=range]::-ms-thumb {
   transform: translate(calc(-50% - 5px), 0);
   text-align: center;
 }
-#mini_notif #selectLocation {
+#mini_notif .has-buttons {
   display: flex;
   flex-flow: row;
 }
@@ -352,7 +352,7 @@ input[type=range]::-ms-thumb {
 #mini_notif .left .button:last-child {
   margin-left: 4px;
 }
-#mini_notif .left span {
+#mini_notif .left span, #mini_notif .left p {
   flex: 1 1 auto;
   text-align: center;
   overflow: hidden;

@@ -332,8 +332,8 @@ var staticInfo = {
 			},
 			{
 				name: "San Chianski Mountain Range",
-				x: 49.25,
-				y: 14.71,
+				x: 68.87,
+				y: 31.02,
 			},
 		],
 	},
@@ -591,7 +591,6 @@ function update() {
 		userInfo.version = "1.8.0";
 	}
 	if (userInfo.version == "1.8.0") {
-		// THE BIG UPDATE!
 		let toUpdate = ["bunker", "coke", "meth", "cash", "weed", "forgery", "nightclub", "importExport", "wheel"];
 		for (let i = 0; i < toUpdate.length; i++) {
 			let business = toUpdate[i];
@@ -653,18 +652,9 @@ var PatchModule = (function () {
 })();
 
 var MiniNotifModule = (function() {
-	// TODO: convert this to one function when done
-	var displayPaused = function() {
+	var setMessage = function(divName) {
 		$("#mini_notif > *").hide();
-		$("#pausedMiniNotif").show();
-	};
-	var displaySelectLocation = function() {
-		$("#mini_notif > *").hide();
-		$("#selectLocation").show();
-	};
-	var displayCustomLocation = function() {
-		$("#mini_notif > *").hide();
-		$("#customLocation").show();
+		$("#"+divName).show();
 	};
 	var show = function() {
 		$("#mini_notif").show();
@@ -673,9 +663,7 @@ var MiniNotifModule = (function() {
 		$("#mini_notif").hide();
 	};
 	return {
-		displayPaused: displayPaused,
-		displaySelectLocation: displaySelectLocation,
-		displayCustomLocation: displayCustomLocation,
+		setMessage: setMessage,
 		show: show,
 		hide: hide,
 	};
@@ -683,33 +671,33 @@ var MiniNotifModule = (function() {
 
 var SelectLocationModule = (function() {
 	var index;
-	var toMove;
-	var toMoveMute;
+	var mapIcon;
+	var mapIconMute;
 	var locations;
 	var templateIcon;
 
 	var beginSelection = function(business) {
-		toMove = $("#"+business+"_map");
-		toMoveMute = $("#"+business+"_mute");
+		mapIcon = $("#"+business+"_map");
+		mapIconMute = $("#"+business+"_mute");
 
-		toMove.hide();
-		toMoveMute.hide();
+		mapIcon.hide();
+		mapIconMute.hide();
 
 		locations = staticInfo[business].locations;
 
-		templateIcon = toMove.clone();
+		templateIcon = mapIcon.clone();
 		templateIcon.removeAttr("id");
 		templateIcon.addClass("faded");
 
 		hidePopup();
-		MiniNotifModule.displaySelectLocation();
+		MiniNotifModule.setMessage("selectLocation");
 		MiniNotifModule.show();
 		$('html, body').animate({
 			scrollTop: $("#mapscreen").offset().top
 		}, 300);
 
-		// TODO: register click handler to check that user is not clicking buttons outside of map
 		$("#infotab button, #options button").on("click", cancelSelection);
+		$("#mapscreen .icons-map").off("click", muteBusiness);
 
 		index = 0;
 		swapToIndex(0);
@@ -728,6 +716,10 @@ var SelectLocationModule = (function() {
 			fadedIcon.attr("data-value", i);
 			fadedIcon.insertAfter("#bunker_map");
 			fadedIcon.show();
+
+			fadedIcon.on("click", function() {
+				swapToIndex(i);
+			});
 
 			if (i == index) {
 				fadedIcon.removeClass("faded");
@@ -750,13 +742,14 @@ var SelectLocationModule = (function() {
 	};
 	var showSettings = function() {
 		$("#infotab button, #options button").off("click", cancelSelection);
+		$("#mapscreen .icons-map").on("click", muteBusiness);
 		$(".potential_spot").remove();
 		$("#notification").show();
 		$("#overlay").show();
 		redrawBusinessTabs();
-		toMove.show();
-		toMoveMute.show();
-		MiniNotifModule.displayPaused();
+		mapIcon.show();
+		mapIconMute.show();
+		MiniNotifModule.setMessage("pausedMiniNotif");
 		if (running) {
 			MiniNotifModule.hide();
 		}
@@ -773,55 +766,48 @@ var SelectLocationModule = (function() {
 		outDim.top += 15;
 		
 		hidePopup();
-		$("#mapscreen .icons-map").off("click");
-		MiniNotifModule.displayCustomLocation();
+		MiniNotifModule.setMessage("customLocation");
 		MiniNotifModule.show();
 		$('html, body').animate({
 			scrollTop: $("#mapscreen").offset().top
 		}, 300);
 
 		$(".potential_spot").remove();
-		toMove.show();
-		toMoveMute.show();
+		mapIcon.show();
+		mapIconMute.show();
 		
 		$(document).on("mousemove", function(e) {
-			var x = (e.clientX);
-			var y = (e.clientY);
+			var x = (e.pageX);
+			var y = (e.pageY);
 			var x_allowed = (x >= outDim.left && x <= outDim.right);
 			var y_allowed = (y >= outDim.top && y <= outDim.bottom);
 			if (x_allowed && y_allowed) {
-				toMove.css({
+				mapIcon.css({
 				   left: e.pageX,
 				   top:  e.pageY,
 				});
-				toMoveMute.css({
+				mapIconMute.css({
 				   left: e.pageX + 8,
 				   top:  e.pageY - 8,
 				});
 			}
 		});
 		
-		var clicks = 0;
-		$("#mapscreen").on("click", function(e) {
-			var final_x = 100.0 * parseInt(toMove.css("left"), 10) / outerDiv.width();
-			var final_y = 100.0 * parseInt(toMove.css("top"), 10) / outerDiv.width();
-			changeInfo["map_position"].x = final_x;
-			changeInfo["map_position"].y = final_y;
+		$("#map").on("click", function(e) {
+			var final_x = 100.0 * parseInt(mapIcon.css("left"), 10) / outerDiv.width();
+			var final_y = 100.0 * parseInt(mapIcon.css("top"), 10) / outerDiv.width();
+			changeInfo.map_position.x = final_x;
+			changeInfo.map_position.y = final_y;
+			cancelSelectionManual();
 		});
-		
-		$("body").on("click", function(e) {
-			if (clicks == 0) {
-				clicks++;
-				return;
-			}
-			toMove.css("top", changeInfo["map_position"].y+"%");
-			toMove.css("left", changeInfo["map_position"].x+"%");
-			$("#mapscreen").off("click");
-			$("body").off("click");
+
+		var cancelSelectionManual = function() {
 			$(document).off("mousemove");
-			showSettings();
-			$("#mapscreen .icons-map").on("click", muteBusiness);
-		});
+			$("#map").off("click");
+			$("#infotab button, #options button, #mini_notif button").off("click", cancelSelectionManual);
+			cancelSelection();
+		};
+		$("#infotab button, #options button, #mini_notif button").on("click", cancelSelectionManual);
 	};
 	return {
 		beginSelection: beginSelection,
@@ -898,7 +884,7 @@ $(document).ready(function() {
 	}
 
 	// Display paused mini notif
-	MiniNotifModule.displayPaused();
+	MiniNotifModule.setMessage("pausedMiniNotif");
 	
 	// Window resize function
 	$(window).resize(function() {
@@ -1335,7 +1321,7 @@ $(document).ready(function() {
 		localStorage.setItem("userInfo", JSON.stringify(userInfo));
 		redrawBusinessTabs();
 		redrawScreen();
-		hidePopup();
+		hidePopup(true);
 	});
 	
 	// General sliders
@@ -1696,9 +1682,13 @@ function redrawBusinessTabs() {
 					var img = $("<img id='"+business+"_mute' class='icons icons-map icons-mute'>");
 					img.attr("src", "img/blank.png");
 					img.insertAfter("#"+business+"_map");
-					img.css("top", "calc("+y+"% - 8px");
-					img.css("left", "calc("+x+"% + 8px");
+					
 				}
+				else {
+					var img = $("#"+business+"_mute");
+				}
+				img.css("top", "calc("+y+"% - 8px");
+				img.css("left", "calc("+x+"% + 8px");
 			}
 			else {
 				$("#"+business+"_mute").remove();
