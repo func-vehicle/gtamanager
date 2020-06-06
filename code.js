@@ -2,7 +2,7 @@ var userInfo;
 
 // The current format of user's data.
 var defaultUserInfo = {
-	version: "1.9.0",
+	version: "1.10.0",
 	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
@@ -22,6 +22,11 @@ var defaultUserInfo = {
 		research: 0,
 		supplies: 0,
 		mode: 0,
+		upgrades: {
+			equipment: false,
+			staff: false,
+			security: false
+		},
 		hide_research: 0,
 		map_position: {
 			x: 58.47,
@@ -33,6 +38,11 @@ var defaultUserInfo = {
 		muted: false,
 		product: 0,
 		supplies: 0,
+		upgrades: {
+			equipment: false,
+			staff: false,
+			security: false
+		},
 		map_position: {
 			x: 48.94,
 			y: 38.73,
@@ -43,6 +53,11 @@ var defaultUserInfo = {
 		muted: false,
 		product: 0,
 		supplies: 0,
+		upgrades: {
+			equipment: false,
+			staff: false,
+			security: false
+		},
 		map_position: {
 			x: 47.40,
 			y: 47.62,
@@ -53,6 +68,11 @@ var defaultUserInfo = {
 		muted: false,
 		product: 0,
 		supplies: 0,
+		upgrades: {
+			equipment: false,
+			staff: false,
+			security: false
+		},
 		map_position: {
 			x: 50.92,
 			y: 45.00,
@@ -63,6 +83,11 @@ var defaultUserInfo = {
 		muted: false,
 		product: 0,
 		supplies: 0,
+		upgrades: {
+			equipment: false,
+			staff: false,
+			security: false
+		},
 		map_position: {
 			x: 68.87,
 			y: 31.02,
@@ -73,6 +98,11 @@ var defaultUserInfo = {
 		muted: false,
 		product: 0,
 		supplies: 0,
+		upgrades: {
+			equipment: false,
+			staff: false,
+			security: false
+		},
 		map_position: {
 			x: 59.28,
 			y: 28.46,
@@ -98,6 +128,12 @@ var defaultUserInfo = {
 			organic: false,
 			copying: false,
 		},
+		upgrades: {
+			equipment: false,
+			staff: false,
+			security: false
+		},
+		storage_floors: 1,
 		map_position: {
 			x: 36.30,
 			y: 76.79,
