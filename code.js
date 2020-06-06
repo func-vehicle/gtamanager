@@ -200,9 +200,10 @@ var staticInfo = {
 	bunker: {
 		fullName: "Bunker",
 		shortName: "Bunker",
-		maxProduct: 750,
+		upgrades: ["equipment", "staff", "security"],
+		maxProduct: [1000,850,700],
 		maxResearch: 210,
-		maxSupplies: 150,
+		maxSupplies: [100,120,140],
 		locations: [
 			{
 				name: "Paleto Forest",
@@ -1170,6 +1171,12 @@ $(document).ready(function() {
 		redrawScreen();
 	});
 	
+	$(".setupGUI .upgrades button").on("click", function(event) {
+		var toChange = $(event.target).attr("data-value");
+		changeInfo["upgrades"][toChange] = !changeInfo["upgrades"][toChange];
+		redrawScreen();
+	});
+
 	$(".setupGUI button.apply").on("click", function(event) {
 		// TODO: fix hacky validation
 		let valid = true;
@@ -1378,11 +1385,12 @@ $(document).ready(function() {
 	$("#infotab button.supplies, #infotab button.sell").on("click", function(event) {
 		var type = typeRegexp.exec($(event.target).attr("class"))[1];
 		var business = $(event.target).parents("div.information").attr("id");
+		var upgrades = (userInfo[business].upgrades.equipment ? 1 : 0) + (userInfo[business].upgrades.staff ? 1 : 0);
 		if (business == "importExport") {
 			return;
 		}
 		if (type == "supplies") {
-			userInfo[business]["supplies"] = staticInfo[business]["maxSupplies"];
+			userInfo[business]["supplies"] = staticInfo[business]["maxSupplies"][upgrades];
 		}
 		else {
 			userInfo[business]["product"] = 0;
@@ -1600,10 +1608,12 @@ function tick() {
 	if (running) {
 		// Bunker
 		if (userInfo["bunker"]["owned"]) {
+			var upgrades = (userInfo["bunker"].upgrades.equipment ? 1 : 0) + (userInfo["bunker"].upgrades.staff ? 1 : 0);
 			// Manufacturing
 			if (userInfo["bunker"]["mode"] == 0) {
+				
 				// Calculate maximum running time in seconds, then actual time
-				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxProduct"] - userInfo["bunker"]["product"]) * 60;
+				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxProduct"][upgrades] - userInfo["bunker"]["product"]) * 60;
 				secondsRun = Math.min(deltaSec, maxSeconds);
 				if (secondsRun > 0) {
 					userInfo["bunker"]["product"] += secondsRun/60;
@@ -1622,7 +1632,7 @@ function tick() {
 			// Both
 			else {
 				// TODO: How does the both option even work?
-				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxProduct"] - userInfo["bunker"]["product"]) * 60;
+				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxProduct"][upgrades] - userInfo["bunker"]["product"]) * 60;
 				secondsRun = Math.min(deltaSec, maxSeconds);
 				if (secondsRun > 0) {
 					userInfo["bunker"]["product"] += secondsRun/120;
@@ -1783,6 +1793,17 @@ function redrawScreen() {
 	
 	$(".setupGUI .position button").prop("disabled", !owned);
 
+	if(changeInfo["upgrades"]) {
+		var upgrades = changeInfo["upgrades"];
+		for(var upgrade in upgrades) {
+			if (upgrades[upgrade]) {
+				$(".setupGUI .upgrades button[data-value=\""+upgrade+"\"]").removeClass("off");
+			} else {
+				$(".setupGUI .upgrades button[data-value=\""+upgrade+"\"]").addClass("off");
+			}
+		}
+	}
+
 	// Main Setup
 	var hide_unowned = changeInfo["hide_unowned"];
 	$("#mainSetup .hideUnowned button[data-value=1]").prop("disabled", hide_unowned);
@@ -1892,14 +1913,14 @@ function redrawScreen() {
 				remaining_ms = (1-percentage/100)*staticInfo["nightclub"]["max"+capitalize(type)]*staticInfo["nightclub"]["accrue"+capitalize(type)]*60*1000;
 			}
 			else if (type == "supplies") {
-				remaining_ms = (percentage/100)*staticInfo[business]["max"+capitalize(type)]*60*1000;
+				remaining_ms = (percentage/100)*staticInfo[business]["max"+capitalize(type)][upgrades]*60*1000;
 				if (business == "bunker" && userInfo.bunker.mode == 2) {
 					// Fix for time remaining in research mode
 					remaining_ms *= 350/150;
 				}
 			}
 			else {
-				remaining_ms = (1-percentage/100)*staticInfo[business]["max"+capitalize(type)]*60*1000;
+				remaining_ms = (1-percentage/100)*staticInfo[business]["max"+capitalize(type)][upgrades]*60*1000;
 			}
 			var remaining_string;
 			if (remaining_ms < 1000) {
