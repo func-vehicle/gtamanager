@@ -641,6 +641,19 @@ function update() {
 		}
 		userInfo.version = "1.9.0";
 	}
+	if (userInfo.version == "1.9.0") {
+		let toUpdate = ["bunker", "coke", "meth", "cash", "weed", "forgery", "nightclub"];
+		for (let i = 0; i < toUpdate.length; i++) {
+			let business = toUpdate[i];
+			userInfo[business].upgrades = {
+				equipment: false,
+				staff: false,
+				security: false
+			};
+		}
+		userInfo.nightclub.storage_floors = 1;
+		userInfo.version = "1.10.0";
+	}
 }
 
 // Modules
