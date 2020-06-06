@@ -411,21 +411,22 @@ var staticInfo = {
 		fullName: "Nightclub",
 		shortName: "Nightclub",
 		products: ["cargo", "sporting", "imports", "pharma", "creation", "organic", "copying"],
+		upgrades: ["equipment", "staff", "security"],
 		// Here max is max capacity of product, accrue is the time per product in minutes
-		maxCargo: 50,
-		maxSporting: 100,
-		maxImports: 10,
-		maxPharma: 20,
-		maxCreation: 40,
-		maxOrganic: 80,
-		maxCopying: 60,
-		accrueCargo: 70,
-		accrueSporting: 40,
-		accrueImports: 120,
-		accruePharma: 60,
-		accrueCreation: 30,
-		accrueOrganic: 20,
-		accrueCopying: 15,
+		maxCargo: [10,20,30,40,50],
+		maxSporting: [20,40,60,80,100],
+		maxImports: [2,4,6,8,10],
+		maxPharma: [4,8,12,16,20],
+		maxCreation: [8,16,24,32,40],
+		maxOrganic: [16,32,48,64,80],
+		maxCopying: [12,24,36,48,60],
+		accrueCargo: [35,70],
+		accrueSporting: [20,40],
+		accrueImports: [60,120],
+		accruePharma: [30,60],
+		accrueCreation: [15,30],
+		accrueOrganic: [10,20],
+		accrueCopying: [7.5,15],
 		locations: [
 			{
 				name: "West Vinewood",
@@ -1219,6 +1220,12 @@ $(document).ready(function() {
 		redrawScreen();
 	});
 	
+	$("#nightclubSetupGUI .storageFloors input").on("keyup", function(event) {
+		var value = $(event.target).val();
+		changeInfo.storage_floors = parseInt(value, 10);
+		redrawScreen();
+	});
+
 	$("#nightclubSetupGUI .sidebar button").on("click", function(event) {
 		changeInfo.sidebar = !changeInfo.sidebar;
 		redrawScreen();
@@ -1381,7 +1388,13 @@ $(document).ready(function() {
 		var value = $(event.target).val();
 		var type = typeRegexp.exec($(event.target).parents("tr").attr("class"))[1];
 		var business = $(event.target).parents("div.information").attr("id");
-		userInfo[business][type] = (value/100)*staticInfo[business]["max"+capitalize(type)];
+		if (business == "nightclub") {
+			var upgrades = userInfo["nightclub"].upgrades.equipment ? 1 : 0;
+			userInfo["nightclub"][type] = (value/100)*(staticInfo["nightclub"]["max"+capitalize(type)][upgrades] * userInfo["nightclub"].storage_floors);
+		} else {
+			var upgrades = (userInfo[business].upgrades.equipment ? 1 : 0) + (userInfo[business].upgrades.staff ? 1 : 0);
+			userInfo[business][type] = (value/100)*staticInfo[business]["max"+capitalize(type)][upgrades];
+		}
 		localStorage.setItem("userInfo", JSON.stringify(userInfo));
 		redrawScreen();
 	});
@@ -1670,12 +1683,14 @@ function tick() {
 		// Nightclub
 		if (userInfo["nightclub"]["owned"]) {
 			var products = staticInfo["nightclub"]["products"];
+			var upgrades = userInfo["nightclub"].upgrades.equipment ? 1 : 0;
+			var storage_index = userInfo["nightclub"].storage_floors - 1;
 			for (var i = 0; i < products.length; i++) {
 				var product = products[i];
 				if (userInfo["nightclub"]["producing"][product]) {
-					if (userInfo["nightclub"][product] < staticInfo["nightclub"]["max"+capitalize(product)]) {
-						userInfo["nightclub"][product] += deltaSec/60 * 1/staticInfo["nightclub"]["accrue"+capitalize(product)];
-						userInfo["nightclub"][product] = Math.min(userInfo["nightclub"][product], staticInfo["nightclub"]["max"+capitalize(product)]);
+					if (userInfo["nightclub"][product] < staticInfo["nightclub"]["max"+capitalize(product)][storage_index]) {
+						userInfo["nightclub"][product] += deltaSec/60 * 1/staticInfo["nightclub"]["accrue"+capitalize(product)][upgrades];
+						userInfo["nightclub"][product] = Math.min(userInfo["nightclub"][product], staticInfo["nightclub"]["max"+capitalize(product)][storage_index]);
 					}
 				}
 			}
@@ -1768,11 +1783,12 @@ function redrawScreen() {
 	// Nightclub manager values
 	var totalNightclubProduct = 0;
 	var products = staticInfo["nightclub"]["products"];
+	var storage_floors = userInfo["nightclub"].storage_floors;
 	for (var i = 0; i < products.length; i++) {
 		var product = products[i];
 		var td = $("#nightclubGUI ."+product+" td").eq(1);
 		var current = Math.round(userInfo["nightclub"][product]);
-		var maxProduct = staticInfo["nightclub"]["max"+capitalize(product)];
+		var maxProduct = staticInfo["nightclub"]["max"+capitalize(product)][storage_floors - 1];
 		td.html(current+"/"+maxProduct);
 		totalNightclubProduct += current;
 	}	
@@ -1869,6 +1885,23 @@ function redrawScreen() {
 	for (var i = 0; i < progressBars.length; i++) {
 		var type = typeRegexp.exec($(progressBars[i]).parents("tr").attr("class"))[1];
 		var business = $(progressBars[i]).parents("div.information").attr("id");
+		var upgrades;
+		if (business == "nightclub") {
+			upgrades = userInfo["nightclub"].upgrades.equipment ? 1 : 0;
+
+			// If downgrading upgrades, ensure current supplies don't exceed maximum for that upgrade
+			if(userInfo["nightclub"][type] > staticInfo["nightclub"]["max"+capitalize(type)][storage_floors - 1]) {
+				userInfo["nightclub"][type] = staticInfo["nightclub"]["max"+capitalize(type)][storage_floors - 1];
+			}
+		} else {
+			upgrades = (userInfo[business].upgrades.equipment ? 1 : 0) + (userInfo[business].upgrades.staff ? 1 : 0);
+
+			// If downgrading upgrades, ensure current supplies don't exceed maximum for that upgrade
+			if(userInfo[business][type] > staticInfo[business]["max"+capitalize(type)][upgrades]) {
+				userInfo[business][type] = staticInfo[business]["max"+capitalize(type)][upgrades];
+			}
+		}
+		//
 		// Hide bunker research bar if option selected
 		if (business == "bunker" && type == "research") {
 			if (userInfo["bunker"]["hide_research"]) {
@@ -1889,7 +1922,12 @@ function redrawScreen() {
 		}
 		// Fill bar
 		progress_bar_style = userInfo.settings["progress_bar_style"];
-		var percentage = 100.0*userInfo[business][type]/staticInfo[business]["max"+capitalize(type)];
+		if (business=="nightclub"){
+			var percentage = 100.0 * userInfo["nightclub"][type]/staticInfo["nightclub"]["max"+capitalize(type)][storage_floors - 1];
+		} else {
+			var percentage = 100.0*userInfo[business][type]/staticInfo[business]["max"+capitalize(type)][upgrades];
+		}
+
 		$("#"+business+" tr."+type+" .progress_bar .bar").css("width", percentage+"%");
 		// Plain
 		if (progress_bar_style == 0) {
@@ -1916,7 +1954,8 @@ function redrawScreen() {
 			$("#"+business+" tr."+type+" .progress_bar .fivetick").hide();
 			var remaining_ms;
 			if (business == "nightclub") {
-				remaining_ms = (1-percentage/100)*staticInfo["nightclub"]["max"+capitalize(type)]*staticInfo["nightclub"]["accrue"+capitalize(type)]*60*1000;
+				remaining_ms = (1-percentage/100)*staticInfo["nightclub"]["max"+capitalize(type)][storage_floors - 1]*staticInfo["nightclub"]["accrue"+capitalize(type)][upgrades]*60*1000;
+				console.log(staticInfo["nightclub"]["accrue"+capitalize(type)][upgrades]);
 			}
 			else if (type == "supplies") {
 				remaining_ms = (percentage/100)*staticInfo[business]["max"+capitalize(type)][upgrades]*60*1000;
