@@ -265,8 +265,9 @@ var staticInfo = {
 	coke: {
 		fullName: "Cocaine",
 		shortName: "Cocaine",
-		maxProduct: 300,
-		maxSupplies: 120,
+		upgrades: ["equipment", "staff", "security"],
+		maxProduct: [500, 400, 300],
+		maxSupplies: [100,120,120],
 		locations: [
 			{
 				name: "Morningwood",
@@ -293,8 +294,9 @@ var staticInfo = {
 	meth: {
 		fullName: "Meth",
 		shortName: "Meth",
-		maxProduct: 360,
-		maxSupplies: 144,
+		upgrades: ["equipment", "staff", "security"],
+		maxProduct: [600, 480, 360],
+		maxSupplies: [120, 144, 144],
 		locations: [
 			{
 				name: "El Burro Heights",
@@ -321,8 +323,9 @@ var staticInfo = {
 	cash: {
 		fullName: "Counterfeit Cash",
 		shortName: "Counterfeit Cash",
-		maxProduct: 320,
-		maxSupplies: 160,
+		upgrades: ["equipment", "staff", "security"],
+		maxProduct: [480,400,320],
+		maxSupplies: [120,150,160],
 		locations: [
 			{
 				name: "Vespucci Canals",
@@ -349,8 +352,9 @@ var staticInfo = {
 	weed: {
 		fullName: "Weed",
 		shortName: "Weed",
-		maxProduct: 320,
-		maxSupplies: 144,
+		upgrades: ["equipment", "staff", "security"],
+		maxProduct: [480,400,320],
+		maxSupplies: [78,122.5,144],
 		locations: [
 			{
 				name: "Downtown Vinewood",
@@ -377,8 +381,9 @@ var staticInfo = {
 	forgery: {
 		fullName: "Document Forgery",
 		shortName: "Doc. Forgery",
-		maxProduct: 180,
-		maxSupplies: 150,
+		upgrades: ["equipment", "staff", "security"],
+		maxProduct: [300,240,180],
+		maxSupplies: [125,150,150],
 		locations: [
 			{
 				name: "Textile City",
@@ -1651,8 +1656,9 @@ function tick() {
 		var mcbusinesses = staticInfo["mcbusinesses"];
 		for (var i = 0; i < mcbusinesses.length; i++) {
 			var business = mcbusinesses[i];
+			var upgrades = (userInfo[business].upgrades.equipment ? 1 : 0) + (userInfo[business].upgrades.staff ? 1 : 0);
 			if (userInfo[business]["owned"]) {
-				maxSeconds = Math.min(userInfo[business]["supplies"] - 0, staticInfo[business]["maxProduct"] - userInfo[business]["product"]) * 60;
+				maxSeconds = Math.min(userInfo[business]["supplies"] - 0, staticInfo[business]["maxProduct"][upgrades] - userInfo[business]["product"]) * 60;
 				secondsRun = Math.min(deltaSec, maxSeconds);
 				if (secondsRun > 0) {
 					userInfo[business]["product"] += secondsRun/60;
