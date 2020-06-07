@@ -202,8 +202,9 @@ var staticInfo = {
 		shortName: "Bunker",
 		upgrades: ["equipment", "staff", "security"],
 		maxProduct: [1000,850,700],
-		maxResearch: 210,
+		maxResearch: [300,255,210],
 		maxSupplies: [100,120,140],
+		maxResearchSupplies: [250,300,350],
 		locations: [
 			{
 				name: "Paleto Forest",
@@ -1653,11 +1654,11 @@ function tick() {
 			}
 			// Research
 			else if (userInfo["bunker"]["mode"] == 2) {
-				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxResearch"] - userInfo["bunker"]["research"]) * 60;
+				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxResearch"][upgrades] - userInfo["bunker"]["research"]) * 60;
 				secondsRun = Math.min(deltaSec, maxSeconds);
 				if (secondsRun > 0) {
 					userInfo["bunker"]["research"] += secondsRun/60;
-					userInfo["bunker"]["supplies"] -= secondsRun/60 * 150/350;
+					userInfo["bunker"]["supplies"] -= secondsRun/60 * staticInfo["bunker"]["maxSupplies"][upgrades]/staticInfo["bunker"]["maxResearchSupplies"][upgrades];
 				}
 			}
 			// Both
@@ -1669,11 +1670,11 @@ function tick() {
 					userInfo["bunker"]["product"] += secondsRun/120;
 					userInfo["bunker"]["supplies"] -= secondsRun/120;
 				}
-				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxResearch"] - userInfo["bunker"]["research"]) * 60;
+				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxResearch"][upgrades] - userInfo["bunker"]["research"]) * 60;
 				secondsRun = Math.min(deltaSec, maxSeconds);
 				if (secondsRun > 0) {
 					userInfo["bunker"]["research"] += secondsRun/120;
-					userInfo["bunker"]["supplies"] -= secondsRun/120 * 150/350;
+					userInfo["bunker"]["supplies"] -= secondsRun/120 * staticInfo["bunker"]["maxSupplies"][upgrades]/staticInfo["bunker"]["maxResearchSupplies"][upgrades];
 				}
 			}
 		}
@@ -1968,13 +1969,12 @@ function redrawScreen() {
 			var remaining_ms;
 			if (business == "nightclub") {
 				remaining_ms = (1-percentage/100)*staticInfo["nightclub"]["max"+capitalize(type)][storage_floors - 1]*staticInfo["nightclub"]["accrue"+capitalize(type)][upgrades]*60*1000;
-				console.log(staticInfo["nightclub"]["accrue"+capitalize(type)][upgrades]);
 			}
 			else if (type == "supplies") {
 				remaining_ms = (percentage/100)*staticInfo[business]["max"+capitalize(type)][upgrades]*60*1000;
 				if (business == "bunker" && userInfo.bunker.mode == 2) {
 					// Fix for time remaining in research mode
-					remaining_ms *= 350/150;
+					remaining_ms *= staticInfo["bunker"]["maxResearchSupplies"][upgrades]/staticInfo["bunker"]["maxSupplies"][upgrades];
 				}
 			}
 			else {
