@@ -1417,10 +1417,10 @@ $(document).ready(function() {
 	$("#infotab button.supplies, #infotab button.sell").on("click", function(event) {
 		var type = typeRegexp.exec($(event.target).attr("class"))[1];
 		var business = $(event.target).parents("div.information").attr("id");
-		var upgrades = (userInfo[business].upgrades.equipment ? 1 : 0) + (userInfo[business].upgrades.staff ? 1 : 0);
 		if (business == "importExport") {
 			return;
 		}
+		var upgrades = (userInfo[business].upgrades.equipment ? 1 : 0) + (userInfo[business].upgrades.staff ? 1 : 0);
 		if (type == "supplies") {
 			userInfo[business]["supplies"] = staticInfo[business]["maxSupplies"][upgrades];
 		}
