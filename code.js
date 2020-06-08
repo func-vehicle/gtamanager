@@ -201,10 +201,10 @@ var staticInfo = {
 		fullName: "Bunker",
 		shortName: "Bunker",
 		upgrades: ["equipment", "staff", "security"],
-		maxProduct: [1000,850,700],
-		maxResearch: [500,340,210],
-		maxSupplies: [100,127.5,140],
-		maxResearchSupplies: [250,300,350],
+		maxProduct: [1000, 850, 700],
+		maxResearch: [500, 340, 210],
+		maxSupplies: [100, 127.5, 140],
+		maxResearchSupplies: [250, 300, 350],
 		locations: [
 			{
 				name: "Paleto Forest",
@@ -268,7 +268,7 @@ var staticInfo = {
 		shortName: "Cocaine",
 		upgrades: ["equipment", "staff", "security"],
 		maxProduct: [500, 400, 300],
-		maxSupplies: [100,120,120],
+		maxSupplies: [100, 120, 120],
 		locations: [
 			{
 				name: "Morningwood",
@@ -325,8 +325,8 @@ var staticInfo = {
 		fullName: "Counterfeit Cash",
 		shortName: "Counterfeit Cash",
 		upgrades: ["equipment", "staff", "security"],
-		maxProduct: [480,400,320],
-		maxSupplies: [120,150,160],
+		maxProduct: [480, 400, 320],
+		maxSupplies: [120, 150, 160],
 		locations: [
 			{
 				name: "Vespucci Canals",
@@ -354,8 +354,8 @@ var staticInfo = {
 		fullName: "Weed",
 		shortName: "Weed",
 		upgrades: ["equipment", "staff", "security"],
-		maxProduct: [480,400,320],
-		maxSupplies: [150,187.5,200],
+		maxProduct: [480, 400, 320],
+		maxSupplies: [78, 122.5, 144],
 		locations: [
 			{
 				name: "Downtown Vinewood",
@@ -383,8 +383,8 @@ var staticInfo = {
 		fullName: "Document Forgery",
 		shortName: "Doc. Forgery",
 		upgrades: ["equipment", "staff", "security"],
-		maxProduct: [300,240,180],
-		maxSupplies: [125,150,150],
+		maxProduct: [300, 240, 180],
+		maxSupplies: [125, 150, 150],
 		locations: [
 			{
 				name: "Textile City",
@@ -414,20 +414,20 @@ var staticInfo = {
 		products: ["cargo", "sporting", "imports", "pharma", "creation", "organic", "copying"],
 		upgrades: ["equipment", "staff", "security"],
 		// Here max is max capacity of product, accrue is the time per product in minutes
-		maxCargo: [10,20,30,40,50],
-		maxSporting: [20,40,60,80,100],
-		maxImports: [2,4,6,8,10],
-		maxPharma: [4,8,12,16,20],
-		maxCreation: [8,16,24,32,40],
-		maxOrganic: [16,32,48,64,80],
-		maxCopying: [12,24,36,48,60],
-		accrueCargo: [140,70],
-		accrueSporting: [80,40],
-		accrueImports: [240,120],
-		accruePharma: [120,60],
-		accrueCreation: [60,30],
-		accrueOrganic: [40,20],
-		accrueCopying: [30,15],
+		maxCargo: [10, 20, 30, 40, 50],
+		maxSporting: [20, 40, 60, 80, 100],
+		maxImports: [2, 4, 6, 8, 10],
+		maxPharma: [4, 8, 12, 16, 20],
+		maxCreation: [8, 16,24,32, 40],
+		maxOrganic: [16, 32, 48, 64, 80],
+		maxCopying: [12, 24, 36, 48, 60],
+		accrueCargo: [140, 70],
+		accrueSporting: [80, 40],
+		accrueImports: [240, 120],
+		accruePharma: [120, 60],
+		accrueCreation: [60, 30],
+		accrueOrganic: [40, 20],
+		accrueCopying: [30, 15],
 		locations: [
 			{
 				name: "West Vinewood",
@@ -1834,9 +1834,9 @@ function redrawScreen() {
 		var upgrades = changeInfo["upgrades"];
 		for(var upgrade in upgrades) {
 			if (upgrades[upgrade]) {
-				$(".setupGUI .upgrades button[data-value=\""+upgrade+"\"]").removeClass("off");
+				$(".setupGUI .upgrades button[data-value=\"" + upgrade + "\"]").removeClass("off");
 			} else {
-				$(".setupGUI .upgrades button[data-value=\""+upgrade+"\"]").addClass("off");
+				$(".setupGUI .upgrades button[data-value=\"" + upgrade + "\"]").addClass("off");
 			}
 		}
 	}
