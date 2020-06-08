@@ -202,8 +202,8 @@ var staticInfo = {
 		shortName: "Bunker",
 		upgrades: ["equipment", "staff", "security"],
 		maxProduct: [1000,850,700],
-		maxResearch: [300,255,210],
-		maxSupplies: [100,120,140],
+		maxResearch: [500,340,210],
+		maxSupplies: [100,127.5,140],
 		maxResearchSupplies: [250,300,350],
 		locations: [
 			{
