@@ -1402,9 +1402,10 @@ $(document).ready(function() {
 		var value = $(event.target).val();
 		var type = typeRegexp.exec($(event.target).parents("tr").attr("class"))[1];
 		var business = $(event.target).parents("div.information").attr("id");
+		var storage_index = userInfo["nightclub"].storage_floors - 1;
 		if (business == "nightclub") {
 			var upgrades = userInfo["nightclub"].upgrades.equipment ? 1 : 0;
-			userInfo["nightclub"][type] = (value/100)*(staticInfo["nightclub"]["max"+capitalize(type)][upgrades] * userInfo["nightclub"].storage_floors);
+			userInfo["nightclub"][type] = (value/100)*(staticInfo["nightclub"]["max"+capitalize(type)][storage_index]);
 		} else {
 			var upgrades = (userInfo[business].upgrades.equipment ? 1 : 0) + (userInfo[business].upgrades.staff ? 1 : 0);
 			userInfo[business][type] = (value/100)*staticInfo[business]["max"+capitalize(type)][upgrades];
