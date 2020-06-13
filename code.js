@@ -1440,7 +1440,7 @@ $(document).ready(function() {
 	
 	$("#nightclub button.setup").on("click", function(event) {
 		createBackup("nightclub");
-		
+		$("#nightclubSetupGUI .storageFloors input").val(userInfo.nightclub.storage_floors);
 		displayPopup("nightclubSetupGUI", true);
 		redrawScreen();
 	});
