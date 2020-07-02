@@ -1193,7 +1193,20 @@ $(document).ready(function() {
 	
 	$(".setupGUI .upgrades button").on("click", function(event) {
 		var toChange = $(event.target).attr("data-value");
-		changeInfo["upgrades"][toChange] = !changeInfo["upgrades"][toChange];
+		var gui = $(event.target).parents(".setupGUI").prop("id");
+		var business = businessRegexp.exec($("#"+gui).prop("class"))[1];
+		if (business != "nightclub") {
+			var old_upgrades = (userInfo[business].upgrades.equipment ? 1 : 0) + (userInfo[business].upgrades.staff ? 1 : 0);
+			changeInfo["upgrades"][toChange] = !changeInfo["upgrades"][toChange];
+			var new_upgrades = (changeInfo["upgrades"].equipment ? 1 : 0) + (changeInfo["upgrades"].staff ? 1 : 0);
+
+			// If downgrading upgrades, ensure current supplies don't exceed maximum for that upgrade
+			for (var type in userInfo[business])
+				if (["supplies","product","research"].indexOf(type) > -1)
+					userInfo[business][type] = userInfo[business][type]
+						/ staticInfo[business]["max"+capitalize(type)][old_upgrades]
+						* staticInfo[business]["max"+capitalize(type)][new_upgrades];
+		}
 		redrawScreen();
 	});
 
@@ -1903,18 +1916,8 @@ function redrawScreen() {
 		var upgrades;
 		if (business == "nightclub") {
 			upgrades = userInfo["nightclub"].upgrades.equipment ? 1 : 0;
-
-			// If downgrading upgrades, ensure current supplies don't exceed maximum for that upgrade
-			if(userInfo["nightclub"][type] > staticInfo["nightclub"]["max"+capitalize(type)][storage_floors - 1]) {
-				userInfo["nightclub"][type] = staticInfo["nightclub"]["max"+capitalize(type)][storage_floors - 1];
-			}
 		} else {
 			upgrades = (userInfo[business].upgrades.equipment ? 1 : 0) + (userInfo[business].upgrades.staff ? 1 : 0);
-
-			// If downgrading upgrades, ensure current supplies don't exceed maximum for that upgrade
-			if(userInfo[business][type] > staticInfo[business]["max"+capitalize(type)][upgrades]) {
-				userInfo[business][type] = staticInfo[business]["max"+capitalize(type)][upgrades];
-			}
 		}
 		//
 		// Hide bunker research bar if option selected
@@ -1938,7 +1941,7 @@ function redrawScreen() {
 		// Fill bar
 		progress_bar_style = userInfo.settings["progress_bar_style"];
 		if (business=="nightclub"){
-			var percentage = 100.0 * userInfo["nightclub"][type]/staticInfo["nightclub"]["max"+capitalize(type)][storage_floors - 1];
+			var percentage = 100.0*userInfo["nightclub"][type]/staticInfo["nightclub"]["max"+capitalize(type)][storage_floors - 1];
 		} else {
 			var percentage = 100.0*userInfo[business][type]/staticInfo[business]["max"+capitalize(type)][upgrades];
 		}
