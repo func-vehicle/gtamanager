@@ -1202,12 +1202,13 @@ $(document).ready(function() {
 			changeInfo["upgrades"][toChange] = !changeInfo["upgrades"][toChange];
 			var new_upgrades = (changeInfo["upgrades"].equipment ? 1 : 0) + (changeInfo["upgrades"].staff ? 1 : 0);
 
-			// If downgrading upgrades, ensure current supplies don't exceed maximum for that upgrade
-			for (var type in userInfo[business])
-				if (["supplies","product","research"].indexOf(type) > -1)
+			for (var type in userInfo[business]) {
+				if (["supplies","product","research"].indexOf(type) > -1) {
 					userInfo[business][type] = userInfo[business][type]
 						/ staticInfo[business]["max"+capitalize(type)][old_upgrades]
 						* staticInfo[business]["max"+capitalize(type)][new_upgrades];
+				}
+			}
 		}
 		redrawScreen();
 	});
