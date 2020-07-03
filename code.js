@@ -1195,7 +1195,9 @@ $(document).ready(function() {
 		var toChange = $(event.target).attr("data-value");
 		var gui = $(event.target).parents(".setupGUI").prop("id");
 		var business = businessRegexp.exec($("#"+gui).prop("class"))[1];
-		if (business != "nightclub") {
+		if (business == "nightclub") {
+			changeInfo["upgrades"][toChange] = !changeInfo["upgrades"][toChange];
+		} else {
 			var old_upgrades = (userInfo[business].upgrades.equipment ? 1 : 0) + (userInfo[business].upgrades.staff ? 1 : 0);
 			changeInfo["upgrades"][toChange] = !changeInfo["upgrades"][toChange];
 			var new_upgrades = (changeInfo["upgrades"].equipment ? 1 : 0) + (changeInfo["upgrades"].staff ? 1 : 0);
