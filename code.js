@@ -647,12 +647,15 @@ function update() {
 		for (let i = 0; i < toUpdate.length; i++) {
 			let business = toUpdate[i];
 			userInfo[business].upgrades = {
-				equipment: false,
-				staff: false,
-				security: false
+				equipment: true,
+				staff: true,
+				security: true
 			};
 		}
-		userInfo.nightclub.storage_floors = 1;
+		userInfo.bunker.product = Math.min(userInfo.bunker.product, staticInfo.bunker.maxProduct[2]);
+		userInfo.bunker.supplies = Math.min(userInfo.bunker.supplies, staticInfo.bunker.maxSupplies[2]);
+		
+		userInfo.nightclub.storage_floors = 5;
 		userInfo.version = "1.10.0";
 	}
 }
@@ -1921,9 +1924,7 @@ function redrawScreen() {
 			upgrades = userInfo["nightclub"].upgrades.equipment ? 1 : 0;
 			
 			// If downgrading upgrades, ensure current supplies don't exceed maximum for that upgrade
-			if(userInfo["nightclub"][type] > staticInfo["nightclub"]["max"+capitalize(type)][storage_floors - 1]) {
-				userInfo["nightclub"][type] = staticInfo["nightclub"]["max"+capitalize(type)][storage_floors - 1];
-			}
+			userInfo["nightclub"][type] = Math.min(userInfo["nightclub"][type], staticInfo["nightclub"]["max"+capitalize(type)][storage_floors - 1])
 		} else {
 			upgrades = (userInfo[business].upgrades.equipment ? 1 : 0) + (userInfo[business].upgrades.staff ? 1 : 0);
 		}
