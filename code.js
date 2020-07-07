@@ -1919,6 +1919,11 @@ function redrawScreen() {
 		var upgrades;
 		if (business == "nightclub") {
 			upgrades = userInfo["nightclub"].upgrades.equipment ? 1 : 0;
+			
+			// If downgrading upgrades, ensure current supplies don't exceed maximum for that upgrade
+			if(userInfo["nightclub"][type] > staticInfo["nightclub"]["max"+capitalize(type)][storage_floors - 1]) {
+				userInfo["nightclub"][type] = staticInfo["nightclub"]["max"+capitalize(type)][storage_floors - 1];
+			}
 		} else {
 			upgrades = (userInfo[business].upgrades.equipment ? 1 : 0) + (userInfo[business].upgrades.staff ? 1 : 0);
 		}
