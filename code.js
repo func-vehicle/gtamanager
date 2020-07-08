@@ -355,7 +355,7 @@ var staticInfo = {
 		shortName: "Weed",
 		upgrades: ["equipment", "staff", "security"],
 		maxProduct: [480, 400, 320],
-		maxSupplies: [78, 122.5, 144],
+		maxSupplies: [150, 187.5, 200],
 		locations: [
 			{
 				name: "Downtown Vinewood",
