@@ -124,33 +124,25 @@
 						</div>
 					</div>
 					<div class="main">
-						<h1 style="padding-left: 3px;">Version 1.9.0</h1>
+						<h1 style="padding-left: 3px;">Version 1.10.0</h1>
 						<div class="indent">
 							<h2>Improvements</h2>
 							<ul>
-								<li>Added preplaced locations when setting the location of a business.</li>
+								<li>Added the option to select upgrades to all applicable businesses, available in their respective setup menus.</li>
 								<ul>
-									<li>Click a location to select it or use the arrows to cycle through locations.</li>
-									<li>Confirm the location with the tick, or cancel with the cross.</li>
-									<li>Swap back to manual placement using the three dot button.</li>
+									<li>Existing users will have every upgrade enabled, which is how the manager worked before this update.</li>
+									<li>Click on the upgrade to toggle it. Timers will be adjusted on the fly.</li>
+									<li>Note that the security upgrade currently does nothing.</li>
+									<li>Nightclub also has storage floor upgrades (determines max product).</li>
 								</ul>
-								<li>'Time remaining' progress style now always shows minutes.</li>
-								<li>Added button to view the business manager's GitHub project in the main setup.</li>
-								<ul>
-									<li>Post bugs and suggest improvements here!</li>
-								</ul>
-								<li>Added missing older patch notes.</li>
 							</ul>
 							<h2>Fixes</h2>
 							<ul>
-								<li>Fixed entering numbers into number only text fields.</li>
-								<li>Fixed applying changes to settings menus with invalid text field entries.</li>
-								<li>Fixed main dialog box buttons on thin mobile displays.</li>
-								<li>Removed ability to scroll background while a dialog box is open on mobile.</li>
-								<li>Moved Weed and Document Forgery default locations to more appropriate locations.</li>
-								<li>Moved Reset Everything button to data section in main settings.</li>
-								<li>Fixed large dialog boxes going off screen on thin width desktop displays.</li>
-								<li>Fixed various display issues on Microsoft Edge.</li>
+								<li>Some business timings have been fixed based on information from the GTA Wiki.</li>
+								<ul>
+									<li>Weed, all upgrades: full supplies now last 3h 20m (up from 2h 24m).</li>
+									<li>Bunker, all upgrades: full supplies now last 2h 20m (down from 2h 30m)</li>
+								</ul>
 							</ul>
 						</div>
 					</div>
@@ -250,7 +242,7 @@
                                 <td class="fsz">
                                     <button class="button orange" data-value="0">Download</button>
 									<button class="button orange" data-value="1">Load from file</button>
-									<button class="button orange" data-value="reset">Reset Everything</button>
+									<button class="button orange" data-value="reset">Reset everything</button>
                                     <a id="dataDownloadLink" style="display: none;"></a>
                                     <input id="fileInput" type="file" accept=".json, application/json" style="display: none;" />
                                 </td>
@@ -389,6 +381,14 @@
 									<button class="button blue">Set Location</button>
 								</td>
 							</tr>
+							<tr class="upgrades">
+								<td>Upgrades:</td>
+								<td class="indivchoice fsz">
+									<button class="button blue" data-value="equipment">Equipment</button>
+									<button class="button blue" data-value="staff">Staff</button>
+									<button class="button blue" data-value="security">Security</button>
+								</td>
+							</tr>
 							<tr class="hide_research">
 								<td>Hide research:</td>
 								<td class="onechoice fsz">
@@ -432,6 +432,14 @@
 									<button class="button blue">Set Location</button>
 								</td>
 							</tr>
+							<tr class="upgrades">
+								<td>Upgrades:</td>
+								<td class="indivchoice fsz">
+									<button class="button blue" data-value="equipment">Equipment</button>
+									<button class="button blue" data-value="staff">Staff</button>
+									<button class="button blue" data-value="security">Security</button>
+								</td>
+							</tr>
 						</table>
 					</div>
 					<div class="buttons fsz">
@@ -460,11 +468,27 @@
 									<button class="button blue">Set Location</button>
 								</td>
 							</tr>
+							<tr class="upgrades">
+								<td>Upgrades:</td>
+								<td class="indivchoice fsz">
+									<button class="button blue" data-value="equipment">Equipment</button>
+									<button class="button blue" data-value="staff">Staff</button>
+									<button class="button blue" data-value="security">Security</button>
+								</td>
+							</tr>
 							<tr class="sidebar">
 								<td>Sidebar:</td>
 								<td class="onechoice fsz">
 									<button class="button green" data-value="1">Show all</button>
 									<button class="button orange" data-value="0">Show produced</button>
+								</td>
+							</tr>
+							<tr class="storageFloors">
+								<td>Storage floors:</td>
+								<td class="incDecButtons fsz">
+									<button class="fa fa-minus button minus"></button>
+									<input type="number" class="range_enforced integer_only" name="quantity" value="1" min="1" max="5">
+									<button class="fa fa-plus button plus"></button>
 								</td>
 							</tr>
 							<tr class="producing">
@@ -568,12 +592,12 @@
 <!-- }}} -->
 		<div id="infotab" class="col">
 			<div class="business-section" id="activeBusinesses">
+<!-- {{{ bunker -->		
 				<div id="bunker" class="information">
 					<div class="business_heading clearfix">
 						<div class="icon_wrap">
 							<img src="img/blank.png" class="icons icons-info icons-bunker" alt="Bunker icon"/>
 						</div>
-<!-- {{{ bunker -->						
 						<h1>Bunker</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -749,7 +773,7 @@
 						<div class="icon_wrap">
 							<img src="img/blank.png" class="icons icons-info icons-weed" alt="Weed icon"/>
 						</div>
-						<h1>Weed</h1> <!-- FIXME: id naming convention to weed -->
+						<h1>Weed</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
 					<div class="content">
@@ -826,7 +850,7 @@
 				</div>
 <!-- }}} -->
 <!-- {{{ nightClub-->
-				<div id="nightclub" class="information"> <!-- FIXME: id naming convention to nightClub -->
+				<div id="nightclub" class="information">
 					<div class="business_heading clearfix">
 						<div class="icon_wrap">
 							<img src="img/blank.png" class="icons icons-info icons-nightclub" alt="Nightclub icon"/>

@@ -2,7 +2,7 @@ var userInfo;
 
 // The current format of user's data.
 var defaultUserInfo = {
-	version: "1.9.0",
+	version: "1.10.0",
 	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
@@ -22,6 +22,11 @@ var defaultUserInfo = {
 		research: 0,
 		supplies: 0,
 		mode: 0,
+		upgrades: {
+			equipment: false,
+			staff: false,
+			security: false
+		},
 		hide_research: 0,
 		map_position: {
 			x: 58.47,
@@ -33,6 +38,11 @@ var defaultUserInfo = {
 		muted: false,
 		product: 0,
 		supplies: 0,
+		upgrades: {
+			equipment: false,
+			staff: false,
+			security: false
+		},
 		map_position: {
 			x: 48.94,
 			y: 38.73,
@@ -43,6 +53,11 @@ var defaultUserInfo = {
 		muted: false,
 		product: 0,
 		supplies: 0,
+		upgrades: {
+			equipment: false,
+			staff: false,
+			security: false
+		},
 		map_position: {
 			x: 47.40,
 			y: 47.62,
@@ -53,6 +68,11 @@ var defaultUserInfo = {
 		muted: false,
 		product: 0,
 		supplies: 0,
+		upgrades: {
+			equipment: false,
+			staff: false,
+			security: false
+		},
 		map_position: {
 			x: 50.92,
 			y: 45.00,
@@ -63,6 +83,11 @@ var defaultUserInfo = {
 		muted: false,
 		product: 0,
 		supplies: 0,
+		upgrades: {
+			equipment: false,
+			staff: false,
+			security: false
+		},
 		map_position: {
 			x: 68.87,
 			y: 31.02,
@@ -73,6 +98,11 @@ var defaultUserInfo = {
 		muted: false,
 		product: 0,
 		supplies: 0,
+		upgrades: {
+			equipment: false,
+			staff: false,
+			security: false
+		},
 		map_position: {
 			x: 59.28,
 			y: 28.46,
@@ -98,6 +128,12 @@ var defaultUserInfo = {
 			organic: false,
 			copying: false,
 		},
+		upgrades: {
+			equipment: false,
+			staff: false,
+			security: false
+		},
+		storage_floors: 1,
 		map_position: {
 			x: 36.30,
 			y: 76.79,
@@ -164,9 +200,11 @@ var staticInfo = {
 	bunker: {
 		fullName: "Bunker",
 		shortName: "Bunker",
-		maxProduct: 750,
-		maxResearch: 210,
-		maxSupplies: 150,
+		upgrades: ["equipment", "staff", "security"],
+		maxProduct: [1000, 850, 700],
+		maxResearch: [500, 340, 210],
+		maxSupplies: [100, 127.5, 140],
+		maxResearchSupplies: [250, 300, 350],
 		locations: [
 			{
 				name: "Paleto Forest",
@@ -228,8 +266,9 @@ var staticInfo = {
 	coke: {
 		fullName: "Cocaine",
 		shortName: "Cocaine",
-		maxProduct: 300,
-		maxSupplies: 120,
+		upgrades: ["equipment", "staff", "security"],
+		maxProduct: [500, 400, 300],
+		maxSupplies: [100, 120, 120],
 		locations: [
 			{
 				name: "Morningwood",
@@ -256,8 +295,9 @@ var staticInfo = {
 	meth: {
 		fullName: "Meth",
 		shortName: "Meth",
-		maxProduct: 360,
-		maxSupplies: 144,
+		upgrades: ["equipment", "staff", "security"],
+		maxProduct: [600, 480, 360],
+		maxSupplies: [120, 144, 144],
 		locations: [
 			{
 				name: "El Burro Heights",
@@ -284,8 +324,9 @@ var staticInfo = {
 	cash: {
 		fullName: "Counterfeit Cash",
 		shortName: "Counterfeit Cash",
-		maxProduct: 320,
-		maxSupplies: 160,
+		upgrades: ["equipment", "staff", "security"],
+		maxProduct: [480, 400, 320],
+		maxSupplies: [120, 150, 160],
 		locations: [
 			{
 				name: "Vespucci Canals",
@@ -312,8 +353,9 @@ var staticInfo = {
 	weed: {
 		fullName: "Weed",
 		shortName: "Weed",
-		maxProduct: 320,
-		maxSupplies: 144,
+		upgrades: ["equipment", "staff", "security"],
+		maxProduct: [480, 400, 320],
+		maxSupplies: [150, 187.5, 200],
 		locations: [
 			{
 				name: "Downtown Vinewood",
@@ -340,8 +382,9 @@ var staticInfo = {
 	forgery: {
 		fullName: "Document Forgery",
 		shortName: "Doc. Forgery",
-		maxProduct: 180,
-		maxSupplies: 150,
+		upgrades: ["equipment", "staff", "security"],
+		maxProduct: [300, 240, 180],
+		maxSupplies: [125, 150, 150],
 		locations: [
 			{
 				name: "Textile City",
@@ -369,21 +412,22 @@ var staticInfo = {
 		fullName: "Nightclub",
 		shortName: "Nightclub",
 		products: ["cargo", "sporting", "imports", "pharma", "creation", "organic", "copying"],
+		upgrades: ["equipment", "staff", "security"],
 		// Here max is max capacity of product, accrue is the time per product in minutes
-		maxCargo: 50,
-		maxSporting: 100,
-		maxImports: 10,
-		maxPharma: 20,
-		maxCreation: 40,
-		maxOrganic: 80,
-		maxCopying: 60,
-		accrueCargo: 70,
-		accrueSporting: 40,
-		accrueImports: 120,
-		accruePharma: 60,
-		accrueCreation: 30,
-		accrueOrganic: 20,
-		accrueCopying: 15,
+		maxCargo: [10, 20, 30, 40, 50],
+		maxSporting: [20, 40, 60, 80, 100],
+		maxImports: [2, 4, 6, 8, 10],
+		maxPharma: [4, 8, 12, 16, 20],
+		maxCreation: [8, 16, 24,32, 40],
+		maxOrganic: [16, 32, 48, 64, 80],
+		maxCopying: [12, 24, 36, 48, 60],
+		accrueCargo: [140, 70],
+		accrueSporting: [80, 40],
+		accrueImports: [240, 120],
+		accruePharma: [120, 60],
+		accrueCreation: [60, 30],
+		accrueOrganic: [40, 20],
+		accrueCopying: [30, 15],
 		locations: [
 			{
 				name: "West Vinewood",
@@ -511,6 +555,7 @@ Number.prototype.mod = function(b) {
     return ((this % b) + b) % b; 
 }
 
+// Update userInfo with new features
 function update() {
 	if (userInfo.version == "1.0.0") {
 		userInfo.audio = {enabled: true};
@@ -597,6 +642,22 @@ function update() {
 			delete userInfo[business].name;
 		}
 		userInfo.version = "1.9.0";
+	}
+	if (userInfo.version == "1.9.0") {
+		let toUpdate = ["bunker", "coke", "meth", "cash", "weed", "forgery", "nightclub"];
+		for (let i = 0; i < toUpdate.length; i++) {
+			let business = toUpdate[i];
+			userInfo[business].upgrades = {
+				equipment: true,
+				staff: true,
+				security: true
+			};
+		}
+		userInfo.bunker.product = Math.min(userInfo.bunker.product, staticInfo.bunker.maxProduct[2]);
+		userInfo.bunker.supplies = Math.min(userInfo.bunker.supplies, staticInfo.bunker.maxSupplies[2]);
+		
+		userInfo.nightclub.storage_floors = 5;
+		userInfo.version = "1.10.0";
 	}
 }
 
@@ -1134,6 +1195,28 @@ $(document).ready(function() {
 		redrawScreen();
 	});
 	
+	$(".setupGUI .upgrades button").on("click", function(event) {
+		var toChange = $(event.target).attr("data-value");
+		var gui = $(event.target).parents(".setupGUI").prop("id");
+		var business = businessRegexp.exec($("#"+gui).prop("class"))[1];
+		if (business == "nightclub") {
+			changeInfo["upgrades"][toChange] = !changeInfo["upgrades"][toChange];
+		} else {
+			var old_upgrades = (userInfo[business].upgrades.equipment ? 1 : 0) + (userInfo[business].upgrades.staff ? 1 : 0);
+			changeInfo["upgrades"][toChange] = !changeInfo["upgrades"][toChange];
+			var new_upgrades = (changeInfo["upgrades"].equipment ? 1 : 0) + (changeInfo["upgrades"].staff ? 1 : 0);
+
+			for (var type in userInfo[business]) {
+				if (["supplies","product","research"].indexOf(type) > -1) {
+					userInfo[business][type] = userInfo[business][type]
+						/ staticInfo[business]["max"+capitalize(type)][old_upgrades]
+						* staticInfo[business]["max"+capitalize(type)][new_upgrades];
+				}
+			}
+		}
+		redrawScreen();
+	});
+
 	$(".setupGUI button.apply").on("click", function(event) {
 		// TODO: fix hacky validation
 		let valid = true;
@@ -1171,6 +1254,12 @@ $(document).ready(function() {
 		redrawScreen();
 	});
 	
+	$("#nightclubSetupGUI .storageFloors input").on("keyup", function(event) {
+		var value = $(event.target).val();
+		changeInfo.storage_floors = parseInt(value, 10);
+		redrawScreen();
+	});
+
 	$("#nightclubSetupGUI .sidebar button").on("click", function(event) {
 		changeInfo.sidebar = !changeInfo.sidebar;
 		redrawScreen();
@@ -1333,7 +1422,14 @@ $(document).ready(function() {
 		var value = $(event.target).val();
 		var type = typeRegexp.exec($(event.target).parents("tr").attr("class"))[1];
 		var business = $(event.target).parents("div.information").attr("id");
-		userInfo[business][type] = (value/100)*staticInfo[business]["max"+capitalize(type)];
+		var storage_index = userInfo["nightclub"].storage_floors - 1;
+		if (business == "nightclub") {
+			var upgrades = userInfo["nightclub"].upgrades.equipment ? 1 : 0;
+			userInfo["nightclub"][type] = (value/100)*(staticInfo["nightclub"]["max"+capitalize(type)][storage_index]);
+		} else {
+			var upgrades = (userInfo[business].upgrades.equipment ? 1 : 0) + (userInfo[business].upgrades.staff ? 1 : 0);
+			userInfo[business][type] = (value/100)*staticInfo[business]["max"+capitalize(type)][upgrades];
+		}
 		localStorage.setItem("userInfo", JSON.stringify(userInfo));
 		redrawScreen();
 	});
@@ -1345,8 +1441,9 @@ $(document).ready(function() {
 		if (business == "importExport") {
 			return;
 		}
+		var upgrades = (userInfo[business].upgrades.equipment ? 1 : 0) + (userInfo[business].upgrades.staff ? 1 : 0);
 		if (type == "supplies") {
-			userInfo[business]["supplies"] = staticInfo[business]["maxSupplies"];
+			userInfo[business]["supplies"] = staticInfo[business]["maxSupplies"][upgrades];
 		}
 		else {
 			userInfo[business]["product"] = 0;
@@ -1363,7 +1460,7 @@ $(document).ready(function() {
 	
 	$("#nightclub button.setup").on("click", function(event) {
 		createBackup("nightclub");
-		
+		$("#nightclubSetupGUI .storageFloors input").val(userInfo.nightclub.storage_floors);
 		displayPopup("nightclubSetupGUI", true);
 		redrawScreen();
 	});
@@ -1564,10 +1661,12 @@ function tick() {
 	if (running) {
 		// Bunker
 		if (userInfo["bunker"]["owned"]) {
+			var upgrades = (userInfo["bunker"].upgrades.equipment ? 1 : 0) + (userInfo["bunker"].upgrades.staff ? 1 : 0);
 			// Manufacturing
 			if (userInfo["bunker"]["mode"] == 0) {
+				
 				// Calculate maximum running time in seconds, then actual time
-				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxProduct"] - userInfo["bunker"]["product"]) * 60;
+				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxProduct"][upgrades] - userInfo["bunker"]["product"]) * 60;
 				secondsRun = Math.min(deltaSec, maxSeconds);
 				if (secondsRun > 0) {
 					userInfo["bunker"]["product"] += secondsRun/60;
@@ -1576,27 +1675,27 @@ function tick() {
 			}
 			// Research
 			else if (userInfo["bunker"]["mode"] == 2) {
-				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxResearch"] - userInfo["bunker"]["research"]) * 60;
+				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxResearch"][upgrades] - userInfo["bunker"]["research"]) * 60;
 				secondsRun = Math.min(deltaSec, maxSeconds);
 				if (secondsRun > 0) {
 					userInfo["bunker"]["research"] += secondsRun/60;
-					userInfo["bunker"]["supplies"] -= secondsRun/60 * 150/350;
+					userInfo["bunker"]["supplies"] -= secondsRun/60 * staticInfo["bunker"]["maxSupplies"][upgrades]/staticInfo["bunker"]["maxResearchSupplies"][upgrades];
 				}
 			}
 			// Both
 			else {
 				// TODO: How does the both option even work?
-				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxProduct"] - userInfo["bunker"]["product"]) * 60;
+				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxProduct"][upgrades] - userInfo["bunker"]["product"]) * 60;
 				secondsRun = Math.min(deltaSec, maxSeconds);
 				if (secondsRun > 0) {
 					userInfo["bunker"]["product"] += secondsRun/120;
 					userInfo["bunker"]["supplies"] -= secondsRun/120;
 				}
-				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxResearch"] - userInfo["bunker"]["research"]) * 60;
+				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxResearch"][upgrades] - userInfo["bunker"]["research"]) * 60;
 				secondsRun = Math.min(deltaSec, maxSeconds);
 				if (secondsRun > 0) {
 					userInfo["bunker"]["research"] += secondsRun/120;
-					userInfo["bunker"]["supplies"] -= secondsRun/120 * 150/350;
+					userInfo["bunker"]["supplies"] -= secondsRun/120 * staticInfo["bunker"]["maxSupplies"][upgrades]/staticInfo["bunker"]["maxResearchSupplies"][upgrades];
 				}
 			}
 		}
@@ -1605,8 +1704,9 @@ function tick() {
 		var mcbusinesses = staticInfo["mcbusinesses"];
 		for (var i = 0; i < mcbusinesses.length; i++) {
 			var business = mcbusinesses[i];
+			var upgrades = (userInfo[business].upgrades.equipment ? 1 : 0) + (userInfo[business].upgrades.staff ? 1 : 0);
 			if (userInfo[business]["owned"]) {
-				maxSeconds = Math.min(userInfo[business]["supplies"] - 0, staticInfo[business]["maxProduct"] - userInfo[business]["product"]) * 60;
+				maxSeconds = Math.min(userInfo[business]["supplies"] - 0, staticInfo[business]["maxProduct"][upgrades] - userInfo[business]["product"]) * 60;
 				secondsRun = Math.min(deltaSec, maxSeconds);
 				if (secondsRun > 0) {
 					userInfo[business]["product"] += secondsRun/60;
@@ -1618,12 +1718,14 @@ function tick() {
 		// Nightclub
 		if (userInfo["nightclub"]["owned"]) {
 			var products = staticInfo["nightclub"]["products"];
+			var upgrades = userInfo["nightclub"].upgrades.equipment ? 1 : 0;
+			var storage_index = userInfo["nightclub"].storage_floors - 1;
 			for (var i = 0; i < products.length; i++) {
 				var product = products[i];
 				if (userInfo["nightclub"]["producing"][product]) {
-					if (userInfo["nightclub"][product] < staticInfo["nightclub"]["max"+capitalize(product)]) {
-						userInfo["nightclub"][product] += deltaSec/60 * 1/staticInfo["nightclub"]["accrue"+capitalize(product)];
-						userInfo["nightclub"][product] = Math.min(userInfo["nightclub"][product], staticInfo["nightclub"]["max"+capitalize(product)]);
+					if (userInfo["nightclub"][product] < staticInfo["nightclub"]["max"+capitalize(product)][storage_index]) {
+						userInfo["nightclub"][product] += deltaSec/60 * 1/staticInfo["nightclub"]["accrue"+capitalize(product)][upgrades];
+						userInfo["nightclub"][product] = Math.min(userInfo["nightclub"][product], staticInfo["nightclub"]["max"+capitalize(product)][storage_index]);
 					}
 				}
 			}
@@ -1651,6 +1753,7 @@ function tick() {
 }
 
 function redrawBusinessTabs() {
+	// Separate to redrawScreen because constantly modifying divs makes it impossible to inspect element +  really inefficient
 	var business_list = ["bunker", "coke", "meth", "cash", "weed", "forgery", "nightclub", "importExport", "wheel"];
 	var some_unowned = false;
 	for (var i = 0; i < business_list.length; i++) {
@@ -1716,11 +1819,12 @@ function redrawScreen() {
 	// Nightclub manager values
 	var totalNightclubProduct = 0;
 	var products = staticInfo["nightclub"]["products"];
+	var storage_floors = userInfo["nightclub"].storage_floors;
 	for (var i = 0; i < products.length; i++) {
 		var product = products[i];
 		var td = $("#nightclubGUI ."+product+" td").eq(1);
 		var current = Math.round(userInfo["nightclub"][product]);
-		var maxProduct = staticInfo["nightclub"]["max"+capitalize(product)];
+		var maxProduct = staticInfo["nightclub"]["max"+capitalize(product)][storage_floors - 1];
 		td.html(current+"/"+maxProduct);
 		totalNightclubProduct += current;
 	}	
@@ -1746,6 +1850,17 @@ function redrawScreen() {
 	$(".setupGUI .own button[data-value=0]").prop("disabled", !owned);
 	
 	$(".setupGUI .position button").prop("disabled", !owned);
+
+	if(changeInfo["upgrades"]) {
+		var upgrades = changeInfo["upgrades"];
+		for(var upgrade in upgrades) {
+			if (upgrades[upgrade]) {
+				$(".setupGUI .upgrades button[data-value=\"" + upgrade + "\"]").removeClass("off");
+			} else {
+				$(".setupGUI .upgrades button[data-value=\"" + upgrade + "\"]").addClass("off");
+			}
+		}
+	}
 
 	// Main Setup
 	var hide_unowned = changeInfo["hide_unowned"];
@@ -1806,6 +1921,16 @@ function redrawScreen() {
 	for (var i = 0; i < progressBars.length; i++) {
 		var type = typeRegexp.exec($(progressBars[i]).parents("tr").attr("class"))[1];
 		var business = $(progressBars[i]).parents("div.information").attr("id");
+		var upgrades;
+		if (business == "nightclub") {
+			upgrades = userInfo["nightclub"].upgrades.equipment ? 1 : 0;
+			
+			// If downgrading upgrades, ensure current supplies don't exceed maximum for that upgrade
+			userInfo["nightclub"][type] = Math.min(userInfo["nightclub"][type], staticInfo["nightclub"]["max"+capitalize(type)][storage_floors - 1])
+		} else {
+			upgrades = (userInfo[business].upgrades.equipment ? 1 : 0) + (userInfo[business].upgrades.staff ? 1 : 0);
+		}
+		//
 		// Hide bunker research bar if option selected
 		if (business == "bunker" && type == "research") {
 			if (userInfo["bunker"]["hide_research"]) {
@@ -1826,7 +1951,12 @@ function redrawScreen() {
 		}
 		// Fill bar
 		progress_bar_style = userInfo.settings["progress_bar_style"];
-		var percentage = 100.0*userInfo[business][type]/staticInfo[business]["max"+capitalize(type)];
+		if (business=="nightclub"){
+			var percentage = 100.0*userInfo["nightclub"][type]/staticInfo["nightclub"]["max"+capitalize(type)][storage_floors - 1];
+		} else {
+			var percentage = 100.0*userInfo[business][type]/staticInfo[business]["max"+capitalize(type)][upgrades];
+		}
+
 		$("#"+business+" tr."+type+" .progress_bar .bar").css("width", percentage+"%");
 		// Plain
 		if (progress_bar_style == 0) {
@@ -1853,17 +1983,17 @@ function redrawScreen() {
 			$("#"+business+" tr."+type+" .progress_bar .fivetick").hide();
 			var remaining_ms;
 			if (business == "nightclub") {
-				remaining_ms = (1-percentage/100)*staticInfo["nightclub"]["max"+capitalize(type)]*staticInfo["nightclub"]["accrue"+capitalize(type)]*60*1000;
+				remaining_ms = (1-percentage/100)*staticInfo["nightclub"]["max"+capitalize(type)][storage_floors - 1]*staticInfo["nightclub"]["accrue"+capitalize(type)][upgrades]*60*1000;
 			}
 			else if (type == "supplies") {
-				remaining_ms = (percentage/100)*staticInfo[business]["max"+capitalize(type)]*60*1000;
+				remaining_ms = (percentage/100)*staticInfo[business]["max"+capitalize(type)][upgrades]*60*1000;
 				if (business == "bunker" && userInfo.bunker.mode == 2) {
 					// Fix for time remaining in research mode
-					remaining_ms *= 350/150;
+					remaining_ms *= staticInfo["bunker"]["maxResearchSupplies"][upgrades]/staticInfo["bunker"]["maxSupplies"][upgrades];
 				}
 			}
 			else {
-				remaining_ms = (1-percentage/100)*staticInfo[business]["max"+capitalize(type)]*60*1000;
+				remaining_ms = (1-percentage/100)*staticInfo[business]["max"+capitalize(type)][upgrades]*60*1000;
 			}
 			var remaining_string;
 			if (remaining_ms < 1000) {
