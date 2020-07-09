@@ -418,7 +418,7 @@ var staticInfo = {
 		maxSporting: [20, 40, 60, 80, 100],
 		maxImports: [2, 4, 6, 8, 10],
 		maxPharma: [4, 8, 12, 16, 20],
-		maxCreation: [8, 16,24,32, 40],
+		maxCreation: [8, 16, 24,32, 40],
 		maxOrganic: [16, 32, 48, 64, 80],
 		maxCopying: [12, 24, 36, 48, 60],
 		accrueCargo: [140, 70],
@@ -555,6 +555,7 @@ Number.prototype.mod = function(b) {
     return ((this % b) + b) % b; 
 }
 
+// Update userInfo with new features
 function update() {
 	if (userInfo.version == "1.0.0") {
 		userInfo.audio = {enabled: true};
@@ -1752,6 +1753,7 @@ function tick() {
 }
 
 function redrawBusinessTabs() {
+	// Separate to redrawScreen because constantly modifying divs makes it impossible to inspect element +  really inefficient
 	var business_list = ["bunker", "coke", "meth", "cash", "weed", "forgery", "nightclub", "importExport", "wheel"];
 	var some_unowned = false;
 	for (var i = 0; i < business_list.length; i++) {

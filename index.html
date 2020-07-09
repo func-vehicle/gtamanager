@@ -128,16 +128,21 @@
 						<div class="indent">
 							<h2>Improvements</h2>
 							<ul>
-								<li>Added all the upgrades to all business with their respective timers.</li>
+								<li>Added the option to select upgrades to all applicable businesses, available in their respective setup menus.</li>
 								<ul>
-									<li>Click on Equipment, Staff or Security to toggle their upgrades. Timers will be adjusted on the fly</li>
-									<li>Currently, security upgrade does nothing. For Nightclub, staff doesn't either</li>
-									<li>Nightclub has also storage floor upgrades.</li>
+									<li>Existing users will have every upgrade enabled, which is how the manager worked before this update.</li>
+									<li>Click on the upgrade to toggle it. Timers will be adjusted on the fly.</li>
+									<li>Note that the security upgrade currently does nothing.</li>
+									<li>Nightclub also has storage floor upgrades (determines max product).</li>
 								</ul>
 							</ul>
 							<h2>Fixes</h2>
 							<ul>
-								<li>Bunker timer with all upgrades from 2h 30min to 2h 20min, according to the GTAWiki.
+								<li>Some business timings have been fixed based on information from the GTA Wiki.</li>
+								<ul>
+									<li>Weed, all upgrades: full supplies now last 3h 20m (up from 2h 24m).</li>
+									<li>Bunker, all upgrades: full supplies now last 2h 20m (down from 2h 30m)</li>
+								</ul>
 							</ul>
 						</div>
 					</div>
@@ -237,7 +242,7 @@
                                 <td class="fsz">
                                     <button class="button orange" data-value="0">Download</button>
 									<button class="button orange" data-value="1">Load from file</button>
-									<button class="button orange" data-value="reset">Reset Everything</button>
+									<button class="button orange" data-value="reset">Reset everything</button>
                                     <a id="dataDownloadLink" style="display: none;"></a>
                                     <input id="fileInput" type="file" accept=".json, application/json" style="display: none;" />
                                 </td>
@@ -376,6 +381,14 @@
 									<button class="button blue">Set Location</button>
 								</td>
 							</tr>
+							<tr class="upgrades">
+								<td>Upgrades:</td>
+								<td class="indivchoice fsz">
+									<button class="button blue" data-value="equipment">Equipment</button>
+									<button class="button blue" data-value="staff">Staff</button>
+									<button class="button blue" data-value="security">Security</button>
+								</td>
+							</tr>
 							<tr class="hide_research">
 								<td>Hide research:</td>
 								<td class="onechoice fsz">
@@ -389,14 +402,6 @@
 									<button class="button orange" data-value="0">Manufacturing</button>
 									<button class="button blue" data-value="1">Both</button>
 									<button class="button green" data-value="2">Researching</button><br/>
-								</td>
-							</tr>
-							<tr class="upgrades">
-								<td>Upgrades:</td>
-								<td class="indivchoice fsz">
-									<button class="button blue" data-value="equipment">Equipment</button>
-									<button class="button blue" data-value="staff">Staff</button>
-									<button class="button blue" data-value="security">Security</button>
 								</td>
 							</tr>
 						</table>
@@ -421,18 +426,18 @@
 									<button class="button red" data-value="0">No</button>
 								</td>
 							</tr>
-						<tr class="upgrades">
+							<tr class="position">
+								<td>Map location:</td>
+								<td class="fsz">
+									<button class="button blue">Set Location</button>
+								</td>
+							</tr>
+							<tr class="upgrades">
 								<td>Upgrades:</td>
 								<td class="indivchoice fsz">
 									<button class="button blue" data-value="equipment">Equipment</button>
 									<button class="button blue" data-value="staff">Staff</button>
 									<button class="button blue" data-value="security">Security</button>
-								</td>
-							</tr>
-							<tr class="position">
-								<td>Map location:</td>
-								<td class="fsz">
-									<button class="button blue">Set Location</button>
 								</td>
 							</tr>
 						</table>
@@ -463,19 +468,19 @@
 									<button class="button blue">Set Location</button>
 								</td>
 							</tr>
-							<tr class="sidebar">
-								<td>Sidebar:</td>
-								<td class="onechoice fsz">
-									<button class="button green" data-value="1">Show all</button>
-									<button class="button orange" data-value="0">Show produced</button>
-								</td>
-							</tr>
 							<tr class="upgrades">
 								<td>Upgrades:</td>
 								<td class="indivchoice fsz">
 									<button class="button blue" data-value="equipment">Equipment</button>
 									<button class="button blue" data-value="staff">Staff</button>
 									<button class="button blue" data-value="security">Security</button>
+								</td>
+							</tr>
+							<tr class="sidebar">
+								<td>Sidebar:</td>
+								<td class="onechoice fsz">
+									<button class="button green" data-value="1">Show all</button>
+									<button class="button orange" data-value="0">Show produced</button>
 								</td>
 							</tr>
 							<tr class="storageFloors">
@@ -587,12 +592,12 @@
 <!-- }}} -->
 		<div id="infotab" class="col">
 			<div class="business-section" id="activeBusinesses">
+<!-- {{{ bunker -->		
 				<div id="bunker" class="information">
 					<div class="business_heading clearfix">
 						<div class="icon_wrap">
 							<img src="img/blank.png" class="icons icons-info icons-bunker" alt="Bunker icon"/>
 						</div>
-<!-- {{{ bunker -->						
 						<h1>Bunker</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
@@ -768,7 +773,7 @@
 						<div class="icon_wrap">
 							<img src="img/blank.png" class="icons icons-info icons-weed" alt="Weed icon"/>
 						</div>
-						<h1>Weed</h1> <!-- FIXME: id naming convention to weed -->
+						<h1>Weed</h1>
 						<button class="fa fa-cog button setup"></button>
 					</div>
 					<div class="content">
@@ -845,7 +850,7 @@
 				</div>
 <!-- }}} -->
 <!-- {{{ nightClub-->
-				<div id="nightclub" class="information"> <!-- FIXME: id naming convention to nightClub -->
+				<div id="nightclub" class="information">
 					<div class="business_heading clearfix">
 						<div class="icon_wrap">
 							<img src="img/blank.png" class="icons icons-info icons-nightclub" alt="Nightclub icon"/>
