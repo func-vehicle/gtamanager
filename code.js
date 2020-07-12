@@ -492,8 +492,8 @@ var staticInfo = {
 			},
 			{
 				name: "El Burro Heights",
-				x: 47.55,
-				y: 93.07,
+				x: 59.91,
+				y: 80.49,
 			},
 			{
 				name: "Elysian Island",
