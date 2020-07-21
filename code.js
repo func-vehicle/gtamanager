@@ -2203,7 +2203,6 @@ window.notify = {
 	},
 	compatible: function() {
 		if (typeof Notification === 'undefined') {
-			alert("Unfortunately, notifications are not available for your browser.");
 			return false;
 		}
 		return true;
@@ -2221,6 +2220,9 @@ window.notify = {
 					displayPopup("pushDeniedNotice");
 				}
 			});
+		}
+		else {
+			alert("Unfortunately, notifications are not available for your browser.");
 		}
 	},
 	show: function(title, body, business) {
