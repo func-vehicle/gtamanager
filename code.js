@@ -2137,10 +2137,11 @@ function checkNotify() {
 	// Nightclub
 	var products = staticInfo.nightclub.products;
 	var flashed = false;
+	var storage_floors = userInfo["nightclub"].storage_floors;
 	for (var i = 0; i < products.length; i++) {
 		var product = products[i];
 		if (userInfo["nightclub"]["producing"][product]) {
-			if (userInfo.nightclub[product] >= staticInfo.nightclub["max"+capitalize(product)]) {
+			if (userInfo.nightclub[product] >= staticInfo.nightclub["max"+capitalize(product)][storage_floors - 1]) {
 				flashed = true;
 				flashIcon("nightclub");
 				playNotification("nightclub", "GTA V Business Manager", "Your Nightclub is at maximum capacity in one or more products.");
