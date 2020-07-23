@@ -2,7 +2,7 @@ var userInfo;
 
 // The current format of user's data.
 var defaultUserInfo = {
-	version: "1.10.0",
+	version: "1.10.1",
 	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
@@ -492,8 +492,8 @@ var staticInfo = {
 			},
 			{
 				name: "El Burro Heights",
-				x: 47.55,
-				y: 93.07,
+				x: 59.91,
+				y: 80.49,
 			},
 			{
 				name: "Elysian Island",
@@ -659,6 +659,9 @@ function update() {
 		userInfo.nightclub.storage_floors = 5;
 		userInfo.version = "1.10.0";
 	}
+	if (userInfo.version == "1.10.0") {
+		userInfo.version = "1.10.1";
+	}
 }
 
 // Modules
@@ -681,13 +684,11 @@ var PatchModule = (function () {
 		redraw();
 	};
 	var redraw = function () {
-		if (patchIndex == null)
-		{
+		if (patchIndex == null) {
 			// Haven't loaded external file, assume on latest and there is a previous patch
 			$("#updateNotice .pageSwap button[data-value=1]").prop("disabled", true);
 		}
-		else
-		{
+		else {
 			$("#updateNotice .pageSwap button[data-value=0]").prop("disabled", patchIndex == 0);
 			$("#updateNotice .pageSwap button[data-value=1]").prop("disabled", patchIndex == patchnotes.length - 1);
 		}
@@ -1366,11 +1367,20 @@ $(document).ready(function() {
 	});
 
 	$("#mainSetup .dataDownload button[data-value=0]").on("click", function(event) {
-		var data_href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(userInfo));
-		var dlAnchorElem = document.getElementById("dataDownloadLink");
-		dlAnchorElem.setAttribute("href", data_href);
-		dlAnchorElem.setAttribute("download", "manager_data.json");
-		dlAnchorElem.click();
+		// https://stackoverflow.com/questions/19721439/
+		var name = "manager_data.json";
+		var file = new Blob([JSON.stringify(userInfo)], {type: "text/json"});
+        var isIE = false || !!document.documentMode;
+        if (isIE) {
+            window.navigator.msSaveOrOpenBlob(file, name);
+        }
+        else {
+            var a = document.getElementById("dataDownloadLink");
+            a.href = URL.createObjectURL(file);
+            a.download = name;
+            a.click();
+		}
+		
 		redrawScreen();
 	});
 	
@@ -2137,10 +2147,11 @@ function checkNotify() {
 	// Nightclub
 	var products = staticInfo.nightclub.products;
 	var flashed = false;
+	var storage_floors = userInfo["nightclub"].storage_floors;
 	for (var i = 0; i < products.length; i++) {
 		var product = products[i];
 		if (userInfo["nightclub"]["producing"][product]) {
-			if (userInfo.nightclub[product] >= staticInfo.nightclub["max"+capitalize(product)]) {
+			if (userInfo.nightclub[product] >= staticInfo.nightclub["max"+capitalize(product)][storage_floors - 1]) {
 				flashed = true;
 				flashIcon("nightclub");
 				playNotification("nightclub", "GTA V Business Manager", "Your Nightclub is at maximum capacity in one or more products.");
@@ -2202,7 +2213,6 @@ window.notify = {
 	},
 	compatible: function() {
 		if (typeof Notification === 'undefined') {
-			alert("Unfortunately, notifications are not available for your browser.");
 			return false;
 		}
 		return true;
@@ -2220,6 +2230,9 @@ window.notify = {
 					displayPopup("pushDeniedNotice");
 				}
 			});
+		}
+		else {
+			alert("Unfortunately, notifications are not available for your browser.");
 		}
 	},
 	show: function(title, body, business) {
