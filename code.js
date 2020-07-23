@@ -681,13 +681,11 @@ var PatchModule = (function () {
 		redraw();
 	};
 	var redraw = function () {
-		if (patchIndex == null)
-		{
+		if (patchIndex == null) {
 			// Haven't loaded external file, assume on latest and there is a previous patch
 			$("#updateNotice .pageSwap button[data-value=1]").prop("disabled", true);
 		}
-		else
-		{
+		else {
 			$("#updateNotice .pageSwap button[data-value=0]").prop("disabled", patchIndex == 0);
 			$("#updateNotice .pageSwap button[data-value=1]").prop("disabled", patchIndex == patchnotes.length - 1);
 		}
@@ -1366,11 +1364,20 @@ $(document).ready(function() {
 	});
 
 	$("#mainSetup .dataDownload button[data-value=0]").on("click", function(event) {
-		var data_href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(userInfo));
-		var dlAnchorElem = document.getElementById("dataDownloadLink");
-		dlAnchorElem.setAttribute("href", data_href);
-		dlAnchorElem.setAttribute("download", "manager_data.json");
-		dlAnchorElem.click();
+		// https://stackoverflow.com/questions/19721439/
+		var name = "manager_data.json";
+		var file = new Blob([JSON.stringify(userInfo)], {type: "text/json"});
+        var isIE = false || !!document.documentMode;
+        if (isIE) {
+            window.navigator.msSaveOrOpenBlob(file, name);
+        }
+        else {
+            var a = document.getElementById("dataDownloadLink");
+            a.href = URL.createObjectURL(file);
+            a.download = name;
+            a.click();
+		}
+		
 		redrawScreen();
 	});
 	
