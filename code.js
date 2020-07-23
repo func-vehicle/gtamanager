@@ -2,7 +2,7 @@ var userInfo;
 
 // The current format of user's data.
 var defaultUserInfo = {
-	version: "1.10.0",
+	version: "1.10.1",
 	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
@@ -658,6 +658,9 @@ function update() {
 		
 		userInfo.nightclub.storage_floors = 5;
 		userInfo.version = "1.10.0";
+	}
+	if (userInfo.version == "1.10.0") {
+		userInfo.version = "1.10.1";
 	}
 }
 
