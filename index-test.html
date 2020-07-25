@@ -1,0 +1,990 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<!-- Website by func_vehicle. Copyright 2020 -->
+
+<head>
+	<!-- Google Tag Manager -->
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+	'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-WDLMN5G');</script>
+	<!-- End Google Tag Manager -->
+	
+	<title>GTA V Business Manager</title>
+	<meta name="description" content="Keep track of your GTA V business supply and stock levels, as well as cooldowns with this online manager."/>
+	<meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<link rel="stylesheet" href="css/html5reset.css" type="text/css" media="screen"/>
+	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans" type="text/css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+			integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+			crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+			integrity="sha384-Dziy8F2VlJQLMShA6FHWNul/veM9bCkRUaLqr199K94ntO5QUrLJBEbYegdSkkqX"
+			crossorigin="anonymous"></script>
+	<script src="./code-test.js"></script>
+</head>
+
+<body>
+	<!-- Google Tag Manager (noscript) -->
+	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WDLMN5G"
+	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+	<!-- End Google Tag Manager (noscript) -->
+
+	<div id="wrapper">
+		<div id="mapscreen" class="col">
+			<audio id="notification_ding" src="sfx/chime.mp3"></audio>
+			<div id="map">
+				<img id="bg" src="img/bg-512.jpg"
+				srcset="img/bg-512.jpg 512w, img/bg-1024.jpg 1024w, img/bg-2048.jpg 2048w"
+				draggable="false" alt="Satellite view map of San Andreas (GTA V)"/>
+				<img id="bunker_map" src="img/blank.png" class="icons icons-map icons-bunker clickable" alt="Bunker icon"/>
+				<img id="coke_map" src="img/blank.png" class="icons icons-map icons-coke clickable" alt="Cocaine icon"/>
+				<img id="meth_map" src="img/blank.png" class="icons icons-map icons-meth clickable" alt="Meth icon"/>
+				<img id="cash_map" src="img/blank.png" class="icons icons-map icons-cash clickable" alt="Counterfeit Cash icon"/>
+				<img id="weed_map" src="img/blank.png" class="icons icons-map icons-weed clickable" alt="Weed icon"/>
+				<img id="forgery_map" src="img/blank.png" class="icons icons-map icons-forgery clickable" alt="Document Forgery icon"/>
+				<img id="nightclub_map" src="img/blank.png" class="icons icons-map icons-nightclub clickable" alt="Nightclub icon"/>
+				<img id="importExport_map" src="img/blank.png" class="icons icons-map icons-importExport" alt="Import/Export icon"/>
+				<img id="wheel_map" src="img/blank.png" class="icons icons-map icons-wheel clickable" alt="Lucky Wheel icon"/>
+			</div>
+			<div id="mini_notif">
+				<div id="pausedMiniNotif">
+					<p>The business manager is paused.</p>
+				</div>
+				<div id="selectLocation" class="has-buttons" style="display:none;">
+					<div class="left">
+						<button class="fa fa-arrow-left button red" data-value="0"></button><!--
+					 --><span></span><!--
+					 --><button class="fa fa-arrow-right button red" data-value="1"></button>
+					</div>
+					<div class="right">
+						<button class="fa fa-check button red" data-value="2"></button><!--
+					 --><button class="fa fa-times button red" data-value="3"></button><!--
+					 --><button class="fa fa-ellipsis-v button red" data-value="4"></button>
+					</div>
+				</div>
+				<div id="customLocation" class="has-buttons" style="display:none;">
+					<div class="left">
+						<p class="desktop-only">Click map to choose custom location.</p>
+						<p class="mobile-only">Tap map to choose custom location.</p>
+					</div>
+					<div class="right">
+						<button class="fa fa-times button red" data-value="3"></button>
+					</div>
+				</div>
+			</div>
+			<div id="options" class="fsz">
+				<button class="button toggle start green">Start</button>
+				<button class="button audio red">Sound</button>
+				<button class="button setup red">Setup</button>
+			</div>
+			<div id="overlay"></div>
+			<div id="notification">
+				<div id="newUserNotice">
+					<div class="heading">
+						<h1>Welcome</h1>
+					</div>
+					<div class="main desktop-only">
+						<p>The GTA V Business Manager can keep track of your businesses while you play the game and alert you when one needs
+						your attention. It can also remind you when to spin the wheel, and when your daily fees will occur.</p>
+						<p>To begin, click the cog of a business on the right to set it up. Product and supply bars can be set by dragging
+						the bars to their in game values.</p>
+						<p>Whenever you are in a session where businesses run (such as free roam and contact missions), start the manager
+						with the button in the bottom right corner of the map. Pause it when you are no longer in session.</p>
+						<p>Your information will persist between browsing sessions. We recommend you bookmark this page if you are
+						considering using this manager long term.</p>
+					</div>
+					<div class="main mobile-only">
+						<p>The GTA V Business Manager can keep track of your businesses while you play the game and alert you when one needs
+						your attention. It can also remind you when to spin the wheel, and when your daily fees will occur.</p>
+						<p>To begin, tap the cog of a business (below the map) to set it up. Product and supply bars can be set by dragging
+						the bars to their in game values.</p>
+						<p>Whenever you are in a session where businesses run (such as free roam and contact missions), start the manager
+						with the button below the map. Pause it when you are no longer in session.</p>
+						<p>Your information will persist between browsing sessions. We recommend you bookmark this page if you are
+						considering using this manager long term.</p>
+					</div>
+					<div class="buttons fsz">
+						<button class="button ok red">OK</button>
+					</div>
+				</div>
+				<div id="updateNotice">
+					<div class="heading clearfix">
+						<h1>Patch Notes</h1>
+						<div class="pageSwap">
+							<button class="fa fa-arrow-left button red" data-value="0"></button>
+							<button class="fa fa-arrow-right button red" data-value="1"></button>
+						</div>
+					</div>
+					<div class="main">
+						<h1 style="padding-left: 3px;">Version 1.10.1</h1>
+						<div class="indent">
+							<h2>Fixes</h2>
+							<ul>
+								<li>Fixed Nightclub not notifying when full.</li>
+								<li>Fixed Import/Export El Burro Heights location.</li>
+								<li>Fixed an alert message constantly popping up on browsers that don't support push notifications.</li>
+								<li>Fixed a bug with downloading the business manager data affecting some browsers.</li>
+							</ul>
+						</div>
+					</div>
+					<div class="buttons">
+						<button class="button ok red">OK</button>
+					</div>
+				</div>
+				<div id="pushDeniedNotice">
+					<div class="heading">
+						<h1>Notice</h1>
+					</div>
+					<div class="main">
+						<p>The request to allow push notifications has been denied. You may need to refresh the page for the
+						request to appear again when you press this button.</p>
+					</div>
+					<div class="buttons fsz">
+						<button class="button ok red">OK</button>
+					</div>
+				</div>
+				<div id="newWeekNotice">
+					<div class="heading">
+						<h1>New Weekly Bonuses</h1>
+					</div>
+					<div class="main">
+						<p>The weekly bonuses for GTA Online have changed.
+						<br/><a target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/gtaonline/search?q=%22weekly+gta+online+bonuses%22&restrict_sr=on&sort=new&t=week">Click here</a> to see what's new.</p>
+					</div>
+					<div class="buttons fsz">
+						<button class="button ok red">OK</button>
+					</div>
+				</div>
+				<div id="pauseNotice">
+					<div class="heading">
+						<h1>Notice</h1>
+					</div>
+					<div class="main">
+						<p>The business manager is currently paused. It should be unpaused at all times
+						when you are in free roam / contact missions in order to be accurate.</p>
+					</div>
+					<div class="buttons fsz">
+						<button class="button ok red">OK</button>
+					</div>
+				</div>
+				<div id="mainSetup" class="setupGUI">
+					<div class="heading">
+						<h1>Setup</h1>
+					</div>
+					<div class="main">
+                        <table>
+                            <tr class="hideUnowned">
+                                <td>Hide unowned:</td>
+                                <td class="onechoice fsz">
+                                    <button class="button green" data-value="1">Yes</button>
+                                    <button class="button red" data-value="0">No</button>
+                                </td>
+                            </tr>
+                            <tr class="notificationSettings">
+                                <td>Notifications:</td>
+                                <td class="fsz">
+                                    <button class="button blue off" data-value="push">Push notifications</button>
+                                </td>
+                            </tr>
+                            <tr class="audioFreq">
+                                <td>Audio interval:</td>
+                                <td class="incDecButtons">
+                                    <button class="fa fa-minus button minus"></button><!--
+                                 --><input type="number" class="range_enforced integer_only" name="quantity" value="1" min="1" max="60" /><!--
+                                 --><button class="fa fa-plus button plus"></button><!--
+                                 --><span>minutes</span>
+                                </td>
+                            </tr>
+                            <tr class="audioVolume">
+                                <td>Audio volume:</td>
+                                <td class="onechoice">
+                                    <input type="range" min="0" max="100" value="0"><!--
+                                 --><span>100%</span>
+                                </td>
+                            </tr>
+                            <tr class="progressBarStyle">
+                                <td>Progress style:</td>
+                                <td class="onechoice fsz">
+                                    <button class="button blue" data-value="0">Plain</button>
+                                    <button class="button blue" data-value="1">5-tick</button>
+                                    <button class="button blue" data-value="2">Percentage</button>
+                                    <button class="button blue" data-value="3">Time Remaining</button>
+                                </td>
+                            </tr>
+                            <tr class="appStyle">
+                                <td>Theme:</td>
+                                <td class="onechoice fsz">
+                                    <button class="button white" data-value="0">Light</button>
+                                    <button class="button grey" data-value="1">Dark</button>
+                                </td>
+                            </tr>
+                            <tr class="dataDownload">
+                                <td>Data:</td>
+                                <td class="fsz">
+                                    <button class="button orange" data-value="0">Download</button>
+									<button class="button orange" data-value="1">Load from file</button>
+									<button class="button orange" data-value="reset">Reset everything</button>
+                                    <a id="dataDownloadLink" style="display: none;"></a>
+                                    <input id="fileInput" type="file" accept=".json, application/json" style="display: none;" />
+                                </td>
+                            </tr>
+                            <tr class="about">
+                                <td>About:</td>
+                                <td class="fsz">
+                                    <button class="button orange" data-value="0">Patch notes</button>
+									<a target="_blank" rel="noopener noreferrer" href="https://github.com/func-vehicle/gtamanager"><button class="button orange">GitHub</button></a>
+                                </td>
+                            </tr>
+                        </table>
+					</div>
+					<div class="buttons fsz">
+						<button class="button cancel red">Cancel</button>
+						<button class="button apply red">Apply</button>
+					</div>
+				</div>
+				<div id="resetWarning">
+					<div class="heading">
+						<h1>Warning</h1>
+					</div>
+					<div class="main">
+						<p>This will reset everything! Are you sure you want to continue?</p>
+					</div>
+					<div class="buttons fsz">
+						<button class="button cancel red">Cancel</button>
+						<button class="button reset red">Reset</button>
+					</div>
+				</div>
+<!-- {{{ nightClubGUI-->				
+				<div id="nightclubGUI">
+					<div class="heading">
+						<h1>Nightclub Manager</h1>
+					</div>
+					<div class="main">
+						<table>
+							<tr>
+								<th>Product Name</th>
+								<th>Stock</th>
+								<th>Sell</th>
+							</tr>
+							<tr class="cargo">
+								<td>Cargo and Shipments</td>
+								<td></td>
+								<td class="incDecButtons">
+									<button class="fa fa-minus button minus"></button>
+									<input type="number" class="range_enforced integer_only" name="quantity" value="0" min="0" max="50"/>
+									<button class="fa fa-plus button plus"></button>
+								</td>
+							</tr>
+							<tr class="sporting">
+								<td>Sporting Goods</td>
+								<td></td>
+								<td class="incDecButtons">
+									<button class="fa fa-minus button minus"></button>
+									<input type="number" class="range_enforced integer_only" name="quantity" value="0" min="0" max="100"/>
+									<button class="fa fa-plus button plus"></button>
+								</td>
+							</tr>
+							<tr class="imports">
+								<td>South American Imports</td>
+								<td></td>
+								<td class="incDecButtons">
+									<button class="fa fa-minus button minus"></button>
+									<input type="number" class="range_enforced integer_only" name="quantity" value="0" min="0" max="10"/>
+									<button class="fa fa-plus button plus"></button>
+								</td>
+							</tr>
+							<tr class="pharma">
+								<td>Pharmaceutical Research</td>
+								<td></td>
+								<td class="incDecButtons">
+									<button class="fa fa-minus button minus"></button>
+									<input type="number" class="range_enforced integer_only" name="quantity" value="0" min="0" max="20"/>
+									<button class="fa fa-plus button plus"></button>
+								</td>
+							</tr>
+							<tr class="creation">
+								<td>Cash Creation</td>
+								<td></td>
+								<td class="incDecButtons">
+									<button class="fa fa-minus button minus"></button>
+									<input type="number" class="range_enforced integer_only" name="quantity" value="0" min="0" max="40"/>
+									<button class="fa fa-plus button plus"></button>
+								</td>
+							</tr>
+							<tr class="organic">
+								<td>Organic Produce</td>
+								<td></td>
+								<td class="incDecButtons">
+									<button class="fa fa-minus button minus"></button>
+									<input type="number" class="range_enforced integer_only" name="quantity" value="0" min="0" max="80"/>
+									<button class="fa fa-plus button plus"></button>
+								</td>
+							</tr>
+							<tr class="copying">
+								<td>Printing and Copying</td>
+								<td></td>
+								<td class="incDecButtons">
+									<button class="fa fa-minus button minus"></button>
+									<input type="number" class="range_enforced integer_only" name="quantity" value="0" min="0" max="60"/>
+									<button class="fa fa-plus button plus"></button>
+								</td>
+							</tr>
+							<tr class="total">
+								<td>Total</td>
+								<td></td>
+								<td></td>
+						</table>
+					</div>
+					<div class="buttons fsz">
+						<button class="button sellsome red">Sell Selected</button>
+						<button class="button sell red">Sell All</button>
+						<button class="button ok red">Close</button>
+					</div>
+				</div>
+<!-- }}} -->				
+<!-- {{{ bunkerSetupGUI -->
+				<div id="bunkerSetupGUI" class="setupGUI bunker">
+					<div class="heading">
+						<h1>Bunker Setup</h1>
+					</div>
+					<div class="main">
+						<table>
+							<tr class="own">
+								<td>Owned:</td>
+								<td class="onechoice fsz">
+									<button class="button green" data-value="1">Yes</button>
+									<button class="button red" data-value="0">No</button>
+								</td>
+							</tr>
+							<tr class="position">
+								<td>Map location:</td>
+								<td class="fsz">
+									<button class="button blue">Set Location</button>
+								</td>
+							</tr>
+							<tr class="upgrades">
+								<td>Upgrades:</td>
+								<td class="indivchoice fsz">
+									<button class="button blue" data-value="equipment">Equipment</button>
+									<button class="button blue" data-value="staff">Staff</button>
+									<button class="button blue" data-value="security">Security</button>
+								</td>
+							</tr>
+							<tr class="hide_research">
+								<td>Hide research:</td>
+								<td class="onechoice fsz">
+									<button class="button green">Yes</button>
+									<button class="button red">No</button>
+								</td>
+							</tr>
+							<tr class="mode">
+								<td>Bunker mode:</td>
+								<td class="onechoice fsz">
+									<button class="button orange" data-value="0">Manufacturing</button>
+									<button class="button blue" data-value="1">Both</button>
+									<button class="button green" data-value="2">Researching</button><br/>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="buttons fsz">
+						<button class="button cancel red">Cancel</button>
+						<button class="button apply red">Apply</button>
+					</div>
+				</div>
+<!-- }}} -->
+<!-- {{{ mcbusinessSetupGUI -->
+				<div id="mcbusinessSetupGUI" class="setupGUI">
+					<div class="heading">
+						<h1>MCBUSINESS Setup</h1>
+					</div>
+					<div class="main">
+						<table>
+							<tr class="own">
+								<td>Owned:</td>
+								<td class="onechoice fsz">
+									<button class="button green" data-value="1">Yes</button>
+									<button class="button red" data-value="0">No</button>
+								</td>
+							</tr>
+							<tr class="position">
+								<td>Map location:</td>
+								<td class="fsz">
+									<button class="button blue">Set Location</button>
+								</td>
+							</tr>
+							<tr class="upgrades">
+								<td>Upgrades:</td>
+								<td class="indivchoice fsz">
+									<button class="button blue" data-value="equipment">Equipment</button>
+									<button class="button blue" data-value="staff">Staff</button>
+									<button class="button blue" data-value="security">Security</button>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="buttons fsz">
+						<button class="button cancel red">Cancel</button>
+						<button class="button apply red">Apply</button>
+					</div>
+				</div>
+<!-- }}} -->
+<!-- {{{ nightclubSetupGUI -->
+				<div id="nightclubSetupGUI" class="setupGUI nightclub">
+					<div class="heading">
+						<h1>Nightclub Setup</h1>
+					</div>
+					<div class="main">
+						<table>
+							<tr class="own">
+								<td>Owned:</td>
+								<td class="onechoice fsz">
+									<button class="button green" data-value="1">Yes</button>
+									<button class="button red" data-value="0">No</button>
+								</td>
+							</tr>
+							<tr class="position">
+								<td>Map location:</td>
+								<td class="fsz">
+									<button class="button blue">Set Location</button>
+								</td>
+							</tr>
+							<tr class="upgrades">
+								<td>Upgrades:</td>
+								<td class="indivchoice fsz">
+									<button class="button blue" data-value="equipment">Equipment</button>
+									<button class="button blue" data-value="staff">Staff</button>
+									<button class="button blue" data-value="security">Security</button>
+								</td>
+							</tr>
+							<tr class="sidebar">
+								<td>Sidebar:</td>
+								<td class="onechoice fsz">
+									<button class="button green" data-value="1">Show all</button>
+									<button class="button orange" data-value="0">Show produced</button>
+								</td>
+							</tr>
+							<tr class="storageFloors">
+								<td>Storage floors:</td>
+								<td class="incDecButtons fsz">
+									<button class="fa fa-minus button minus"></button>
+									<input type="number" class="range_enforced integer_only" name="quantity" value="1" min="1" max="5">
+									<button class="fa fa-plus button plus"></button>
+								</td>
+							</tr>
+							<tr class="producing">
+								<td>Producing:</td>
+								<td class="indivchoice fsz">
+									<button class="button blue" data-value="cargo">Cargo and Shipments</button>
+									<button class="button blue" data-value="sporting">Sporting Goods</button>
+									<button class="button blue" data-value="imports">South American Imports</button>
+									<button class="button blue" data-value="pharma">Pharmaceutical Research</button>
+									<button class="button blue" data-value="creation">Cash Creation</button>
+									<button class="button blue" data-value="organic">Organic Produce</button>
+									<button class="button blue" data-value="copying">Printing and Copying</button>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="buttons fsz">
+						<button class="button cancel red">Cancel</button>
+						<button class="button apply red">Apply</button>
+					</div>
+				</div>
+<!-- }}} -->
+<!-- {{{ importExportSetupGUI-->
+				<div id="importExportSetupGUI" class="setupGUI importExport">
+					<div class="heading">
+						<h1>Import / Export Setup</h1>
+					</div>
+					<div class="main">
+						<table>
+							<tr class="own">
+								<td>Owned:</td>
+								<td class="onechoice fsz">
+									<button class="button green" data-value="1">Yes</button>
+									<button class="button red" data-value="0">No</button>
+								</td>
+							</tr>
+							<tr class="position">
+								<td>Map location:</td>
+								<td class="fsz">
+									<button class="button blue">Set Location</button>
+								</td>
+							</tr>
+							<tr class="highEndCars">
+								<td>High-end cars:</td>
+								<td class="incDecButtons fsz">
+									<button class="fa fa-minus button minus"></button>
+									<input type="number" class="range_enforced integer_only" name="quantity" value="0" min="0" max="20"/>
+									<button class="fa fa-plus button plus"></button>
+								</td>
+							</tr>
+							<tr class="resetCooldown">
+								<td>Cooldown:</td>
+								<td class="fsz">
+									<button class="button blue">Reset</button>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="buttons fsz">
+						<button class="button cancel red">Cancel</button>
+						<button class="button apply red">Apply</button>
+					</div>
+				</div>
+<!-- }}} -->
+<!-- {{{ wheelSetupGUI -->
+				<div id="wheelSetupGUI" class="setupGUI wheel">
+					<div class="heading">
+						<h1>Lucky Wheel Setup</h1>
+					</div>
+					<div class="main">
+						<table>
+							<tr class="own">
+								<td>Display:</td>
+								<td class="onechoice fsz">
+									<button class="button green" data-value="1">Yes</button>
+									<button class="button red" data-value="0">No</button>
+								</td>
+							</tr>
+							<tr class="notifyWhilePaused">
+								<td>Notify:</td>
+								<td class="onechoice fsz">
+									<button class="button green" data-value="1">Always</button>
+									<button class="button orange" data-value="0">Only while running</button>
+								</td>
+							</tr>
+							<tr class="resetCooldown">
+								<td>Cooldown:</td>
+								<td class="fsz">
+									<button class="button blue">Reset</button>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="buttons fsz">
+						<button class="button cancel red">Cancel</button>
+						<button class="button apply red">Apply</button>
+					</div>
+				</div>
+			</div>
+		</div>	
+<!-- }}} -->
+		<div id="infotab" class="col">
+			<div class="business-section" id="activeBusinesses">
+<!-- {{{ bunker -->		
+				<div id="bunker" class="information">
+					<div class="business_heading clearfix">
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-bunker" alt="Bunker icon"/>
+						</div>
+						<h1>Bunker</h1>
+						<button class="fa fa-cog button setup"></button>
+					</div>
+					<div class="content">
+						<table>
+							<tr class="product">
+								<td><span>Product</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="research">
+								<td><span>Research</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="supplies">
+								<td><span>Supplies</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+						</table>
+						<div class="fsz">
+							<button class="button supplies green">Resupply</button>
+							<button class="button sell blue">Sell</button>
+						</div>
+					</div>
+				</div>
+<!-- }}} -->
+<!-- {{{ coke -->
+				<div id="coke" class="information mcbusiness">
+					<div class="business_heading clearfix">
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-coke" alt="Cocaine icon"/>
+						</div>
+						<h1>Cocaine</h1>
+						<button class="fa fa-cog button setup"></button>
+					</div>
+					<div class="content">
+						<table>
+							<tr class="product">
+								<td><span>Product</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="supplies">
+								<td><span>Supplies</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+						</table>
+						<div class="fsz">
+							<button class="button supplies green">Resupply</button>
+							<button class="button sell blue">Sell</button>
+						</div>
+					</div>
+				</div>
+<!-- }}} -->
+<!-- {{{ meth-->
+				<div id="meth" class="information mcbusiness">
+					<div class="business_heading clearfix">
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-meth" alt="Meth icon"/>
+						</div>
+						<h1>Meth</h1>
+						<button class="fa fa-cog button setup"></button>
+					</div>
+					<div class="content">
+						<table>
+							<tr class="product">
+								<td><span>Product</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="supplies">
+								<td><span>Supplies</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+						</table>
+						<div class="fsz">
+							<button class="button supplies green">Resupply</button>
+							<button class="button sell blue">Sell</button>
+						</div>
+					</div>
+				</div>
+<!-- }}} -->
+<!-- {{{ cash-->
+				<div id="cash" class="information mcbusiness">
+					<div class="business_heading clearfix">
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-cash" alt="Counterfeit Cash icon"/>
+						</div>
+						<h1>Counterfeit Cash</h1>
+						<button class="fa fa-cog button setup"></button>
+					</div>
+					<div class="content">
+						<table>
+							<tr class="product">
+								<td><span>Product</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="supplies">
+								<td><span>Supplies</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+						</table>
+						<div class="fsz">
+							<button class="button supplies green">Resupply</button>
+							<button class="button sell blue">Sell</button>
+						</div>
+					</div>
+				</div>
+<!-- }}} -->
+<!-- {{{ weed -->
+				<div id="weed" class="information mcbusiness">
+					<div class="business_heading clearfix">
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-weed" alt="Weed icon"/>
+						</div>
+						<h1>Weed</h1>
+						<button class="fa fa-cog button setup"></button>
+					</div>
+					<div class="content">
+						<table>
+							<tr class="product">
+								<td><span>Product</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="supplies">
+								<td><span>Supplies</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+						</table>
+						<div class="fsz">
+							<button class="button supplies green">Resupply</button>
+							<button class="button sell blue">Sell</button>
+						</div>
+					</div>
+				</div>
+<!-- }}} -->
+<!-- {{{ forgery -->
+				<div id="forgery" class="information mcbusiness">
+					<div class="business_heading clearfix">
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-forgery" alt="Document Forgery icon"/>
+						</div>
+						<h1>Doc. Forgery</h1>
+						<button class="fa fa-cog button setup"></button>
+					</div>
+					<div class="content">
+						<table>
+							<tr class="product">
+								<td><span>Product</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="supplies">
+								<td><span>Supplies</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+						</table>
+						<div class="fsz">
+							<button class="button supplies green">Resupply</button>
+							<button class="button sell blue">Sell</button>
+						</div>
+					</div>
+				</div>
+<!-- }}} -->
+<!-- {{{ nightClub-->
+				<div id="nightclub" class="information">
+					<div class="business_heading clearfix">
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-nightclub" alt="Nightclub icon"/>
+						</div>
+						<h1>Nightclub</h1>
+						<button class="fa fa-cog button setup"></button>
+					</div>
+					<div class="content">
+						<table>
+							<tr class="cargo">
+								<td><span>Cargo</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="sporting">
+								<td><span>Sporting</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							<tr class="imports">
+								<td><span>Imports</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="pharma">
+								<td><span>Pharma</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="creation">
+								<td><span>Cash</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="organic">
+								<td><span>Organic</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+							<tr class="copying">
+								<td><span>Copying</span></td>
+								<td><div class="progress_bar">
+									<span></span>
+									<div class="fivetick">
+										<div></div><div></div><div></div><div></div><div></div>
+									</div>
+									<input type="range" class="slider" min="0" max="100" value="0">
+									<div class="bar"></div>
+								</div></td>
+							</tr>
+						</table>
+						<button class="button modify purple">Modify</button>
+					</div>
+				</div>
+<!-- }}} -->
+<!-- {{{ importExport -->
+				<div id="importExport" class="information">
+					<div class="business_heading clearfix">
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-importExport" alt="Import/Export icon"/>
+						</div>
+						<h1>Import / Export</h1>
+						<button class="fa fa-cog button setup"></button>
+					</div>
+					<div class="content">
+						<div class="fsz">
+							<button class="button source green">Source (0)</button>
+							<!--<button class="button modify purple">View</button>-->
+						</div>
+						<div>
+							<select name="toSell">
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+							</select>
+							<button class="button sell blue">Sell</button>
+						</div>
+					</div>
+				</div>
+<!-- }}} -->
+<!-- {{{ wheel -->
+				<div id="wheel" class="information">
+					<div class="business_heading clearfix">
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-wheel" alt="Lucky Wheel icon"/>
+						</div>
+						<h1>Lucky Wheel</h1>
+						<button class="fa fa-cog button setup"></button>
+					</div>
+					<div class="content">
+						<button class="button spin purple">Spin</button>
+					</div>
+				</div>
+<!-- }}} -->
+<!-- {{{ fees -->
+				<div id="fees" class="information">
+					<div class="business_heading clearfix">
+						<div class="icon_wrap">
+							<img src="img/blank.png" class="icons icons-info icons-fees" alt="Daily Fees icon"/>
+						</div>
+						<h1>Daily Fees</h1>
+					</div>
+					<button class="button purple" disabled="true">Not in Session</button>
+				</div>
+<!-- }}} -->
+			</div>
+			<div class="business-section" id="inactiveBusinesses"></div>
+		</div>
+	</div>
+</body>
+
+</html>
