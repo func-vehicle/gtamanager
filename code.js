@@ -2208,6 +2208,7 @@ function playNotification(business, title, body) {
 window.notify = {
 	list: [],
 	id: 0,
+	registered: false,
 	log: function(msg) {
 		console.log(msg);
 	},
@@ -2232,32 +2233,39 @@ window.notify = {
 			});
 		}
 		else {
-			alert("Unfortunately, notifications are not available for your browser.");
+			alert("Unfortunately, push notifications are not available for your browser.");
 		}
 	},
 	show: function(title, body, business) {
-		if (typeof Notification === "undefined") {
-			notify.log("Notifications not supported, ignoring.");
-			return;
-		}
 		if (notify.compatible()) {
-			notify.id++;
-			var id = notify.id;
-			notify.list[id] = new Notification(title, {
-				body: body,
-				tag: business,
-				icon: "img/"+business+".png",
-				lang: "",
-				dir: "auto",
-			});
-			notify.log("Notification #"+id+" queued for display");
-			notify.list[id].onclick = function() { notify.logEvent(id, "clicked"); };
-			notify.list[id].onshow  = function() { notify.logEvent(id, "showed");  };
-			notify.list[id].onerror = function() { notify.logEvent(id, "errored"); };
-			notify.list[id].onclose = function() { notify.logEvent(id, "closed");  };
+			// TODO:
+			if (!this.registered) {
+				navigator.serviceWorker.register('./sw.js');
+				registered = true;
+			}
+			navigator.serviceWorker.ready.then(function(registration) {
+				notify.id++;
+				var id = notify.id;
+				notify.list[id] = registration.showNotification(title, {
+					body: body,
+					tag: business,
+					icon: "img/"+business+".png",
+					lang: "",
+					dir: "auto",
+				});
+				notify.log("Notification #"+id+" queued for display");
+				notify.list[id].onclick = function() { notify.logEvent(id, "clicked"); };
+				notify.list[id].onshow  = function() { notify.logEvent(id, "showed");  };
+				notify.list[id].onerror = function() { notify.logEvent(id, "errored"); };
+				notify.list[id].onclose = function() { notify.logEvent(id, "closed");  };
+				
+				notify.log("Created a new notification...");
+				notify.log(notify.list[id]);
+				});
 			
-			notify.log("Created a new notification...");
-			notify.log(notify.list[id]);
+		}
+		else {
+			notify.log("Notifications not supported, ignoring.");
 		}
 	},
 	logEvent: function(id, event) {
