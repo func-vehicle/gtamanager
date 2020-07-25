@@ -2,7 +2,7 @@ var userInfo;
 
 // The current format of user's data.
 var defaultUserInfo = {
-	version: "1.10.1",
+	version: "1.10.2",
 	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
@@ -661,6 +661,9 @@ function update() {
 	}
 	if (userInfo.version == "1.10.0") {
 		userInfo.version = "1.10.1";
+	}
+	if (userInfo.version == "1.10.1") {
+		userInfo.version = "1.10.2";
 	}
 }
 
@@ -2238,7 +2241,6 @@ window.notify = {
 	},
 	show: function(title, body, business) {
 		if (notify.compatible()) {
-			// TODO:
 			if (!this.registered) {
 				navigator.serviceWorker.register('./sw.js');
 				registered = true;
