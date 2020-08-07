@@ -1677,7 +1677,6 @@ function tick() {
 			var upgrades = (userInfo["bunker"].upgrades.equipment ? 1 : 0) + (userInfo["bunker"].upgrades.staff ? 1 : 0);
 			// Manufacturing
 			if (userInfo["bunker"]["mode"] == 0) {
-				
 				// Calculate maximum running time in seconds, then actual time
 				maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxProduct"][upgrades] - userInfo["bunker"]["product"]) * 60;
 				secondsRun = Math.min(deltaSec, maxSeconds);
@@ -1835,10 +1834,14 @@ function redrawScreen() {
 	var storage_floors = userInfo["nightclub"].storage_floors;
 	for (var i = 0; i < products.length; i++) {
 		var product = products[i];
-		var td = $("#nightclubGUI ."+product+" td").eq(1);
 		var current = Math.round(userInfo["nightclub"][product]);
 		var maxProduct = staticInfo["nightclub"]["max"+capitalize(product)][storage_floors - 1];
+		// Set slider max value
+		$("#nightclubGUI ."+product+" input").attr("max", maxProduct);
+		// Show current/capacity
+		var td = $("#nightclubGUI ."+product+" td").eq(1);
 		td.html(current+"/"+maxProduct);
+		// Add to running total (for delivery vehicle calculation)
 		totalNightclubProduct += current;
 	}	
 	var transport;
