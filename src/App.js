@@ -1,26 +1,61 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { InfoContext, defaultUserInfo } from './infoContext';
+import Map from './Map';
+import MCBusiness from './MCBusiness';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    /*this.toggleTheme = () => {
+      this.setState(state => ({
+        theme:
+          state.theme === themes.dark
+            ? themes.light
+            : themes.dark,
+      }));
+    };*/
+
+    // State also contains the updater function so it will be passed down into the context provider
+    this.state = {
+      userInfo: defaultUserInfo,
+    };
+  }
+
+  render() {
+    return (
+      <InfoContext.Provider value={this.state}>
+        <Map />
+        <div id="infotab" className="col">
+          <MCBusiness 
+            business="coke"
+            full_name="Cocaine"
+            short_name="Cocaine"
+          />
+          <MCBusiness 
+            business="meth"
+            full_name="Methamphetamine"
+            short_name="Meth"
+          />
+          <MCBusiness 
+            business="cash"
+            full_name="Counterfeit Cash"
+            short_name="Counterfeit Cash"
+          />
+          <MCBusiness 
+            business="weed"
+            full_name="Weed"
+            short_name="Weed"
+          />
+          <MCBusiness 
+            business="forgery"
+            full_name="Document Forgery"
+            short_name="Doc. Forgery"
+          />
+        </div>
+      </InfoContext.Provider>
+    );
+  }
 }
 
 export default App;
