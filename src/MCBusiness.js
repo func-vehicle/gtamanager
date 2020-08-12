@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import update from 'immutability-helper';
@@ -119,7 +118,7 @@ class MCBusiness extends React.Component {
                         />
                     </div>
                     <h1>{this.props.short_name}</h1>
-                    <button className="fa fa-cog button setup">
+                    <button className="button setup">
                         <FontAwesomeIcon icon={faCog} />
                     </button>
                 </div>

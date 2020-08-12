@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans");
 /* GENERAL */
 * {
   box-sizing: border-box;
@@ -412,9 +413,11 @@ input[type=range]::-ms-thumb {
   height: 50rem;
   width: 50rem;
   position: absolute;
-  display: none;
   top: 0;
   left: 0;
+}
+#root > #overlay {
+  position: fixed;
 }
 
 #notification {
@@ -423,13 +426,15 @@ input[type=range]::-ms-thumb {
   border: 1px solid #CC212C;
   position: absolute;
   min-height: 200px;
-  display: none;
   width: 600px;
   max-width: calc(100% - 10px);
   /* Center a div of unknown width */
   top: 50%;
   left: 50%;
   transform: translate(calc(-50% - 5px), calc(-50% - 5px));
+}
+#root > #notification {
+  position: fixed;
 }
 #notification > div {
   height: 100%;

@@ -25,7 +25,7 @@ class MapIcon extends React.Component {
           muted: {$set: newValue},
         }
       }
-  }));
+    }));
   }
 
   render() {

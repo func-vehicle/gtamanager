@@ -1,32 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import './html5reset.css';
 import './style.css';
 import MapIcon from './MapIcon';
-import image from './img/bg-2048.jpg'
-
-function getWindowDimensions() {
-  const { innerWidth: width, innerHeight: height } = window;
-  return {
-    width,
-    height
-  };
-}
-
-export function useWindowDimensions() {
-  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
-
-  useEffect(() => {
-    function handleResize() {
-      setWindowDimensions(getWindowDimensions());
-    }
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return windowDimensions;
-}
+import Popup from './Popup';
+import image from './img/bg-2048.jpg';
+import { useWindowDimensions } from './Utility';
 
 function calculateScrollbarWidth(element) {
   if (element != null) {
@@ -41,6 +20,17 @@ const Map = () => {
   let bodyElement = document.body;
   let infoTabElement = document.getElementById("infotab");
   let styles;
+  let popupElement = null;
+
+  const [state, setState] = useState([0, 0]);
+  const ref = useRef(null);
+  useEffect(() => {
+    if (ref.current == null) {
+      return;
+    }
+    setState([ref.current.clientHeight, ref.current.clientWidth]);
+  }, [width, height]);
+
   if (width > 600) {
     bodyElement.classList.add("desktop");
     bodyElement.classList.remove("mobile");
@@ -52,6 +42,7 @@ const Map = () => {
       maxHeight: height + "px",
       maxWidth: width - 220 - scrollWidth + "px",
     }
+    popupElement = <Popup width={state[0]} height={state[1]} />;
   }
   else {
     bodyElement.classList.add("mobile");
@@ -75,6 +66,7 @@ const Map = () => {
           draggable="false"
           alt="Satellite view map of San Andreas (GTA V)"
           style={styles}
+          ref={ref}
         />
         <MapIcon business="bunker" />
         <MapIcon business="coke" />
@@ -86,6 +78,12 @@ const Map = () => {
         <MapIcon business="importExport" />
         <MapIcon business="wheel" />
       </div>
+      <div id="options" className="fsz">
+				<button className="button toggle start green">Start</button>
+				<button className="button audio red">Sound</button>
+				<button className="button setup red">Setup</button>
+			</div>
+      {popupElement}
     </div>
   );
 }
