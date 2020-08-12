@@ -34,7 +34,7 @@ export let defaultUserInfo = {
 	},
 	coke: {
 		owned: false,
-		muted: false,
+		muted: true,
 		product: 50,
 		supplies: 20,
 		upgrades: {

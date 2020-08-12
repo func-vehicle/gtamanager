@@ -1,9 +1,13 @@
 import React from 'react';
-import './html5reset.css';
-import './style.css';
-import { InfoContext, staticInfo } from './infoContext';
+
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import update from 'immutability-helper';
+
+import { capitalize } from './Utility'
+import { InfoContext, staticInfo } from './infoContext';
+import './html5reset.css';
+import './style.css';
 import blank from "./img/blank.png";
 
 class MCBusiness extends React.Component {
@@ -22,7 +26,7 @@ class MCBusiness extends React.Component {
         let userInfo = this.context.userInfo;
         let currentProduct = userInfo[this.props.business].product;
         let upgradeIndex = (userInfo[this.props.business].upgrades.equipment ? 1 : 0) + (userInfo[this.props.business].upgrades.staff ? 1 : 0);
-        let maxProduct = staticInfo.bunker.maxProduct[upgradeIndex];
+        let maxProduct = staticInfo[this.props.business].maxProduct[upgradeIndex];
         return currentProduct/maxProduct;
     }
 
@@ -30,27 +34,46 @@ class MCBusiness extends React.Component {
         let userInfo = this.context.userInfo;
         let currentSupplies = userInfo[this.props.business].supplies;
         let upgradeIndex = (userInfo[this.props.business].upgrades.equipment ? 1 : 0) + (userInfo[this.props.business].upgrades.staff ? 1 : 0);
-        let maxSupplies = staticInfo.bunker.maxSupplies[upgradeIndex];
+        let maxSupplies = staticInfo[this.props.business].maxSupplies[upgradeIndex];
         return currentSupplies/maxSupplies;
     }
 
     sellAllProduct() {
-        let userInfo = this.context.userInfo;
-        userInfo[this.props.business].product = 0;
-        this.forceUpdate();
+        this.context.setState((previousState) => update(previousState, {
+            userInfo: { 
+                [this.props.business]: {
+                    product: {$set: 0},
+                }
+            }
+        }));
     }
 
     buyFullSupplies() {
         let userInfo = this.context.userInfo;
         let upgradeIndex = (userInfo[this.props.business].upgrades.equipment ? 1 : 0) + (userInfo[this.props.business].upgrades.staff ? 1 : 0);
-        let maxSupplies = staticInfo.bunker.maxSupplies[upgradeIndex];
-        userInfo[this.props.business].supplies = maxSupplies;
-        this.forceUpdate();
+        let maxSupplies = staticInfo[this.props.business].maxSupplies[upgradeIndex];
+        this.context.setState((previousState) => update(previousState, {
+            userInfo: { 
+                [this.props.business]: {
+                    supplies: {$set: maxSupplies},
+                }
+            }
+        }));
     }
 
     setTypeValue(e) {
-        console.log(e.target);
-        
+        let userInfo = this.context.userInfo;
+        let upgradeIndex = (userInfo[this.props.business].upgrades.equipment ? 1 : 0) + (userInfo[this.props.business].upgrades.staff ? 1 : 0);
+        let type = e.target.name;
+        let maxType = staticInfo[this.props.business]["max"+capitalize(type)][upgradeIndex];
+        let newValue = Math.round(maxType * e.target.value/100);
+        this.context.setState((previousState) => update(previousState, {
+            userInfo: { 
+                [this.props.business]: {
+                    [type]: {$set: newValue},
+                }
+            }
+        }));
     }
 
     // TODO: make this a proper object!!!
@@ -58,9 +81,6 @@ class MCBusiness extends React.Component {
         let userInfo = this.context.userInfo;
         let progressBarOverlay;
         switch (userInfo.settings.progress_bar_style) {
-            case 0:
-                progressBarOverlay = null;
-                break;
             case 1:
                 progressBarOverlay = (
                     <div className="fivetick">
@@ -88,10 +108,6 @@ class MCBusiness extends React.Component {
 
     render() {
         let userInfo = this.context.userInfo;
-        let sliderClass = "slider";
-        if (userInfo.settings.progress_bar_style > 1) {
-            sliderClass = "slider"
-        }
         return (
             <div id={this.props.business} className="information mcbusiness">
                 <div className="business_heading clearfix">
@@ -114,7 +130,7 @@ class MCBusiness extends React.Component {
                                 <td><span>Product</span></td>
                                 <td><div className="progress_bar">
                                     {this.BarOverlay("product")}
-                                    <input type="range" className="slider" min="0" max="100" value={this.computeProductPortion()} />
+                                    <input name="product" onChange={this.setTypeValue} type="range" className="slider" min="0" max="100" value={Math.round(this.computeProductPortion()*100)} />
                                     <div className="bar" style={{width: this.computeProductPortion()*100 + "%"}}></div>
                                 </div></td>
                             </tr>
@@ -122,7 +138,7 @@ class MCBusiness extends React.Component {
                                 <td><span>Supplies</span></td>
                                 <td><div className="progress_bar">
                                     {this.BarOverlay("supplies")}
-                                    <input onChange={this.setTypeValue} type="range" className="slider" min="0" max="100" value={this.computeSuppliesPortion()} />
+                                    <input name="supplies" onChange={this.setTypeValue} type="range" className="slider" min="0" max="100" value={Math.round(this.computeSuppliesPortion()*100)} />
                                     <div className="bar" style={{width: this.computeSuppliesPortion()*100 + "%"}}></div>
                                 </div></td>
                             </tr>

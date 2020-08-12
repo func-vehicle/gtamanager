@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans');
-
 /* GENERAL */
 * {
   box-sizing: border-box;
@@ -46,7 +44,7 @@ body.darkMode {
 }
 
 .desktop .mobile-only, .mobile .desktop-only {
-  display: none;
+  display: none !important;
 }
 
 .col {
@@ -237,7 +235,7 @@ input[type=range]::-ms-thumb {
 }
 
 .icons {
-  background-image: url(./img/spritesheet.png);
+  background-image: url(img/spritesheet.png);
   background-repeat: no-repeat;
   display: block;
 }
@@ -308,6 +306,10 @@ input[type=range]::-ms-thumb {
   background-position: -199px -67px;
 }
 
+.faded {
+  opacity: 0.6;
+}
+
 #mini_notif {
   background-color: #000;
   border: 1px solid #CC212C;
@@ -322,8 +324,50 @@ input[type=range]::-ms-thumb {
   transform: translate(calc(-50% - 5px), 0);
   text-align: center;
 }
+#mini_notif .has-buttons {
+  display: flex;
+  flex-flow: row;
+}
 .mobile #mini_notif {
   top: 5px;
+}
+#mini_notif .button {
+  margin-top: 0;
+  margin-right: 3px;
+  padding: 1px;
+  height: 24px;
+  width: 24px;
+}
+#mini_notif .button:last-child {
+  margin-right: 0;
+}
+#mini_notif .left {
+  flex: 1 1 auto;
+  display: flex;
+  min-width: 0;
+}
+#mini_notif .left .button {
+  flex-shrink: 0;
+}
+#mini_notif .left .button:last-child {
+  margin-left: 4px;
+}
+#mini_notif .left span, #mini_notif .left p {
+  flex: 1 1 auto;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: top;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+#mini_notif .right {
+  display: inline-block;
+  margin-left: 20px;
+  flex: 0 0 auto;
+  text-align: right;
 }
 
 .desktop #options {
@@ -584,6 +628,7 @@ input[type=range]::-ms-thumb {
 }
 .mobile #infotab {
   overflow-y: hidden;
+  width: 100%;
 }
 
 .information {
