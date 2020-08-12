@@ -21,9 +21,9 @@ class MapIcon extends React.Component {
     let newValue = !userInfo[this.props.business].muted;
     this.context.setState((previousState) => update(previousState, {
       userInfo: { 
-          [this.props.business]: {
-              muted: {$set: newValue},
-          }
+        [this.props.business]: {
+          muted: {$set: newValue},
+        }
       }
   }));
   }

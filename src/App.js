@@ -7,16 +7,24 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    // Gigantic brain giga-hack
+    // Hacky solution?
     this.setNewState = (func) => {
       this.setState(func);
     }
 
     // State also contains the updater function so it will be passed down into the context provider
     this.state = {
-      userInfo: defaultUserInfo,
+      userInfo: this.loadUserInfo(),
       setState: this.setNewState,
     };
+  }
+
+  loadUserInfo() {
+    let storedInfo = localStorage.getItem("userInfo");
+    if (storedInfo == null) {
+      return defaultUserInfo;
+    }
+    return JSON.parse(storedInfo);
   }
 
   render() {

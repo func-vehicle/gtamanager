@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
 import './html5reset.css';
 import './style.css';
 import MapIcon from './MapIcon';
 import image from './img/bg-2048.jpg'
-
-import { useState, useEffect } from 'react';
 
 function getWindowDimensions() {
   const { innerWidth: width, innerHeight: height } = window;
