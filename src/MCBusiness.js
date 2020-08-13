@@ -21,20 +21,12 @@ class MCBusiness extends React.Component {
         this.setTypeValue = this.setTypeValue.bind(this);
     }
 
-    computeProductPortion() {
+    computePortion(type) {
         let userInfo = this.context.userInfo;
-        let currentProduct = userInfo[this.props.business].product;
+        let currentOfType = userInfo[this.props.business][type];
         let upgradeIndex = (userInfo[this.props.business].upgrades.equipment ? 1 : 0) + (userInfo[this.props.business].upgrades.staff ? 1 : 0);
-        let maxProduct = staticInfo[this.props.business].maxProduct[upgradeIndex];
-        return currentProduct/maxProduct;
-    }
-
-    computeSuppliesPortion() {
-        let userInfo = this.context.userInfo;
-        let currentSupplies = userInfo[this.props.business].supplies;
-        let upgradeIndex = (userInfo[this.props.business].upgrades.equipment ? 1 : 0) + (userInfo[this.props.business].upgrades.staff ? 1 : 0);
-        let maxSupplies = staticInfo[this.props.business].maxSupplies[upgradeIndex];
-        return currentSupplies/maxSupplies;
+        let maxOfType = staticInfo[this.props.business]["max"+capitalize(type)][upgradeIndex];
+        return currentOfType/maxOfType;
     }
 
     sellAllProduct() {
@@ -90,9 +82,9 @@ class MCBusiness extends React.Component {
             case 2:
                 let percentage;
                 if (type === "supplies")
-                    percentage = Math.round(this.computeSuppliesPortion() * 100);
+                    percentage = Math.round(this.computePortion("supplies") * 100);
                 else
-                    percentage = Math.round(this.computeProductPortion() * 100);
+                    percentage = Math.round(this.computePortion("product") * 100);
                 progressBarOverlay = <span>{percentage}%</span>;
                 break;
             case 3:
@@ -129,16 +121,16 @@ class MCBusiness extends React.Component {
                                 <td><span>Product</span></td>
                                 <td><div className="progress_bar">
                                     {this.BarOverlay("product")}
-                                    <input name="product" onChange={this.setTypeValue} type="range" className="slider" min="0" max="100" value={Math.round(this.computeProductPortion()*100)} />
-                                    <div className="bar" style={{width: this.computeProductPortion()*100 + "%"}}></div>
+                                    <input name="product" onChange={this.setTypeValue} type="range" className="slider" min="0" max="100" value={Math.round(this.computePortion("product")*100)} />
+                                    <div className="bar" style={{width: this.computePortion("product")*100 + "%"}}></div>
                                 </div></td>
                             </tr>
                             <tr className={"supplies" + (userInfo.settings.progress_bar_style > 1 ? " big" : "")}>
                                 <td><span>Supplies</span></td>
                                 <td><div className="progress_bar">
                                     {this.BarOverlay("supplies")}
-                                    <input name="supplies" onChange={this.setTypeValue} type="range" className="slider" min="0" max="100" value={Math.round(this.computeSuppliesPortion()*100)} />
-                                    <div className="bar" style={{width: this.computeSuppliesPortion()*100 + "%"}}></div>
+                                    <input name="supplies" onChange={this.setTypeValue} type="range" className="slider" min="0" max="100" value={Math.round(this.computePortion("supplies")*100)} />
+                                    <div className="bar" style={{width: this.computePortion("supplies")*100 + "%"}}></div>
                                 </div></td>
                             </tr>
                         </tbody>

@@ -4,8 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import { InfoContext } from './infoContext';
+import { inRange, isInteger } from './Utility';
 
-const PopupPushDenied = (props) => {
+export const PopupPushDenied = (props) => {
   return (
     <div id="pushDeniedNotice">
       <div className="heading">
@@ -22,7 +23,7 @@ const PopupPushDenied = (props) => {
   );
 }
 
-const PopupNewUser = (props) => {
+export const PopupNewUser = (props) => {
   return (
     <div id="newUserNotice">
       <div className="heading">
@@ -55,7 +56,7 @@ const PopupNewUser = (props) => {
   );
 }
 
-const PopupPatchnotes = (props) => {
+export const PopupPatchnotes = (props) => {
   return (
     <div id="updateNotice">
       <div className="heading clearfix">
@@ -81,7 +82,7 @@ const PopupPatchnotes = (props) => {
   );
 }
 
-const PopupNewWeek = (props) => {
+export const PopupNewWeek = (props) => {
   return (
     <div id="newWeekNotice">
       <div className="heading">
@@ -98,7 +99,7 @@ const PopupNewWeek = (props) => {
   );
 }
 
-const PopupPaused = (props) => {
+export const PopupPaused = (props) => {
   return (
     <div id="pauseNotice">
       <div className="heading">
@@ -115,42 +116,142 @@ const PopupPaused = (props) => {
   );
 }
 
-const PopupSetupMain = (props) => {
+export const PopupSetupMain = (props) => {
 
   const context = useContext(InfoContext);
   let workingInfo = JSON.parse(JSON.stringify(context.userInfo.settings));
   const [state, setState] = useState(workingInfo);
 
-  function setAudioInterval(e) {
-    // e.persist();
-    // const re = /^[0-9\b]+$/;
-    
-    // if (e.target.value === '' || re.test(e.target.value)) {
-    //   console.log("Passed first check...");
-    //   let value = parseInt(e.target.value);
-    //   let min = parseInt(e.target.min);
-    //   let max = parseInt(e.target.max);
-    //   if (min <= value && value <= max) {
-    //     console.log("Passed second check!");
-    //     context.setState((previousState) => update(previousState, {
-    //       userInfo: { 
-    //         settings: {
-    //           audio: {
-    //             interval: {$set: e.target.value}
-    //           }
-    //         }
-    //       }
-    //     }));
-    //   }
-    // }
-  }
-
-  function setAudioVolume(e) {
+  function validateIndividual(e) {
     e.persist();
+    let element = e.target;
+    if (element.value === "") {
+      element.parentElement.classList.add("invalid-value");
+    }
+    else if (element.classList.contains("range_enforced") && !inRange(element)) {
+      element.parentElement.classList.add("invalid-value");
+    }
+    else {
+      element.parentElement.classList.remove("invalid-value");
+    }
     setState((previousState) => update(previousState, {
       audio: {
-        volume: {$set: e.target.value/100}
+        [element.name]: {$set: element.value}
       }
+    }));
+  }
+
+  function decrementor(e) {
+    let element = e.target.nextSibling;
+    let value = parseFloat(element.value);
+    let min = parseFloat(element.min);
+    let newValue = Math.max(value - 1, min);
+    setState((previousState) => update(previousState, {
+      audio: {
+        [element.name]: {$set: newValue}
+      }
+    }));
+  }
+
+  function incrementor(e) {
+    let element = e.target.previousSibling;
+    let value = parseFloat(element.value);
+    let max = parseFloat(element.max);
+    let newValue = Math.min(value + 1, max);
+    setState((previousState) => update(previousState, {
+      audio: {
+        [element.name]: {$set: newValue}
+      }
+    }));
+  }
+
+  function hideUnowned(e) {
+    let newValue = !state.hide_unowned;
+    setState((previousState) => update(previousState, {
+      hide_unowned: {$set: newValue}
+    }));
+  }
+
+  function setProgressStyle(e) {
+    let newValue = parseInt(e.target.dataset.value);
+    setState((previousState) => update(previousState, {
+      progress_bar_style: {$set: newValue}
+    }));
+  }
+
+  function setAppStyle(e) {
+    let newValue = parseInt(e.target.dataset.value);
+    setState((previousState) => update(previousState, {
+      app_style: {$set: newValue}
+    }));
+  }
+
+  // TODO:
+  function validateVolume(e) {
+    validateIndividual(e);
+
+  }
+
+  function downloadData(e) {
+    // https://stackoverflow.com/questions/19721439/
+		var name = "manager_data.json";
+		var file = new Blob([JSON.stringify(context.userInfo)], {type: "text/json"});
+      var isIE = false || !!document.documentMode;
+      if (isIE) {
+        window.navigator.msSaveOrOpenBlob(file, name);
+      }
+      else {
+        let a = document.createElement('a');
+        a.href = URL.createObjectURL(file);
+        a.download = name;
+        a.click();
+		}
+  }
+
+  function selectFile(e) {
+    let element = document.getElementById("fileInput");
+    if (element != null) {
+      element.click();
+    }
+  }
+
+  function uploadData(e) {
+    var reader = new FileReader();
+    var file = e.target.files[0];
+		if (file.name.split('.').pop() !== "json") {
+			console.log("Invalid file type!");
+			return;
+		}
+		reader.onload = function(e) {
+      // Can't use context.setState because data may need to be updated, could crash application if not updated
+      let newInfo = JSON.parse(reader.result);
+      localStorage.setItem("userInfo", JSON.stringify(newInfo));
+      window.onbeforeunload = null;
+			window.location.reload(false);
+      // context.setState((previousState) => update(previousState, {
+      //   userInfo: {$set: newInfo}
+      // }));
+		};
+		reader.readAsText(file);
+  }
+
+  // TODO: Don't mutate popupStack directly!!!
+  function applyChanges(e) {
+    let popupStack = [context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      userInfo: {
+        settings: {$set: state}
+      },
+      popupStack: {$set: popupStack}
+    }));
+  }
+
+  function cancelChanges(e) {
+    let popupStack = [context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      popupStack: {$set: popupStack}
     }));
   }
 
@@ -165,8 +266,8 @@ const PopupSetupMain = (props) => {
             <tr className="hideUnowned">
               <td>Hide unowned:</td>
               <td className="onechoice fsz">
-                <button className="button green" data-value="1">Yes</button>
-                <button className="button red" data-value="0">No</button>
+                <button onClick={hideUnowned} className="button green" disabled={state.hide_unowned} data-value="true">Yes</button>
+                <button onClick={hideUnowned} className="button red" disabled={!state.hide_unowned} data-value="false">No</button>
               </td>
             </tr>
             <tr className="notificationSettings">
@@ -178,43 +279,42 @@ const PopupSetupMain = (props) => {
             <tr className="audioFreq">
               <td>Audio interval:</td>
               <td className="incDecButtons">
-                <button className="button minus"><FontAwesomeIcon icon={faMinus} /></button>
-                <input type="number" onChange={setAudioInterval} className="range_enforced integer_only" name="quantity" value={state.audio.interval} min="1" max="60" />
-                <button className="button plus"><FontAwesomeIcon icon={faPlus} /></button>
+                <button onClick={decrementor} className="button minus"><FontAwesomeIcon icon={faMinus} /></button>
+                <input type="number" name="interval" onKeyDown={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.audio.interval} min="1" max="60" />
+                <button onClick={incrementor} className="button plus"><FontAwesomeIcon icon={faPlus} /></button>
                 <span>minutes</span>
               </td>
             </tr>
             <tr className="audioVolume">
               <td>Audio volume:</td>
               <td className="onechoice">
-                  <input type="range" onChange={setAudioVolume} min="0" max="100" value={Math.round(state.audio.volume*100)} />
+                  <input type="range" name="volume" onChange={validateIndividual} value={state.audio.volume} min="0" max="1" step="0.01" />
                   <span>{Math.round(state.audio.volume*100)}%</span>
               </td>
             </tr>
             <tr className="progressBarStyle">
               <td>Progress style:</td>
               <td className="onechoice fsz">
-                  <button className="button blue" data-value="0">Plain</button>
-                  <button className="button blue" data-value="1">5-tick</button>
-                  <button className="button blue" data-value="2">Percentage</button>
-                  <button className="button blue" data-value="3">Time Remaining</button>
+                  <button onClick={setProgressStyle} className="button blue" disabled={state.progress_bar_style === 0} data-value="0">Plain</button>
+                  <button onClick={setProgressStyle} className="button blue" disabled={state.progress_bar_style === 1} data-value="1">5-tick</button>
+                  <button onClick={setProgressStyle} className="button blue" disabled={state.progress_bar_style === 2} data-value="2">Percentage</button>
+                  <button onClick={setProgressStyle} className="button blue" disabled={state.progress_bar_style === 3} data-value="3">Time Remaining</button>
               </td>
             </tr>
             <tr className="appStyle">
               <td>Theme:</td>
               <td className="onechoice fsz">
-                  <button className="button white" data-value="0">Light</button>
-                  <button className="button grey" data-value="1">Dark</button>
+                  <button onClick={setAppStyle} className="button white" disabled={state.app_style === 0} data-value="0">Light</button>
+                  <button onClick={setAppStyle} className="button grey" disabled={state.app_style === 1} data-value="1">Dark</button>
               </td>
             </tr>
             <tr className="dataDownload">
               <td>Data:</td>
               <td className="fsz">
-                <button className="button orange" data-value="0">Download</button>
-                <button className="button orange" data-value="1">Load from file</button>
+                <button onClick={downloadData} className="button orange" data-value="0">Download</button>
+                <button onClick={selectFile} className="button orange" data-value="1">Load from file</button>
                 <button className="button orange" data-value="reset">Reset everything</button>
-                <a id="dataDownloadLink" title="Download business manager data" style={{display: "none"}}></a>
-                <input id="fileInput" type="file" accept=".json, application/json" style={{display: "none"}} />
+                <input onChange={uploadData} id="fileInput" type="file" accept=".json, application/json" style={{display: "none"}} />
               </td>
             </tr>
             <tr className="about">
@@ -228,19 +328,19 @@ const PopupSetupMain = (props) => {
         </table>
       </div>
       <div className="buttons fsz">
-        <button className="button cancel red">Cancel</button>
-        <button className="button apply red">Apply</button>
+        <button onClick={cancelChanges} className="button cancel red">Cancel</button>
+        <button onClick={applyChanges} className="button apply red">Apply</button>
       </div>
     </div>
   );
 }
 
 const Popup = (props) => {
+  const context = useContext(InfoContext);
   let styles = {
     width: props.width,
     height: props.height,
   }
-  console.log(styles);
 
   // Workaround for setting max height of notification main
   let notificationMainElement = document.querySelector("#notification .main");
@@ -248,14 +348,19 @@ const Popup = (props) => {
     notificationMainElement.style.maxHeight = styles.height - 100 + "px";
   }
 
-  return (
-    <React.Fragment>
-      <div id="overlay" style={styles}></div>
-      <div id="notification">
-        <PopupSetupMain />
-      </div>
-    </React.Fragment>
-  );
+  let fragment = null;
+  if (context.popupStack.length > 0) {
+    fragment = (
+      <React.Fragment>
+        <div id="overlay" style={styles}></div>
+        <div id="notification">
+          {context.popupStack[context.popupStack.length - 1]}
+        </div>
+      </React.Fragment>
+    )
+  }
+
+  return fragment;
 }
 
 export default Popup;

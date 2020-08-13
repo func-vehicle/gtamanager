@@ -1,7 +1,7 @@
 import React from 'react';
 
 export let defaultUserInfo = {
-  version: "1.10.2",
+	version: "1.10.2",
 	recentFriday: 0,
 	settings: {
 		hide_unowned: false,

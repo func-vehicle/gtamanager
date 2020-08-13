@@ -27,19 +27,22 @@ export function useWindowDimensions() {
   return windowDimensions;
 }
 
-export function integerOnly(e) {
+export function isInteger(e) {
   // Only allow digits and backspace
   let digitRegexp = /^[0-9]?(?:Backspace)?$/;
-  let result = digitRegexp.test(e.key);
-  return result;
+  let valid = digitRegexp.test(e.key);
+  if (!valid) {
+      e.preventDefault();
+  }
+  return valid;
 }
 
-export function enforceRange(e) {
+export function inRange(element) {
   // Ensure value is number and in given range 
-  let value = parseFloat(e.target.value);
-  let min = parseFloat(e.target.min);
-  let max = parseFloat(e.target.max);
-  if (!isNaN(value) && min <= value && value <= max) {
+  let value = parseFloat(element.value);
+  let min = parseFloat(element.min);
+  let max = parseFloat(element.max);
+  if (value === "" || (!isNaN(value) && min <= value && value <= max)) {
     return true;
   }
   return false;

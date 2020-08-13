@@ -112,6 +112,10 @@ body {
     &.grey {
         background-color: #423D3C;
     }
+
+    svg {
+        pointer-events: none;
+    }
 }
 /* Input */
 input {
