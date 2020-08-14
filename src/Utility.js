@@ -28,13 +28,13 @@ export function useWindowDimensions() {
 }
 
 export function isInteger(e) {
-  // Only allow digits and backspace
-  let digitRegexp = /^[0-9]?(?:Backspace)?$/;
-  let valid = digitRegexp.test(e.key);
-  if (!valid) {
-      e.preventDefault();
+  // https://stackoverflow.com/questions/469357/html-text-input-allow-only-numeric-input/469419#469419
+  var key = e.keyCode || e.which;
+  key = String.fromCharCode(key);
+  var regex = /[0-9]/;
+  if (!regex.test(key)) {
+    e.preventDefault();
   }
-  return valid;
 }
 
 export function inRange(element) {
@@ -46,4 +46,37 @@ export function inRange(element) {
     return true;
   }
   return false;
+}
+
+export function formatTimeString(ms) {
+  let hours = Math.floor(ms / (1000*60*60));
+  let minutes = Math.floor((ms % (1000*60*60)) / (1000*60));
+  let seconds = Math.floor((ms % (1000*60)) / 1000);
+
+  let maxFigures = 2;
+  let digits = 1;
+  let s = "";
+
+  if (hours > 0 && maxFigures > 0) {
+    s += hours.toLocaleString(undefined, {minimumIntegerDigits: digits});
+    s += "H ";
+    maxFigures--;
+    digits = 2;
+  }
+  if ((hours > 0 || minutes > 0) && maxFigures > 0) {
+    s += minutes.toLocaleString(undefined, {minimumIntegerDigits: digits});
+    s += "M ";
+    maxFigures--;
+    digits = 2;
+  }
+  if (maxFigures > 0) {
+    s += seconds.toLocaleString(undefined, {minimumIntegerDigits: digits});
+    s += "S ";
+    maxFigures--;
+    digits = 2;
+  }
+
+  // Remove trailing space
+  s = s.slice(0, s.length - 1);
+  return s;
 }

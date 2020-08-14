@@ -1,7 +1,7 @@
 import React from 'react';
 import update from 'immutability-helper';
 
-import { InfoContext } from './infoContext';
+import { InfoContext } from './InfoContext';
 import './html5reset.css';
 import './style.css';
 import blank from './img/blank.png';

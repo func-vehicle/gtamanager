@@ -159,6 +159,10 @@ export let defaultUserInfo = {
 	},
 };
 
+export const InfoContext = React.createContext({
+	userInfo: defaultUserInfo,
+});
+
 export const staticInfo = {
 	mcbusinesses: ["coke", "meth", "cash", "weed", "forgery"],
 	bunker: {
@@ -382,7 +386,7 @@ export const staticInfo = {
 		maxSporting: [20, 40, 60, 80, 100],
 		maxImports: [2, 4, 6, 8, 10],
 		maxPharma: [4, 8, 12, 16, 20],
-		maxCreation: [8, 16, 24,32, 40],
+		maxCreation: [8, 16, 24, 32, 40],
 		maxOrganic: [16, 32, 48, 64, 80],
 		maxCopying: [12, 24, 36, 48, 60],
 		accrueCargo: [140, 70],
@@ -502,6 +506,124 @@ export const staticInfo = {
 	}
 }
 
-export const InfoContext = React.createContext({
-  userInfo: defaultUserInfo,
-});
+export function shouldUpdate(userInfo) {
+	return userInfo.version !== defaultUserInfo.version;
+}
+
+export function updateUserInfo(userInfo) {
+	if (userInfo.version === "1.0.0") {
+		userInfo.audio = {enabled: true};
+		userInfo.bunker.name = "Bunker";
+		userInfo.coke.name = "Cocaine";
+		userInfo.meth.name = "Meth";
+		userInfo.cash.name = "Counterfeit Cash";
+		userInfo.weed = Object.assign({}, defaultUserInfo.weed);  // This is bad, as defaultUserInfo has changed with updates
+		userInfo.forgery = Object.assign({}, defaultUserInfo.forgery);  // Nobody should be on this version though
+		userInfo.nightclub.name = "Nightclub";
+		userInfo.importExport.name = "Import / Export";
+		userInfo.wheel.name = "Lucky Wheel";
+		userInfo.bunker.research /= 60000;
+		var toUpdate = ["bunker", "coke", "meth", "cash"];
+		for (var i = 0; i < toUpdate.length; i++) {
+			var business = toUpdate[i];
+			userInfo[business].product /= 60000;
+			userInfo[business].supplies /= 60000;
+		}
+		userInfo.version = "1.1.0";
+	}
+	if (userInfo.version === "1.1.0") {
+		userInfo.settings = Object.assign({}, defaultUserInfo.settings);
+		userInfo.settings.audio.enabled = userInfo.audio.enabled;
+		delete userInfo.audio;
+		userInfo.nightclub.sidebar = true;
+		userInfo.nightclub.organic = 0;
+		userInfo.nightclub.copying = 0;
+		userInfo.nightclub.producing.organic = false;
+		userInfo.nightclub.producing.copying = false;
+		userInfo.version = "1.2.0";
+	}
+	if (userInfo.version === "1.2.0") {
+		userInfo.settings.progress_bar_style = 0;
+		userInfo.version = "1.3.0";
+	}
+	if (userInfo.version === "1.3.0") {
+		userInfo.bunker.muted = false;
+		userInfo.coke.muted = false;
+		userInfo.meth.muted = false;
+		userInfo.cash.muted = false;
+		userInfo.weed.muted = false;
+		userInfo.forgery.muted = false;
+		userInfo.nightclub.muted = false;
+		userInfo.wheel.muted = false;
+		userInfo.wheel.owned = true;
+		userInfo.version = "1.4.0";
+	}
+	if (userInfo.version === "1.4.0") {
+		userInfo.version = "1.5.0";
+	}
+	if (userInfo.version === "1.5.0") {
+		if (userInfo.settings.progress_bar_style === 0) {
+			userInfo.settings.progress_bar_style = 1;
+		}
+		userInfo.version = "1.5.3";
+	}
+	if (userInfo.version === "1.5.3") {
+		userInfo.recentFriday = 0;
+		userInfo.settings.push_notifications = false;
+		userInfo.wheel.notify_while_paused = false;
+		userInfo.version = "1.6.0";
+	}
+	if (userInfo.version === "1.6.0") {
+		userInfo.app_style = 0;  // This is incorrect. Remedied in 2.0.0
+		userInfo.version = "1.7.0";
+	}
+	if (userInfo.version === "1.7.0") {
+		userInfo.version = "1.7.1";
+	}
+	if (userInfo.version === "1.7.1") {
+		userInfo.version = "1.7.2";
+	}
+	if (userInfo.version === "1.7.2") {
+		userInfo.version = "1.7.3";
+	}
+	if (userInfo.version === "1.7.3") {
+		userInfo.version = "1.8.0";
+	}
+	if (userInfo.version === "1.8.0") {
+		let toUpdate = ["bunker", "coke", "meth", "cash", "weed", "forgery", "nightclub", "importExport", "wheel"];
+		for (let i = 0; i < toUpdate.length; i++) {
+			let business = toUpdate[i];
+			delete userInfo[business].name;
+		}
+		userInfo.version = "1.9.0";
+	}
+	if (userInfo.version === "1.9.0") {
+		let toUpdate = ["bunker", "coke", "meth", "cash", "weed", "forgery", "nightclub"];
+		for (let i = 0; i < toUpdate.length; i++) {
+			let business = toUpdate[i];
+			userInfo[business].upgrades = {
+				equipment: true,
+				staff: true,
+				security: true
+			};
+		}
+		userInfo.nightclub.storage_floors = 5;
+		userInfo.bunker.product = Math.min(userInfo.bunker.product, staticInfo.bunker.maxProduct[2]);
+		userInfo.bunker.supplies = Math.min(userInfo.bunker.supplies, staticInfo.bunker.maxSupplies[2]);
+		userInfo.version = "1.10.0";
+	}
+	if (userInfo.version === "1.10.0") {
+		userInfo.version = "1.10.1";
+	}
+	if (userInfo.version === "1.10.1") {
+		userInfo.version = "1.10.2";
+  }
+  if (userInfo.version === "1.10.2") {
+    if (typeof userInfo.app_style !== undefined) {
+      userInfo.settings.app_style = 0;
+      delete userInfo.app_style;
+    }
+    userInfo.version = "2.0.0";
+  }
+  return userInfo;
+}

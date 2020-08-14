@@ -3,10 +3,22 @@ import update from 'immutability-helper';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 
-import { InfoContext } from './infoContext';
+import Patchnotes, { patchArray } from './Patchnotes';
+import { InfoContext, defaultUserInfo, shouldUpdate, updateUserInfo } from './InfoContext';
 import { inRange, isInteger } from './Utility';
 
 export const PopupPushDenied = (props) => {
+
+  const context = useContext(InfoContext);
+
+  function cancelChanges(e) {
+    let popupStack = [...context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      popupStack: {$set: popupStack}
+    }));
+  }
+
   return (
     <div id="pushDeniedNotice">
       <div className="heading">
@@ -17,13 +29,24 @@ export const PopupPushDenied = (props) => {
         request to appear again when you press this button.</p>
       </div>
       <div className="buttons fsz">
-        <button className="button ok red">OK</button>
+        <button onClick={cancelChanges} className="button red">OK</button>
       </div>
     </div>
   );
 }
 
 export const PopupNewUser = (props) => {
+
+  const context = useContext(InfoContext);
+
+  function cancelChanges(e) {
+    let popupStack = [...context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      popupStack: {$set: popupStack}
+    }));
+  }
+
   return (
     <div id="newUserNotice">
       <div className="heading">
@@ -50,39 +73,64 @@ export const PopupNewUser = (props) => {
         considering using this manager long term.</p>
       </div>
       <div className="buttons fsz">
-        <button className="button ok red">OK</button>
+        <button onClick={cancelChanges} className="button red">OK</button>
       </div>
   </div>
   );
 }
 
 export const PopupPatchnotes = (props) => {
+
+  const context = useContext(InfoContext);
+  const [state, setState] = useState(patchArray.length - 1);
+
+  function decrementPage(e) {
+    let newPage = (state - 1 + patchArray.length) % patchArray.length;
+    setState(newPage);
+  }
+
+  function incrementPage(e) {
+    let newPage = (state + 1) % patchArray.length;
+    setState(newPage);
+  }
+
+  function cancelChanges(e) {
+    let popupStack = [...context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      popupStack: {$set: popupStack}
+    }));
+  }
+
   return (
     <div id="updateNotice">
       <div className="heading clearfix">
         <h1>Patch Notes</h1>
         <div className="pageSwap">
-          <button className="button red" data-value="0"><FontAwesomeIcon icon={faArrowLeft} /></button>
-          <button className="button red" data-value="1"><FontAwesomeIcon icon={faArrowRight} /></button>
+          <button onClick={decrementPage} disabled={state === 0} className="button red" data-value="0"><FontAwesomeIcon icon={faArrowLeft} /></button>
+          <button onClick={incrementPage} disabled={state === patchArray.length - 1} className="button red" data-value="1"><FontAwesomeIcon icon={faArrowRight} /></button>
         </div>
       </div>
-      <div className="main">
-        <h1>Version 1.10.2</h1>
-        <div className="indent">
-          <h2>Fixes</h2>
-          <ul>
-            <li>Fixed push notifications on Chrome mobile.</li>
-          </ul>
-        </div>
-      </div>
+      <Patchnotes page={state}/>
       <div className="buttons">
-        <button className="button ok red">OK</button>
+        <button onClick={cancelChanges} className="button red">OK</button>
       </div>
     </div>
   );
 }
 
 export const PopupNewWeek = (props) => {
+
+  const context = useContext(InfoContext);
+
+  function cancelChanges(e) {
+    let popupStack = [...context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      popupStack: {$set: popupStack}
+    }));
+  }
+
   return (
     <div id="newWeekNotice">
       <div className="heading">
@@ -93,13 +141,24 @@ export const PopupNewWeek = (props) => {
         <br/><a target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/gtaonline/search?q=%22weekly+gta+online+bonuses%22&restrict_sr=on&sort=new&t=week">Click here</a> to see what's new.</p>
       </div>
       <div className="buttons fsz">
-        <button className="button ok red">OK</button>
+        <button onClick={cancelChanges} className="button red">OK</button>
       </div>
     </div>
   );
 }
 
 export const PopupPaused = (props) => {
+
+  const context = useContext(InfoContext);
+
+  function cancelChanges(e) {
+    let popupStack = [...context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      popupStack: {$set: popupStack}
+    }));
+  }
+
   return (
     <div id="pauseNotice">
       <div className="heading">
@@ -110,7 +169,7 @@ export const PopupPaused = (props) => {
         when you are in free roam / contact missions in order to be accurate.</p>
       </div>
       <div className="buttons fsz">
-        <button className="button ok red">OK</button>
+        <button onClick={cancelChanges} className="button red">OK</button>
       </div>
     </div>
   );
@@ -139,6 +198,26 @@ export const PopupSetupMain = (props) => {
         [element.name]: {$set: element.value}
       }
     }));
+  }
+  
+  function validateAll() {
+    let valid = true;
+    for (let input of document.querySelectorAll("#notification input[type=number]")) {
+      if (input.value === "") {
+        valid = false;
+      }
+      else {
+        if (input.classList.contains("range_enforced") && !inRange(input)) {
+          input.parentElement.classList.add("invalid-value");
+          valid = false;
+        }
+        if (input.classList.contains("integer_only") && isNaN(parseInt(input.value))) {
+          input.parentElement.classList.add("invalid-value");
+          valid = false;
+        }
+      }
+    }
+    return valid;
   }
 
   function decrementor(e) {
@@ -186,12 +265,6 @@ export const PopupSetupMain = (props) => {
     }));
   }
 
-  // TODO:
-  function validateVolume(e) {
-    validateIndividual(e);
-
-  }
-
   function downloadData(e) {
     // https://stackoverflow.com/questions/19721439/
 		var name = "manager_data.json";
@@ -223,21 +296,46 @@ export const PopupSetupMain = (props) => {
 			return;
 		}
 		reader.onload = function(e) {
-      // Can't use context.setState because data may need to be updated, could crash application if not updated
-      let newInfo = JSON.parse(reader.result);
-      localStorage.setItem("userInfo", JSON.stringify(newInfo));
-      window.onbeforeunload = null;
-			window.location.reload(false);
-      // context.setState((previousState) => update(previousState, {
-      //   userInfo: {$set: newInfo}
-      // }));
+      let userInfo = JSON.parse(reader.result);
+      let popupStack = [];
+      if (userInfo == null) {
+        userInfo = {...defaultUserInfo};
+        popupStack.push(<PopupNewUser />);
+      }
+      else {
+        if (shouldUpdate(userInfo)) {
+          userInfo = updateUserInfo(userInfo);
+          popupStack.unshift(<PopupPatchnotes />);
+        }
+        popupStack.unshift(<PopupPaused />);
+      }
+      context.setState((previousState) => update(previousState, {
+        userInfo: {$set: userInfo},
+        popupStack: {$set: popupStack},
+        running: {$set: false},
+      }));
 		};
 		reader.readAsText(file);
   }
 
-  // TODO: Don't mutate popupStack directly!!!
+  function showResetEverything(e) {
+    let popupStack = [...context.popupStack];
+    popupStack.push(<PopupResetEverything />);
+    context.setState((previousState) => update(previousState, {
+      popupStack: {$set: popupStack}
+    }));
+  }
+
+  function showPatchnotes(e) {
+    let popupStack = [...context.popupStack];
+    popupStack.push(<PopupPatchnotes />);
+    context.setState((previousState) => update(previousState, {
+      popupStack: {$set: popupStack}
+    }));
+  }
+
   function applyChanges(e) {
-    let popupStack = [context.popupStack];
+    let popupStack = [...context.popupStack];
     popupStack.pop();
     context.setState((previousState) => update(previousState, {
       userInfo: {
@@ -248,7 +346,7 @@ export const PopupSetupMain = (props) => {
   }
 
   function cancelChanges(e) {
-    let popupStack = [context.popupStack];
+    let popupStack = [...context.popupStack];
     popupStack.pop();
     context.setState((previousState) => update(previousState, {
       popupStack: {$set: popupStack}
@@ -279,9 +377,9 @@ export const PopupSetupMain = (props) => {
             <tr className="audioFreq">
               <td>Audio interval:</td>
               <td className="incDecButtons">
-                <button onClick={decrementor} className="button minus"><FontAwesomeIcon icon={faMinus} /></button>
-                <input type="number" name="interval" onKeyDown={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.audio.interval} min="1" max="60" />
-                <button onClick={incrementor} className="button plus"><FontAwesomeIcon icon={faPlus} /></button>
+                <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
+                <input type="number" name="interval" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.audio.interval} min="1" max="60" />
+                <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
                 <span>minutes</span>
               </td>
             </tr>
@@ -313,14 +411,14 @@ export const PopupSetupMain = (props) => {
               <td className="fsz">
                 <button onClick={downloadData} className="button orange" data-value="0">Download</button>
                 <button onClick={selectFile} className="button orange" data-value="1">Load from file</button>
-                <button className="button orange" data-value="reset">Reset everything</button>
+                <button onClick={showResetEverything} className="button orange" data-value="reset">Reset everything</button>
                 <input onChange={uploadData} id="fileInput" type="file" accept=".json, application/json" style={{display: "none"}} />
               </td>
             </tr>
             <tr className="about">
               <td>About:</td>
               <td className="fsz">
-                <button className="button orange" data-value="0">Patch notes</button>
+                <button onClick={showPatchnotes} className="button orange" data-value="0">Patch notes</button>
                 <a target="_blank" rel="noopener noreferrer" href="https://github.com/func-vehicle/gtamanager"><button className="button orange">GitHub</button></a>
               </td>
             </tr>
@@ -329,7 +427,148 @@ export const PopupSetupMain = (props) => {
       </div>
       <div className="buttons fsz">
         <button onClick={cancelChanges} className="button cancel red">Cancel</button>
-        <button onClick={applyChanges} className="button apply red">Apply</button>
+        <button onClick={applyChanges} disabled={!validateAll()} className="button apply red">Apply</button>
+      </div>
+    </div>
+  );
+}
+
+export const PopupResetEverything = (props) => {
+
+  const context = useContext(InfoContext);
+
+  function cancelChanges(e) {
+    let popupStack = [...context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      popupStack: {$set: popupStack}
+    }));
+  }
+
+  function confirmReset(e) {
+    context.setState((previousState) => update(previousState, {
+      userInfo: {$set: {...defaultUserInfo}},
+      popupStack: {$set: []},
+      running: {$set: false},
+    }));
+  }
+
+  return (
+    <div id="resetWarning">
+      <div className="heading">
+        <h1>Warning</h1>
+      </div>
+      <div className="main">
+        <p>This will reset everything! Are you sure you want to continue?</p>
+      </div>
+      <div className="buttons fsz">
+        <button onClick={cancelChanges} className="button cancel red">Cancel</button>
+        <button onClick={confirmReset} className="button reset red">Reset</button>
+      </div>
+    </div>
+  );
+}
+
+export const PopupModifyNightclub = (props) => {
+
+  const context = useContext(InfoContext);
+
+  function cancelChanges(e) {
+    let popupStack = [...context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      popupStack: {$set: popupStack}
+    }));
+  }
+
+  return (
+    <div id="nightclubGUI">
+      <div className="heading">
+        <h1>Nightclub Manager</h1>
+      </div>
+      <div className="main">
+        <table>
+          <tbody>
+            <tr>
+              <th>Product Name</th>
+              <th>Stock</th>
+              <th>Sell</th>
+            </tr>
+            <tr className="cargo">
+              <td>Cargo and Shipments</td>
+              <td></td>
+              <td className="incDecButtons">
+                <button className="button"><FontAwesomeIcon icon={faMinus} /></button>
+                <input type="number" className="range_enforced integer_only" name="quantity" value="0" min="0" max="50" />
+                <button className="button"><FontAwesomeIcon icon={faPlus} /></button>
+              </td>
+            </tr>
+            <tr className="sporting">
+              <td>Sporting Goods</td>
+              <td></td>
+              <td className="incDecButtons">
+                <button className="button"><FontAwesomeIcon icon={faMinus} /></button>
+                <input type="number" className="range_enforced integer_only" name="quantity" value="0" min="0" max="100" />
+                <button className="button"><FontAwesomeIcon icon={faPlus} /></button>
+              </td>
+            </tr>
+            <tr className="imports">
+              <td>South American Imports</td>
+              <td></td>
+              <td className="incDecButtons">
+                <button className="button"><FontAwesomeIcon icon={faMinus} /></button>
+                <input type="number" className="range_enforced integer_only" name="quantity" value="0" min="0" max="10" />
+                <button className="button"><FontAwesomeIcon icon={faPlus} /></button>
+              </td>
+            </tr>
+            <tr className="pharma">
+              <td>Pharmaceutical Research</td>
+              <td></td>
+              <td className="incDecButtons">
+                <button className="button"><FontAwesomeIcon icon={faMinus} /></button>
+                <input type="number" className="range_enforced integer_only" name="quantity" value="0" min="0" max="20" />
+                <button className="button"><FontAwesomeIcon icon={faPlus} /></button>
+              </td>
+            </tr>
+            <tr className="creation">
+              <td>Cash Creation</td>
+              <td></td>
+              <td className="incDecButtons">
+                <button className="button"><FontAwesomeIcon icon={faMinus} /></button>
+                <input type="number" className="range_enforced integer_only" name="quantity" value="0" min="0" max="40" />
+                <button className="button"><FontAwesomeIcon icon={faPlus} /></button>
+              </td>
+            </tr>
+            <tr className="organic">
+              <td>Organic Produce</td>
+              <td></td>
+              <td className="incDecButtons">
+                <button className="button"><FontAwesomeIcon icon={faMinus} /></button>
+                <input type="number" className="range_enforced integer_only" name="quantity" value="0" min="0" max="80" />
+                <button className="button"><FontAwesomeIcon icon={faPlus} /></button>
+              </td>
+            </tr>
+            <tr className="copying">
+              <td>Printing and Copying</td>
+              <td></td>
+              <td className="incDecButtons">
+                <button className="button"><FontAwesomeIcon icon={faMinus} /></button>
+                <input type="number" className="range_enforced integer_only" name="quantity" value="0" min="0" max="60" />
+                <button className="button"><FontAwesomeIcon icon={faPlus} /></button>
+              </td>
+            </tr>
+            <tr className="total">
+              <td>Total</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div className="buttons fsz">
+        <button className="button sellsome red">Sell Selected</button>
+        <button className="button sell red">Sell All</button>
+        <button onClick={cancelChanges} className="button ok red">Close</button>
       </div>
     </div>
   );

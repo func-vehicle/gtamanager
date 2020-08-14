@@ -4,8 +4,8 @@ import update from 'immutability-helper';
 import './html5reset.css';
 import './style.css';
 import MapIcon from './MapIcon';
-import Popup, { PopupSetupMain } from './Popup';
-import { InfoContext } from './infoContext';
+import Popup, { PopupSetupMain, PopupPaused } from './Popup';
+import { InfoContext } from './InfoContext';
 import { useWindowDimensions } from './Utility';
 import mapImage512 from './img/bg-512.jpg';
 import mapImage1024 from './img/bg-1024.jpg';
@@ -54,11 +54,44 @@ const Map = () => {
     }
   }
 
+  function toggleRunning() {
+    let newRunning = !context.running;
+    let popupStack = [];
+    if (!newRunning) {
+      popupStack.push(<PopupPaused />);
+    }
+    context.setState((previousState) => update(previousState, {
+      popupStack: {$set: popupStack},
+      running: {$set: newRunning}
+    }));
+  }
+
+  function toggleNotifications() {
+    let newValue = !context.userInfo.settings.audio.enabled;
+    context.setState((previousState) => update(previousState, {
+      userInfo: {
+        settings: {
+          audio: {
+            enabled: {$set: newValue}
+          }
+        }
+      }
+    }));
+  }
+
   function showSetupMain() {
     let newStack = [<PopupSetupMain />];
     context.setState((previousState) => update(previousState, {
       popupStack: {$set: newStack}
     }));
+  }
+
+  let toggleButton;
+  if (!context.running) {
+    toggleButton = <button onClick={toggleRunning} className="button toggle green">Start</button>;
+  }
+  else {
+    toggleButton = <button onClick={toggleRunning} className="button toggle blue">Pause</button>;
   }
   
   return (
@@ -83,8 +116,8 @@ const Map = () => {
         <MapIcon business="wheel" />
       </div>
       <div id="options" className="fsz">
-				<button className="button toggle start green">Start</button>
-				<button className="button audio red">Sound</button>
+				{toggleButton}
+				<button onClick={toggleNotifications} className={"button audio red" + (!context.userInfo.settings.audio.enabled ? " off" : "")}>Sound</button>
 				<button onClick={showSetupMain} className="button setup red">Setup</button>
 			</div>
       {popupElement}

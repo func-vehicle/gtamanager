@@ -255,7 +255,11 @@ input {
     }
 }
 #map {
-	position: relative;
+    position: relative;
+    
+    &::selection, *::selection {
+        color: rgba(0, 0, 0, 0);
+    }
 }
 .icons {
 	background-image: url(img/spritesheet.png);
@@ -492,7 +496,7 @@ input {
         .button {
             margin-top: 3px;
 	        margin-right: 3px;
-	        padding: 1px;
+	        padding: 1px 2px 1px 4px;
 	        height: 24px;
 	        width: 24px;
         }
