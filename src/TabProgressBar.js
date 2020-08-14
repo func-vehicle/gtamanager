@@ -7,28 +7,48 @@ import { capitalize, formatTimeString } from './Utility';
 export const TabProgressBar = (props) => {
     const context = useContext(InfoContext);
 
+    // Nightclub product works differently to other businesses, so different calculations are used
+
     function computePortion() {
         let currentOfType = context.userInfo[props.business][props.type];
-        let upgradeIndex = (context.userInfo[props.business].upgrades.equipment ? 1 : 0) + (context.userInfo[props.business].upgrades.staff ? 1 : 0);
-        let maxOfType = staticInfo[props.business]["max"+capitalize(props.type)][upgradeIndex];
+        let maxOfType;
+        if (props.business === "nightclub") {
+            let storageFloors = context.userInfo.nightclub.storage_floors;
+            maxOfType = staticInfo.nightclub["max"+capitalize(props.type)][storageFloors - 1];
+        }
+        else {
+            let upgradeIndex = (context.userInfo[props.business].upgrades.equipment ? 1 : 0) + (context.userInfo[props.business].upgrades.staff ? 1 : 0);
+            maxOfType = staticInfo[props.business]["max"+capitalize(props.type)][upgradeIndex];
+        }
         return currentOfType/maxOfType;
     }
 
     function calculateMsRemaining() {
-        let upgradeIndex = (context.userInfo[props.business].upgrades.equipment ? 1 : 0) + (context.userInfo[props.business].upgrades.staff ? 1 : 0);
         let portion = computePortion();
         if (props.type !== "supplies") {
             portion = 1 - portion;
         }
-        else if (props.business === "nightclub") {
-
+        if (props.business === "nightclub") {
+            let storageFloors = context.userInfo.nightclub.storage_floors;
+            let upgradeIndex = context.userInfo.nightclub.upgrades.equipment ? 1 : 0;
+            return portion * staticInfo.nightclub["max"+capitalize(props.type)][storageFloors - 1] * staticInfo.nightclub["accrue"+capitalize(props.type)][upgradeIndex] * (60*1000);
         }
-        return portion * staticInfo[props.business]["max"+capitalize(props.type)][upgradeIndex] * (60*1000);
+        else {
+            let upgradeIndex = (context.userInfo[props.business].upgrades.equipment ? 1 : 0) + (context.userInfo[props.business].upgrades.staff ? 1 : 0);
+            return portion * staticInfo[props.business]["max"+capitalize(props.type)][upgradeIndex] * (60*1000);
+        }
     }
 
     function setTypeValue(e) {
-        let upgradeIndex = (context.userInfo[props.business].upgrades.equipment ? 1 : 0) + (context.userInfo[props.business].upgrades.staff ? 1 : 0);
-        let maxOfType = staticInfo[props.business]["max"+capitalize(props.type)][upgradeIndex];
+        let maxOfType;
+        if (props.business === "nightclub") {
+            let storageFloors = context.userInfo.nightclub.storage_floors;
+            maxOfType = staticInfo.nightclub["max"+capitalize(props.type)][storageFloors - 1];
+        }
+        else {
+            let upgradeIndex = (context.userInfo[props.business].upgrades.equipment ? 1 : 0) + (context.userInfo[props.business].upgrades.staff ? 1 : 0);
+            maxOfType = staticInfo[props.business]["max"+capitalize(props.type)][upgradeIndex];
+        }
         let newValue = maxOfType * e.target.value/100;
         context.setState((previousState) => update(previousState, {
             userInfo: { 

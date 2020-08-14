@@ -260,6 +260,29 @@ export const patchArray = [
                 <li>Fixed push notifications on Chrome mobile.</li>
             </ul>
         </div>
+    </div>,
+    <div className="main">
+        <h1>Version 2.0.0</h1>
+        <div className="indent">
+            <h2>Improvements</h2>
+            <ul>
+                <li>The business manager now runs on React instead of custom JavaScript. This should improve
+                    performance, as well as fix some bugs and make future updates easier to create.</li>
+                <ul>
+                    <li>If you notice any differences, this is likely the reason. Please post any new bugs
+                        as a GitHub issue.</li>
+                </ul>
+            </ul>
+            <h2>Fixes</h2>
+            <ul>
+                <li>Numeric inputs will display invalid values better now.</li>
+            </ul>
+            <h2>Information</h2>
+            <ul>
+                <li>Modifying settings will no longer display the changes live. You need to press apply
+                    to see the changes.</li>
+            </ul>
+        </div>
     </div>
 ];
 

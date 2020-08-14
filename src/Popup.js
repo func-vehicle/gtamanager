@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import Patchnotes, { patchArray } from './Patchnotes';
-import { InfoContext, defaultUserInfo, shouldUpdate, updateUserInfo } from './InfoContext';
+import { InfoContext, defaultUserInfo, shouldUpdate, updateUserInfo, staticInfo } from './InfoContext';
 import { inRange, isInteger } from './Utility';
 
 export const PopupPushDenied = (props) => {
@@ -472,6 +472,124 @@ export const PopupResetEverything = (props) => {
 export const PopupModifyNightclub = (props) => {
 
   const context = useContext(InfoContext);
+  let workingInfo = {
+    cargo: 0,
+    sporting: 0,
+    imports: 0,
+    pharma: 0,
+    creation: 0,
+    organic: 0,
+    copying: 0,
+  }
+  const [state, setState] = useState(workingInfo);
+
+  function validateIndividual(e) {
+    e.persist();
+    let element = e.target;
+    if (element.value === "") {
+      element.parentElement.classList.add("invalid-value");
+    }
+    else if (element.classList.contains("range_enforced") && !inRange(element)) {
+      element.parentElement.classList.add("invalid-value");
+    }
+    else {
+      element.parentElement.classList.remove("invalid-value");
+    }
+    setState((previousState) => update(previousState, {
+      [element.name]: {$set: element.value}
+    }));
+  }
+
+  function validateAll() {
+    let valid = true;
+    for (let input of document.querySelectorAll("#notification input[type=number]")) {
+      if (input.value === "") {
+        valid = false;
+      }
+      else {
+        if (input.classList.contains("range_enforced") && !inRange(input)) {
+          input.parentElement.classList.add("invalid-value");
+          valid = false;
+        }
+        if (input.classList.contains("integer_only") && isNaN(parseInt(input.value))) {
+          input.parentElement.classList.add("invalid-value");
+          valid = false;
+        }
+      }
+    }
+    return valid;
+  }
+
+  function decrementor(e) {
+    let element = e.target.nextSibling;
+    let value = parseFloat(element.value);
+    let min = parseFloat(element.min);
+    let newValue = Math.max(value - 1, min);
+    setState((previousState) => update(previousState, {
+      [element.name]: {$set: newValue}
+    }));
+  }
+
+  function incrementor(e) {
+    let element = e.target.previousSibling;
+    let value = parseFloat(element.value);
+    let max = parseFloat(element.max);
+    let newValue = Math.min(value + 1, max);
+    setState((previousState) => update(previousState, {
+      [element.name]: {$set: newValue}
+    }));
+  }
+
+  function sellSelected(e) {
+    let oldNightclub = context.userInfo.nightclub;
+    context.setState((previousState) => update(previousState, {
+      userInfo: {
+        nightclub: {
+          cargo: {$set: oldNightclub.cargo - state.cargo},
+          sporting: {$set: oldNightclub.sporting - state.sporting},
+          imports: {$set: oldNightclub.imports - state.imports},
+          pharma: {$set: oldNightclub.pharma - state.pharma},
+          creation: {$set: oldNightclub.creation - state.creation},
+          organic: {$set: oldNightclub.organic - state.organic},
+          copying: {$set: oldNightclub.copying - state.copying},
+        }
+      }
+    }));
+    setState((previousState) => update(previousState, {
+      cargo: {$set: 0},
+      sporting: {$set: 0},
+      imports: {$set: 0},
+      pharma: {$set: 0},
+      creation: {$set: 0},
+      organic: {$set: 0},
+      copying: {$set: 0},
+    }));
+  }
+
+  function sellAll(e) {
+    context.setState((previousState) => update(previousState, {
+      userInfo: {
+        nightclub: {
+          cargo: {$set: 0},
+          sporting: {$set: 0},
+          imports: {$set: 0},
+          pharma: {$set: 0},
+          creation: {$set: 0},
+          organic: {$set: 0},
+          copying: {$set: 0},
+        }
+      }
+    }));
+    setState((previousState) => update(previousState, {
+      cargo: {$set: 0},
+      sporting: {$set: 0},
+      imports: {$set: 0},
+      pharma: {$set: 0},
+      creation: {$set: 0},
+      organic: {$set: 0},
+      copying: {$set: 0},
+    }));
+  }
 
   function cancelChanges(e) {
     let popupStack = [...context.popupStack];
@@ -480,6 +598,8 @@ export const PopupModifyNightclub = (props) => {
       popupStack: {$set: popupStack}
     }));
   }
+
+  const storageFloors = context.userInfo.nightclub.storage_floors;
 
   return (
     <div id="nightclubGUI">
@@ -496,65 +616,65 @@ export const PopupModifyNightclub = (props) => {
             </tr>
             <tr className="cargo">
               <td>Cargo and Shipments</td>
-              <td></td>
+              <td>{Math.round(context.userInfo.nightclub.cargo)}/{staticInfo.nightclub.maxCargo[storageFloors - 1]}</td>
               <td className="incDecButtons">
-                <button className="button"><FontAwesomeIcon icon={faMinus} /></button>
-                <input type="number" className="range_enforced integer_only" name="quantity" value="0" min="0" max="50" />
-                <button className="button"><FontAwesomeIcon icon={faPlus} /></button>
+                <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
+                <input name="cargo" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.cargo} min="0" max="50" />
+                <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
             <tr className="sporting">
               <td>Sporting Goods</td>
-              <td></td>
+              <td>{Math.round(context.userInfo.nightclub.sporting)}/{staticInfo.nightclub.maxSporting[storageFloors - 1]}</td>
               <td className="incDecButtons">
-                <button className="button"><FontAwesomeIcon icon={faMinus} /></button>
-                <input type="number" className="range_enforced integer_only" name="quantity" value="0" min="0" max="100" />
-                <button className="button"><FontAwesomeIcon icon={faPlus} /></button>
+                <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
+                <input name="sporting" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.sporting} min="0" max="100" />
+                <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
             <tr className="imports">
               <td>South American Imports</td>
-              <td></td>
+              <td>{Math.round(context.userInfo.nightclub.imports)}/{staticInfo.nightclub.maxImports[storageFloors - 1]}</td>
               <td className="incDecButtons">
-                <button className="button"><FontAwesomeIcon icon={faMinus} /></button>
-                <input type="number" className="range_enforced integer_only" name="quantity" value="0" min="0" max="10" />
-                <button className="button"><FontAwesomeIcon icon={faPlus} /></button>
+                <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
+                <input name="imports" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.imports} min="0" max="10" />
+                <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
             <tr className="pharma">
               <td>Pharmaceutical Research</td>
-              <td></td>
+              <td>{Math.round(context.userInfo.nightclub.pharma)}/{staticInfo.nightclub.maxPharma[storageFloors - 1]}</td>
               <td className="incDecButtons">
-                <button className="button"><FontAwesomeIcon icon={faMinus} /></button>
-                <input type="number" className="range_enforced integer_only" name="quantity" value="0" min="0" max="20" />
-                <button className="button"><FontAwesomeIcon icon={faPlus} /></button>
+                <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
+                <input name="pharma" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.pharma} min="0" max="20" />
+                <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
             <tr className="creation">
               <td>Cash Creation</td>
-              <td></td>
+              <td>{Math.round(context.userInfo.nightclub.creation)}/{staticInfo.nightclub.maxCreation[storageFloors - 1]}</td>
               <td className="incDecButtons">
-                <button className="button"><FontAwesomeIcon icon={faMinus} /></button>
-                <input type="number" className="range_enforced integer_only" name="quantity" value="0" min="0" max="40" />
-                <button className="button"><FontAwesomeIcon icon={faPlus} /></button>
+                <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
+                <input name="creation" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.creation} min="0" max="40" />
+                <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
             <tr className="organic">
               <td>Organic Produce</td>
-              <td></td>
+              <td>{Math.round(context.userInfo.nightclub.organic)}/{staticInfo.nightclub.maxOrganic[storageFloors - 1]}</td>
               <td className="incDecButtons">
-                <button className="button"><FontAwesomeIcon icon={faMinus} /></button>
-                <input type="number" className="range_enforced integer_only" name="quantity" value="0" min="0" max="80" />
-                <button className="button"><FontAwesomeIcon icon={faPlus} /></button>
+                <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
+                <input name="organic" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.organic} min="0" max="80" />
+                <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
             <tr className="copying">
               <td>Printing and Copying</td>
-              <td></td>
+              <td>{Math.round(context.userInfo.nightclub.copying)}/{staticInfo.nightclub.maxCopying[storageFloors - 1]}</td>
               <td className="incDecButtons">
-                <button className="button"><FontAwesomeIcon icon={faMinus} /></button>
-                <input type="number" className="range_enforced integer_only" name="quantity" value="0" min="0" max="60" />
-                <button className="button"><FontAwesomeIcon icon={faPlus} /></button>
+                <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
+                <input name="copying" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.copying} min="0" max="60" />
+                <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
             <tr className="total">
@@ -566,9 +686,9 @@ export const PopupModifyNightclub = (props) => {
         </table>
       </div>
       <div className="buttons fsz">
-        <button className="button sellsome red">Sell Selected</button>
-        <button className="button sell red">Sell All</button>
-        <button onClick={cancelChanges} className="button ok red">Close</button>
+        <button onClick={sellSelected} disabled={!validateAll()} className="button red">Sell Selected</button>
+        <button onClick={sellAll} className="button red">Sell All</button>
+        <button onClick={cancelChanges} className="button red">Close</button>
       </div>
     </div>
   );

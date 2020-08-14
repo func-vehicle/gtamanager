@@ -3,6 +3,7 @@ import React from 'react';
 import TabBunker from './TabBunker';
 import TabMCBusiness from './TabMCBusiness';
 import TabNightclub from './TabNightclub';
+import TabImportExport from './TabImportExport';
 
 class InfoTabContainer extends React.Component {
   render() {
@@ -15,6 +16,7 @@ class InfoTabContainer extends React.Component {
         <TabMCBusiness business="weed" />
         <TabMCBusiness business="forgery" />
         <TabNightclub />
+        <TabImportExport />
       </div>
     );
   }
