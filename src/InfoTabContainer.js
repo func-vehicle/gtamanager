@@ -7,8 +7,9 @@ import TabImportExport from './TabImportExport';
 import TabWheel from './TabWheel';
 import TabFees from './TabFees';
 import { InfoContext } from './InfoContext';
+import { useWindowDimensions, calculateScrollbarWidth, useWidthDetector } from './Utility';
 
-export const InfoTabContainer = React.forwardRef((props, ref) => {
+export const InfoTabContainer = (props) => {
   const context = useContext(InfoContext);
 
   let business_objects = {
@@ -33,6 +34,25 @@ export const InfoTabContainer = React.forwardRef((props, ref) => {
     </div>
   )
 
+  const ref = React.createRef();
+  const {width} = useWindowDimensions();
+
+  const accomodateScrollbar = () => {
+    if (ref.current == null) {
+      return;
+    }
+    if (width <= 600) {
+      ref.current.style.width = null;
+      return;
+    }
+    let scrollWidth = calculateScrollbarWidth(ref.current);
+    ref.current.style.width = 220 + scrollWidth + "px";
+  }
+
+  useWidthDetector(ref, () => {
+    accomodateScrollbar();
+  });
+
   return (
     <div id="infotab" className="col" ref={ref}>
       <div id="activeBusinesses" className="business-section">
@@ -46,6 +66,6 @@ export const InfoTabContainer = React.forwardRef((props, ref) => {
       {!context.userInfo.settings.hide_unowned && inactiveDiv}
     </div>
   );
-});
+}
 
 export default InfoTabContainer;

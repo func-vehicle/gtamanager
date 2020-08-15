@@ -67,8 +67,25 @@ const App = () => {
   // Use fullscreen popup
   const {width} = useWindowDimensions();
   let popupElement = null;
-  if (width <= 600) {
+  let bodyElement = document.body;
+  if (width > 600) {
+    bodyElement.classList.add("desktop");
+    bodyElement.classList.remove("mobile");
+  }
+  else {
+    bodyElement.classList.add("mobile");
+    bodyElement.classList.remove("desktop");
     popupElement = <Popup width="100%" height="100%" />;
+  }
+
+  // Apply dark mode
+  if (bodyElement != null) {
+    if (state.userInfo.settings.app_style === 1) {
+      bodyElement.classList.add("darkMode");
+    }
+    else {
+      bodyElement.classList.remove("darkMode");
+    }
   }
 
   // Save application state
@@ -96,24 +113,10 @@ const App = () => {
     }
   }, [state.userInfo, state.running]);
 
-  // Apply dark mode
-  let bodyElement = document.body;
-  if (bodyElement != null) {
-    if (state.userInfo.settings.app_style === 1) {
-      bodyElement.classList.add("darkMode");
-    }
-    else {
-      bodyElement.classList.remove("darkMode");
-    }
-  }
-
-  // Create ref to be forwarded
-  const ref = React.createRef();
-
   return (
     <InfoContext.Provider value={state}>
-      <Map ref={ref} />
-      <InfoTabContainer ref={ref} />
+      <Map />
+      <InfoTabContainer />
       {popupElement}
     </InfoContext.Provider>
   );

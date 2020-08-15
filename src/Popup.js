@@ -631,7 +631,7 @@ export const PopupModifyNightclub = (props) => {
               <th>Stock</th>
               <th>Sell</th>
             </tr>
-            <tr className="cargo">
+            <tr>
               <td>Cargo and Shipments</td>
               <td>{Math.round(context.userInfo.nightclub.cargo)}/{staticInfo.nightclub.maxCargo[storageFloors - 1]}</td>
               <td className="incDecButtons">
@@ -640,7 +640,7 @@ export const PopupModifyNightclub = (props) => {
                 <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
-            <tr className="sporting">
+            <tr>
               <td>Sporting Goods</td>
               <td>{Math.round(context.userInfo.nightclub.sporting)}/{staticInfo.nightclub.maxSporting[storageFloors - 1]}</td>
               <td className="incDecButtons">
@@ -649,7 +649,7 @@ export const PopupModifyNightclub = (props) => {
                 <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
-            <tr className="imports">
+            <tr>
               <td>South American Imports</td>
               <td>{Math.round(context.userInfo.nightclub.imports)}/{staticInfo.nightclub.maxImports[storageFloors - 1]}</td>
               <td className="incDecButtons">
@@ -658,7 +658,7 @@ export const PopupModifyNightclub = (props) => {
                 <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
-            <tr className="pharma">
+            <tr>
               <td>Pharmaceutical Research</td>
               <td>{Math.round(context.userInfo.nightclub.pharma)}/{staticInfo.nightclub.maxPharma[storageFloors - 1]}</td>
               <td className="incDecButtons">
@@ -667,7 +667,7 @@ export const PopupModifyNightclub = (props) => {
                 <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
-            <tr className="creation">
+            <tr>
               <td>Cash Creation</td>
               <td>{Math.round(context.userInfo.nightclub.creation)}/{staticInfo.nightclub.maxCreation[storageFloors - 1]}</td>
               <td className="incDecButtons">
@@ -676,7 +676,7 @@ export const PopupModifyNightclub = (props) => {
                 <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
-            <tr className="organic">
+            <tr>
               <td>Organic Produce</td>
               <td>{Math.round(context.userInfo.nightclub.organic)}/{staticInfo.nightclub.maxOrganic[storageFloors - 1]}</td>
               <td className="incDecButtons">
@@ -685,7 +685,7 @@ export const PopupModifyNightclub = (props) => {
                 <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
-            <tr className="copying">
+            <tr>
               <td>Printing and Copying</td>
               <td>{Math.round(context.userInfo.nightclub.copying)}/{staticInfo.nightclub.maxCopying[storageFloors - 1]}</td>
               <td className="incDecButtons">
@@ -694,7 +694,7 @@ export const PopupModifyNightclub = (props) => {
                 <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
-            <tr className="total">
+            <tr>
               <td>Total</td>
               <td>{totalProduct}<br/>({vehicleRequired})</td>
               <td></td>
@@ -1212,20 +1212,20 @@ export const PopupSetupImportExport = (props) => {
       <div className="main">
         <table>
           <tbody>
-            <tr className="own">
+            <tr>
               <td>Owned:</td>
               <td className="onechoice fsz">
                 <button onClick={toggleOwned} disabled={state.owned} className="button green" data-value="1">Yes</button>
                 <button onClick={toggleOwned} disabled={!state.owned} className="button red" data-value="0">No</button>
               </td>
             </tr>
-            <tr className="position">
+            <tr>
               <td>Map location:</td>
               <td className="fsz">
                 <button className="button blue">Set Location</button>
               </td>
             </tr>
-            <tr className="highEndCars">
+            <tr>
               <td>High-end cars:</td>
               <td className="incDecButtons fsz">
                 <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
@@ -1233,7 +1233,7 @@ export const PopupSetupImportExport = (props) => {
                 <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
-            <tr className="resetCooldown">
+            <tr>
               <td>Cooldown:</td>
               <td className="fsz">
                 <button onClick={resetCooldown} disabled={state.cooldown === 0} className="button blue">Reset</button>
@@ -1252,22 +1252,12 @@ export const PopupSetupImportExport = (props) => {
 
 const Popup = (props) => {
   const context = useContext(InfoContext);
-  let styles = {
-    width: props.width,
-    height: props.height,
-  }
-
-  // Workaround for setting max height of notification main
-  // let notificationMainElement = document.querySelector("#notification .main");
-  // if (notificationMainElement != null) {
-  //   notificationMainElement.style.maxHeight = styles.height - 100 + "px";
-  // }
 
   let fragment = null;
   if (context.popupStack.length > 0) {
     fragment = (
       <React.Fragment>
-        <div id="overlay" style={styles}></div>
+        <div id="overlay"></div>
         <div id="notification">
           {context.popupStack[context.popupStack.length - 1]}
         </div>

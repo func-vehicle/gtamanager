@@ -64,7 +64,7 @@ export const TabProgressBar = (props) => {
         case 1:
             progressBarOverlay = (
                 <div className="fivetick">
-                    <div></div><div></div><div></div><div></div><div></div>
+                    <div></div><div></div><div></div><div></div>
                 </div>
             );
             break;
