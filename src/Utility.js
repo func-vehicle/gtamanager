@@ -48,15 +48,18 @@ export function inRange(element) {
   return false;
 }
 
-export function formatTimeString(ms) {
+export function formatTimeString(ms, maxFigures) {
   let hours = Math.floor(ms / (1000*60*60));
   let minutes = Math.floor((ms % (1000*60*60)) / (1000*60));
   let seconds = Math.floor((ms % (1000*60)) / 1000);
 
-  let maxFigures = 2;
   let digits = 1;
+  if (typeof maxFigures === 'undefined') {
+		maxFigures = 3;
+		digits = 2;
+  }
+  
   let s = "";
-
   if (hours > 0 && maxFigures > 0) {
     s += hours.toLocaleString(undefined, {minimumIntegerDigits: digits});
     s += "H ";

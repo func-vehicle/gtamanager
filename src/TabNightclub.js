@@ -19,6 +19,35 @@ export const TabNightclub = (props) => {
         }));
     }
 
+    let product_objects = {
+        cargo: <TabProgressBar business="nightclub" type="cargo" label="Cargo" />,
+        sporting: <TabProgressBar business="nightclub" type="sporting" label="Sporting" />,
+        imports: <TabProgressBar business="nightclub" type="imports" label="Imports" />,
+        pharma: <TabProgressBar business="nightclub" type="pharma" label="Pharma" />,
+        creation: <TabProgressBar business="nightclub" type="creation" label="Cash" />,
+        organic: <TabProgressBar business="nightclub" type="organic" label="Organic" />,
+        copying: <TabProgressBar business="nightclub" type="copying" label="Copying" />,
+    }
+
+    const owned = context.userInfo.nightclub.owned;
+    let content = null;
+    if (owned) {
+        content = (
+            <div className="content">
+                <table>
+                    <tbody>
+                        {Object.keys(product_objects).map((key) => (
+                            <React.Fragment key={key}>
+                                {(!context.userInfo.nightclub.sidebar || context.userInfo.nightclub.producing[key]) && product_objects[key]}
+                            </React.Fragment>
+                        ))}
+                    </tbody>
+                </table>
+                <button onClick={showModifyNightclub} className="button purple">Modify</button>
+            </div>
+        );
+    }
+
     return (
         <div id="nightclub" className="information">
             <div className="business_heading clearfix">
@@ -30,20 +59,7 @@ export const TabNightclub = (props) => {
                     <FontAwesomeIcon icon={faCog} />
                 </button>
             </div>
-            <div className="content">
-                <table>
-                    <tbody>
-                        <TabProgressBar business="nightclub" type="cargo" label="Cargo" />
-                        <TabProgressBar business="nightclub" type="sporting" label="Sporting" />
-                        <TabProgressBar business="nightclub" type="imports" label="Imports" />
-                        <TabProgressBar business="nightclub" type="pharma" label="Pharma" />
-                        <TabProgressBar business="nightclub" type="creation" label="Cash" />
-                        <TabProgressBar business="nightclub" type="organic" label="Organic" />
-                        <TabProgressBar business="nightclub" type="copying" label="Copying" />
-                    </tbody>
-                </table>
-                <button onClick={showModifyNightclub} className="button purple">Modify</button>
-            </div>
+            {content}
         </div>
     );
 }

@@ -84,7 +84,7 @@ export const TabProgressBar = (props) => {
                 }
             }
             else {
-                s = formatTimeString(remainingMilliseconds);
+                s = formatTimeString(remainingMilliseconds, 2);
             }
             progressBarOverlay = <span>{s}</span>;
             break;

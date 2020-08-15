@@ -1,22 +1,17 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import update from 'immutability-helper';
 
+import './html5reset.css';
+import './style.css';
 import { InfoContext, defaultUserInfo, shouldUpdate, updateUserInfo } from './InfoContext';
 import Map from './Map';
 import InfoTabContainer from './InfoTabContainer';
 import { useWindowDimensions } from './Utility';
-import Popup, { PopupNewUser, PopupPatchnotes, PopupNewWeek, PopupPaused } from './Popup'
-
-// Emulates a constructor in functional components
-// TODO: is this needed for App?
-export function useConstructor(callBack = () => {}) {
-  const [hasBeenCalled, setHasBeenCalled] = useState(false);
-  if (hasBeenCalled) return;
-  callBack();
-  setHasBeenCalled(true);
-}
+import Popup, { PopupNewUser, PopupPatchnotes, PopupNewWeek, PopupPaused } from './Popup';
+import tick from './tick';
 
 const App = () => {
-  // Hack solution to allow children to arbitrarily use setState
+  // Allow children to arbitrarily use setState
   let setNewState = (func) => {
     setState(func);
   }
@@ -59,13 +54,15 @@ const App = () => {
   // State also contains the updater function so it will be passed down into the context provider
   let defaultState = {
     userInfo: userInfo,
-	popupStack: popupStack,
-	running: false,
+	  popupStack: popupStack,
+	  running: false,
     setState: setNewState,
   };
 
+  // Create the state
   const [state, setState] = useState(defaultState);
 
+  // Use fullscreen popup
   const {width} = useWindowDimensions();
   let popupElement = null;
   if (width <= 600) {
@@ -77,7 +74,27 @@ const App = () => {
     localStorage.setItem("userInfo", JSON.stringify(state.userInfo));
   }, [state.userInfo]);
 
-  // Apply darkMode
+  // Apply tick
+  // TODO: this is pretty ugly...
+  const intervalID = useRef(null);
+  const upToDate = useRef(state.userInfo);
+  useEffect(() => {
+    upToDate.current = state.userInfo;
+    if (intervalID.current == null && state.running) {
+      intervalID.current = setInterval(() => {
+        let newUserInfo = tick({...upToDate.current});
+        setState((previousState) => update(previousState, {
+          userInfo: {$set: newUserInfo}
+        }));
+      }, 1000);
+    }
+    else if (intervalID.current != null && !state.running) {
+      clearInterval(intervalID.current);
+      intervalID.current = null;
+    }
+  }, [state.userInfo, state.running]);
+
+  // Apply dark mode
   let bodyElement = document.body;
   if (bodyElement != null) {
     if (state.userInfo.settings.app_style === 1) {
@@ -88,10 +105,13 @@ const App = () => {
     }
   }
 
+  // Create ref to be forwarded
+  const ref = React.createRef();
+
   return (
     <InfoContext.Provider value={state}>
-      <Map />
-      <InfoTabContainer />
+      <Map ref={ref} />
+      <InfoTabContainer ref={ref} />
       {popupElement}
     </InfoContext.Provider>
   );

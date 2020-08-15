@@ -273,14 +273,14 @@ export const patchArray = [
                         as a GitHub issue.</li>
                 </ul>
             </ul>
-            <h2>Fixes</h2>
-            <ul>
-                <li>Numeric inputs will display invalid values better now.</li>
-            </ul>
             <h2>Information</h2>
             <ul>
                 <li>Modifying settings will no longer display the changes live. You need to press apply
                     to see the changes.</li>
+            </ul>
+            <h2>Fixes</h2>
+            <ul>
+                <li>Numeric inputs will display invalid values better now.</li>
             </ul>
         </div>
     </div>

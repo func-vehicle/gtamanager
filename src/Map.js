@@ -1,12 +1,11 @@
 import React, { useContext } from 'react';
 import update from 'immutability-helper';
 
-import './html5reset.css';
-import './style.css';
 import MapIcon from './MapIcon';
 import Popup, { PopupSetupMain, PopupPaused } from './Popup';
 import { InfoContext } from './InfoContext';
 import { useWindowDimensions } from './Utility';
+import { useWidthDetector } from './useWidthDetector';
 import mapImage512 from './img/bg-512.jpg';
 import mapImage1024 from './img/bg-1024.jpg';
 import mapImage2048 from './img/bg-2048.jpg';
@@ -19,7 +18,16 @@ function calculateScrollbarWidth(element) {
   return 0;
 }
 
-const Map = () => {
+// TODO: test
+const accomodateScrollbar = (ref) => {
+  let scrollWidth = calculateScrollbarWidth(ref.current);
+  if (ref.current == null) {
+    return;
+  }
+  ref.current.style.width = 220 + scrollWidth + "px";
+}
+
+const Map = React.forwardRef((props, ref) => {
   const context = useContext(InfoContext);
   const {height, width} = useWindowDimensions();
 
@@ -27,6 +35,11 @@ const Map = () => {
   let infoTabElement = document.getElementById("infotab");
   let styles;
   let popupElement = null;
+
+  // TODO: test
+  useWidthDetector(ref, () => {
+    accomodateScrollbar(ref);
+  });
 
   if (width > 600) {
     bodyElement.classList.add("desktop");
@@ -45,9 +58,6 @@ const Map = () => {
   else {
     bodyElement.classList.add("mobile");
     bodyElement.classList.remove("desktop");
-    if (infoTabElement != null) {
-      infoTabElement.style.width = "";
-    }
     styles = {
       maxHeight: null,
       maxWidth: "100%",
@@ -123,6 +133,6 @@ const Map = () => {
       {popupElement}
     </div>
   );
-}
+});
 
 export default Map;

@@ -42,21 +42,10 @@ class TabMCBusiness extends React.Component {
     }
 
     render() {
-        return (
-            <div id={this.props.business} className="information mcbusiness">
-                <div className="business_heading clearfix">
-                    <div className="icon_wrap">
-                        <img
-                        src={blank}
-                        className={"icons icons-info icons-" + this.props.business}
-                        alt={staticInfo[this.props.business].fullName + " icon"}
-                        />
-                    </div>
-                    <h1>{staticInfo[this.props.business].shortName}</h1>
-                    <button className="button setup">
-                        <FontAwesomeIcon icon={faCog} />
-                    </button>
-                </div>
+        const owned = this.context.userInfo[this.props.business].owned;
+        let content = null;
+        if (owned) {
+            content = (
                 <div className="content">
                     <table>
                         <tbody>
@@ -69,6 +58,25 @@ class TabMCBusiness extends React.Component {
                         <button onClick={this.sellAllProduct} className="button blue">Sell</button>
                     </div>
                 </div>
+            );
+        }
+
+        return (
+            <div id={this.props.business} className="information">
+                <div className="business_heading clearfix">
+                    <div className="icon_wrap">
+                        <img
+                            src={blank}
+                            className={"icons icons-info icons-" + this.props.business}
+                            alt={staticInfo[this.props.business].fullName + " icon"}
+                        />
+                    </div>
+                    <h1>{staticInfo[this.props.business].shortName}</h1>
+                    <button className="button setup">
+                        <FontAwesomeIcon icon={faCog} />
+                    </button>
+                </div>
+                {content}
             </div>
         );
     }

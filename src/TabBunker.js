@@ -32,17 +32,10 @@ export const TabBunker = (props) => {
         }));
     }
 
-    return (
-        <div id="bunker" className="information">
-            <div className="business_heading clearfix">
-                <div className="icon_wrap">
-                    <img src={blank} className="icons icons-info icons-bunker" alt="Bunker icon"/>
-                </div>
-                <h1>{staticInfo.bunker.shortName}</h1>
-                <button className="button setup">
-                    <FontAwesomeIcon icon={faCog} />
-                </button>
-            </div>
+    const owned = context.userInfo.bunker.owned;
+    let content = null;
+    if (owned) {
+        content = (
             <div className="content">
                 <table>
                     <tbody>
@@ -56,6 +49,21 @@ export const TabBunker = (props) => {
                     <button onClick={sellAllProduct} className="button blue">Sell</button>
                 </div>
             </div>
+        );
+    }
+
+    return (
+        <div id="bunker" className="information">
+            <div className="business_heading clearfix">
+                <div className="icon_wrap">
+                    <img src={blank} className="icons icons-info icons-bunker" alt="Bunker icon"/>
+                </div>
+                <h1>{staticInfo.bunker.shortName}</h1>
+                <button className="button setup">
+                    <FontAwesomeIcon icon={faCog} />
+                </button>
+            </div>
+            {content}
         </div>
     );
 }

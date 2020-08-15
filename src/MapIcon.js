@@ -2,8 +2,6 @@ import React from 'react';
 import update from 'immutability-helper';
 
 import { InfoContext } from './InfoContext';
-import './html5reset.css';
-import './style.css';
 import blank from './img/blank.png';
 
 class MapIcon extends React.Component {
@@ -47,8 +45,9 @@ class MapIcon extends React.Component {
       )
     }
 
-    return (
-      <React.Fragment>
+    let mapIcon = null;
+    if (userInfo[this.props.business].owned) {
+      mapIcon = (
         <img
           id={this.props.business + "_map"}
           src={blank}
@@ -60,6 +59,12 @@ class MapIcon extends React.Component {
           }}
           onClick={userInfo[this.props.business].muted != null ? this.muteBusiness : undefined}
         />
+      );
+    }
+
+    return (
+      <React.Fragment>
+        {mapIcon}
         {muteIcon}
       </React.Fragment>
     );
