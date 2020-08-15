@@ -5,7 +5,8 @@ import { faArrowLeft, faArrowRight, faMinus, faPlus } from '@fortawesome/free-so
 
 import Patchnotes, { patchArray } from './Patchnotes';
 import { InfoContext, defaultUserInfo, shouldUpdate, updateUserInfo, staticInfo } from './InfoContext';
-import { inRange, isInteger } from './Utility';
+import { inRange, isInteger, capitalize } from './Utility';
+import { BannerSelectLocation } from './BannerNotification';
 
 export const PopupPushDenied = (props) => {
 
@@ -361,20 +362,20 @@ export const PopupSetupMain = (props) => {
 			<div className="main">
         <table>
           <tbody>
-            <tr className="hideUnowned">
+            <tr>
               <td>Hide unowned:</td>
               <td className="onechoice fsz">
                 <button onClick={hideUnowned} className="button green" disabled={state.hide_unowned} data-value="true">Yes</button>
                 <button onClick={hideUnowned} className="button red" disabled={!state.hide_unowned} data-value="false">No</button>
               </td>
             </tr>
-            <tr className="notificationSettings">
+            <tr>
               <td>Notifications:</td>
               <td className="fsz">
                   <button className="button blue off" data-value="push">Push notifications</button>
               </td>
             </tr>
-            <tr className="audioFreq">
+            <tr>
               <td>Audio interval:</td>
               <td className="incDecButtons">
                 <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
@@ -383,14 +384,14 @@ export const PopupSetupMain = (props) => {
                 <span>minutes</span>
               </td>
             </tr>
-            <tr className="audioVolume">
+            <tr>
               <td>Audio volume:</td>
               <td className="onechoice">
                   <input type="range" name="volume" onChange={validateIndividual} value={state.audio.volume} min="0" max="1" step="0.01" />
                   <span>{Math.round(state.audio.volume*100)}%</span>
               </td>
             </tr>
-            <tr className="progressBarStyle">
+            <tr>
               <td>Progress style:</td>
               <td className="onechoice fsz">
                   <button onClick={setProgressStyle} className="button blue" disabled={state.progress_bar_style === 0} data-value="0">Plain</button>
@@ -399,14 +400,14 @@ export const PopupSetupMain = (props) => {
                   <button onClick={setProgressStyle} className="button blue" disabled={state.progress_bar_style === 3} data-value="3">Time Remaining</button>
               </td>
             </tr>
-            <tr className="appStyle">
+            <tr>
               <td>Theme:</td>
               <td className="onechoice fsz">
                   <button onClick={setAppStyle} className="button white" disabled={state.app_style === 0} data-value="0">Light</button>
                   <button onClick={setAppStyle} className="button grey" disabled={state.app_style === 1} data-value="1">Dark</button>
               </td>
             </tr>
-            <tr className="dataDownload">
+            <tr>
               <td>Data:</td>
               <td className="fsz">
                 <button onClick={downloadData} className="button orange" data-value="0">Download</button>
@@ -415,7 +416,7 @@ export const PopupSetupMain = (props) => {
                 <input onChange={uploadData} id="fileInput" type="file" accept=".json, application/json" style={{display: "none"}} />
               </td>
             </tr>
-            <tr className="about">
+            <tr>
               <td>About:</td>
               <td className="fsz">
                 <button onClick={showPatchnotes} className="button orange" data-value="0">Patch notes</button>
@@ -723,6 +724,15 @@ export const PopupSetupBunker = (props) => {
     }));
   }
 
+  function setLocation(e) {
+    let bannerElement = <BannerSelectLocation
+      business="bunker"
+    />
+    context.setState((previousState) => update(previousState, {
+      bannerNotification: {$set: bannerElement}
+    }));
+  }
+
   function toggleUpgrade(e) {
     let upgrade = e.target.dataset.value
     let newValue = !state.upgrades[upgrade];
@@ -736,7 +746,8 @@ export const PopupSetupBunker = (props) => {
   function toggleHideResearch(e) {
     let newValue = !state.hide_research;
     setState((previousState) => update(previousState, {
-      hide_research: {$set: newValue}
+      hide_research: {$set: newValue},
+      mode: {$set: 0},
     }));
   }
 
@@ -769,7 +780,7 @@ export const PopupSetupBunker = (props) => {
   let modeElement = null;
   if (!state.hide_research) {
     modeElement = (
-      <tr className="mode">
+      <tr>
         <td>Bunker mode:</td>
         <td className="onechoice fsz">
           <button onClick={setMode} disabled={state.mode === 0} className="button orange" data-value="0">Manufacturing</button>
@@ -788,20 +799,20 @@ export const PopupSetupBunker = (props) => {
       <div className="main">
         <table>
           <tbody>
-            <tr className="own">
+            <tr>
               <td>Owned:</td>
               <td className="onechoice fsz">
                 <button onClick={toggleOwned} disabled={state.owned} className="button green" data-value="1">Yes</button>
                 <button onClick={toggleOwned} disabled={!state.owned} className="button red" data-value="0">No</button>
               </td>
             </tr>
-            <tr className="position">
+            <tr>
               <td>Map location:</td>
               <td className="fsz">
-                <button disabled={!state.owned} className="button blue">Set Location</button>
+                <button onClick={setLocation} disabled={!state.owned} className="button blue">Set Location</button>
               </td>
             </tr>
-            <tr className="upgrades">
+            <tr>
               <td>Upgrades:</td>
               <td className="indivchoice fsz">
                 <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.equipment ? "" : " off")} data-value="equipment">Equipment</button>
@@ -809,7 +820,7 @@ export const PopupSetupBunker = (props) => {
                 <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.security ? "" : " off")} data-value="security">Security</button>
               </td>
             </tr>
-            <tr className="hide_research">
+            <tr>
               <td>Hide research:</td>
               <td className="onechoice fsz">
                 <button onClick={toggleHideResearch} disabled={state.hide_research} className="button green">Yes</button>
@@ -877,27 +888,29 @@ export const PopupSetupMCBusiness = (props) => {
       </div>
       <div className="main">
         <table>
-          <tr className="own">
-            <td>Owned:</td>
-            <td className="onechoice fsz">
-              <button onClick={toggleOwned} disabled={state.owned} className="button green" data-value="1">Yes</button>
-              <button onClick={toggleOwned} disabled={!state.owned} className="button red" data-value="0">No</button>
-            </td>
-          </tr>
-          <tr className="position">
-            <td>Map location:</td>
-            <td className="fsz">
-              <button disabled={!state.owned} className="button blue">Set Location</button>
-            </td>
-          </tr>
-          <tr className="upgrades">
-            <td>Upgrades:</td>
-            <td className="indivchoice fsz">
-              <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.equipment ? "" : " off")} data-value="equipment">Equipment</button>
-              <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.staff ? "" : " off")} data-value="staff">Staff</button>
-              <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.security ? "" : " off")} data-value="security">Security</button>
-            </td>
-          </tr>
+          <tbody>
+            <tr>
+              <td>Owned:</td>
+              <td className="onechoice fsz">
+                <button onClick={toggleOwned} disabled={state.owned} className="button green" data-value="1">Yes</button>
+                <button onClick={toggleOwned} disabled={!state.owned} className="button red" data-value="0">No</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Map location:</td>
+              <td className="fsz">
+                <button disabled={!state.owned} className="button blue">Set Location</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Upgrades:</td>
+              <td className="indivchoice fsz">
+                <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.equipment ? "" : " off")} data-value="equipment">Equipment</button>
+                <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.staff ? "" : " off")} data-value="staff">Staff</button>
+                <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.security ? "" : " off")} data-value="security">Security</button>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
       <div className="buttons fsz">
@@ -914,10 +927,261 @@ export const PopupSetupNightclub = (props) => {
   let workingInfo = {...context.userInfo.nightclub};
   const [state, setState] = useState(workingInfo);
 
+  function validateIndividual(e) {
+    e.persist();
+    let element = e.target;
+    if (element.value === "") {
+      element.parentElement.classList.add("invalid-value");
+    }
+    else if (element.classList.contains("range_enforced") && !inRange(element)) {
+      element.parentElement.classList.add("invalid-value");
+    }
+    else {
+      element.parentElement.classList.remove("invalid-value");
+    }
+    setState((previousState) => update(previousState, {
+      [element.name]: {$set: element.value}
+    }));
+  }
+  
+  function validateAll() {
+    let valid = true;
+    for (let input of document.querySelectorAll("#notification input[type=number]")) {
+      if (input.value === "") {
+        valid = false;
+      }
+      else {
+        if (input.classList.contains("range_enforced") && !inRange(input)) {
+          input.parentElement.classList.add("invalid-value");
+          valid = false;
+        }
+        if (input.classList.contains("integer_only") && isNaN(parseInt(input.value))) {
+          input.parentElement.classList.add("invalid-value");
+          valid = false;
+        }
+      }
+    }
+    return valid;
+  }
+
+  function decrementor(e) {
+    let element = e.target.nextSibling;
+    let value = parseFloat(element.value);
+    let min = parseFloat(element.min);
+    let newValue = Math.max(value - 1, min);
+    setState((previousState) => update(previousState, {
+      [element.name]: {$set: newValue}
+    }));
+  }
+
+  function incrementor(e) {
+    let element = e.target.previousSibling;
+    let value = parseFloat(element.value);
+    let max = parseFloat(element.max);
+    let newValue = Math.min(value + 1, max);
+    setState((previousState) => update(previousState, {
+      [element.name]: {$set: newValue}
+    }));
+  }
+
   function toggleOwned(e) {
     let newValue = !state.owned;
     setState((previousState) => update(previousState, {
       owned: {$set: newValue}
+    }));
+  }
+
+  function toggleUpgrade(e) {
+    let upgrade = e.target.dataset.value;
+    let newValue = !state.upgrades[upgrade];
+    setState((previousState) => update(previousState, {
+      upgrades: {
+        [upgrade]: {$set: newValue}
+      }
+    }));
+  }
+
+  function toggleShowUnproduced(e) {
+    let newValue = !state.sidebar;
+    setState((previousState) => update(previousState, {
+      sidebar: {$set: newValue}
+    }));
+  }
+
+  function toggleProducing(e) {
+    let product = e.target.dataset.value;
+    let newValue = !state.producing[product];
+    setState((previousState) => update(previousState, {
+      producing: {
+        [product]: {$set: newValue}
+      }
+    }));
+  }
+
+  function cancelChanges(e) {
+    let popupStack = [...context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      popupStack: {$set: popupStack}
+    }));
+  }
+
+  function applyChanges(e) {
+    let newState = {...state};
+    // If lowering no. of storage floors, make sure product doesn't exceed new maximum
+    for (let product of staticInfo.nightclub.products) {
+      newState[product] = Math.min(state[product], staticInfo.nightclub["max"+capitalize(product)][state.storage_floors - 1]);
+    }
+    let popupStack = [...context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      userInfo: {
+        nightclub: {$set: newState}
+      },
+      popupStack: {$set: popupStack}
+    }));
+  }
+
+  return (
+    <div id="nightclubSetupGUI" className="setupGUI nightclub">
+      <div className="heading">
+        <h1>Nightclub Setup</h1>
+      </div>
+      <div className="main">
+        <table>
+          <tbody>
+            <tr>
+              <td>Owned:</td>
+              <td className="onechoice fsz">
+                <button onClick={toggleOwned} disabled={state.owned} className="button green" data-value="1">Yes</button>
+                <button onClick={toggleOwned} disabled={!state.owned} className="button red" data-value="0">No</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Map location:</td>
+              <td className="fsz">
+                <button className="button blue">Set Location</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Upgrades:</td>
+              <td className="indivchoice fsz">
+                <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.equipment ? "" : " off")} data-value="equipment">Equipment</button>
+                <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.staff ? "" : " off")} data-value="staff">Staff</button>
+                <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.security ? "" : " off")} data-value="security">Security</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Sidebar:</td>
+              <td className="onechoice fsz">
+                <button onClick={toggleShowUnproduced} disabled={!state.sidebar} className="button green" data-value="1">Show all</button>
+                <button onClick={toggleShowUnproduced} disabled={state.sidebar} className="button orange" data-value="0">Show produced</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Storage floors:</td>
+              <td className="incDecButtons fsz">
+                <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
+                <input type="number" name="storage_floors" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.storage_floors} min="1" max="5" />
+                <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
+              </td>
+            </tr>
+            <tr>
+              <td>Producing:</td>
+              <td className="indivchoice fsz">
+                <button onClick={toggleProducing} className={"button blue" + (state.producing.cargo ? "" : " off")} data-value="cargo">Cargo and Shipments</button>
+                <button onClick={toggleProducing} className={"button blue" + (state.producing.sporting ? "" : " off")} data-value="sporting">Sporting Goods</button>
+                <button onClick={toggleProducing} className={"button blue" + (state.producing.imports ? "" : " off")} data-value="imports">South American Imports</button>
+                <button onClick={toggleProducing} className={"button blue" + (state.producing.pharma ? "" : " off")} data-value="pharma">Pharmaceutical Research</button>
+                <button onClick={toggleProducing} className={"button blue" + (state.producing.creation ? "" : " off")} data-value="creation">Cash Creation</button>
+                <button onClick={toggleProducing} className={"button blue" + (state.producing.organic ? "" : " off")} data-value="organic">Organic Produce</button>
+                <button onClick={toggleProducing} className={"button blue" + (state.producing.copying ? "" : " off")} data-value="copying">Printing and Copying</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div className="buttons fsz">
+        <button onClick={cancelChanges} className="button red">Cancel</button>
+        <button onClick={applyChanges} disabled={!validateAll()} className="button red">Apply</button>
+      </div>
+    </div>
+  );
+}
+
+export const PopupSetupImportExport = (props) => {
+
+  const context = useContext(InfoContext);
+  let workingInfo = {...context.userInfo.importExport};
+  const [state, setState] = useState(workingInfo);
+
+  function validateIndividual(e) {
+    e.persist();
+    let element = e.target;
+    if (element.value === "") {
+      element.parentElement.classList.add("invalid-value");
+    }
+    else if (element.classList.contains("range_enforced") && !inRange(element)) {
+      element.parentElement.classList.add("invalid-value");
+    }
+    else {
+      element.parentElement.classList.remove("invalid-value");
+    }
+    setState((previousState) => update(previousState, {
+      [element.name]: {$set: element.value}
+    }));
+  }
+  
+  function validateAll() {
+    let valid = true;
+    for (let input of document.querySelectorAll("#notification input[type=number]")) {
+      if (input.value === "") {
+        valid = false;
+      }
+      else {
+        if (input.classList.contains("range_enforced") && !inRange(input)) {
+          input.parentElement.classList.add("invalid-value");
+          valid = false;
+        }
+        if (input.classList.contains("integer_only") && isNaN(parseInt(input.value))) {
+          input.parentElement.classList.add("invalid-value");
+          valid = false;
+        }
+      }
+    }
+    return valid;
+  }
+
+  function decrementor(e) {
+    let element = e.target.nextSibling;
+    let value = parseFloat(element.value);
+    let min = parseFloat(element.min);
+    let newValue = Math.max(value - 1, min);
+    setState((previousState) => update(previousState, {
+      [element.name]: {$set: newValue}
+    }));
+  }
+
+  function incrementor(e) {
+    let element = e.target.previousSibling;
+    let value = parseFloat(element.value);
+    let max = parseFloat(element.max);
+    let newValue = Math.min(value + 1, max);
+    setState((previousState) => update(previousState, {
+      [element.name]: {$set: newValue}
+    }));
+  }
+
+  function toggleOwned(e) {
+    let newValue = !state.owned;
+    setState((previousState) => update(previousState, {
+      owned: {$set: newValue}
+    }));
+  }
+
+  function resetCooldown(e) {
+    setState((previousState) => update(previousState, {
+      cooldown: {$set: 0}
     }));
   }
 
@@ -934,16 +1198,16 @@ export const PopupSetupNightclub = (props) => {
     popupStack.pop();
     context.setState((previousState) => update(previousState, {
       userInfo: {
-        nightclub: {$set: state}
+        importExport: {$set: state}
       },
       popupStack: {$set: popupStack}
     }));
   }
 
   return (
-    <div id="nightclubSetupGUI" className="setupGUI nightclub">
+    <div id="importExportSetupGUI" className="setupGUI importExport">
       <div className="heading">
-        <h1>Nightclub Setup</h1>
+        <h1>Import / Export Setup</h1>
       </div>
       <div className="main">
         <table>
@@ -961,39 +1225,18 @@ export const PopupSetupNightclub = (props) => {
                 <button className="button blue">Set Location</button>
               </td>
             </tr>
-            <tr className="upgrades">
-              <td>Upgrades:</td>
-              <td className="indivchoice fsz">
-                <button className="button blue" data-value="equipment">Equipment</button>
-                <button className="button blue" data-value="staff">Staff</button>
-                <button className="button blue" data-value="security">Security</button>
-              </td>
-            </tr>
-            <tr className="sidebar">
-              <td>Sidebar:</td>
-              <td className="onechoice fsz">
-                <button className="button green" data-value="1">Show all</button>
-                <button className="button orange" data-value="0">Show produced</button>
-              </td>
-            </tr>
-            <tr className="storageFloors">
-              <td>Storage floors:</td>
+            <tr className="highEndCars">
+              <td>High-end cars:</td>
               <td className="incDecButtons fsz">
-                <button className="fa fa-minus button minus"></button>
-                <input type="number" className="range_enforced integer_only" name="quantity" value="1" min="1" max="5" />
-                <button className="fa fa-plus button plus"></button>
+                <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
+                <input type="number" name="highend_cars" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.highend_cars} min="0" max="20" />
+                <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
-            <tr className="producing">
-              <td>Producing:</td>
-              <td className="indivchoice fsz">
-                <button className="button blue" data-value="cargo">Cargo and Shipments</button>
-                <button className="button blue" data-value="sporting">Sporting Goods</button>
-                <button className="button blue" data-value="imports">South American Imports</button>
-                <button className="button blue" data-value="pharma">Pharmaceutical Research</button>
-                <button className="button blue" data-value="creation">Cash Creation</button>
-                <button className="button blue" data-value="organic">Organic Produce</button>
-                <button className="button blue" data-value="copying">Printing and Copying</button>
+            <tr className="resetCooldown">
+              <td>Cooldown:</td>
+              <td className="fsz">
+                <button onClick={resetCooldown} disabled={state.cooldown === 0} className="button blue">Reset</button>
               </td>
             </tr>
           </tbody>
@@ -1001,7 +1244,7 @@ export const PopupSetupNightclub = (props) => {
       </div>
       <div className="buttons fsz">
         <button onClick={cancelChanges} className="button red">Cancel</button>
-        <button onClick={applyChanges} className="button red">Apply</button>
+        <button onClick={applyChanges} disabled={!validateAll()} className="button red">Apply</button>
       </div>
     </div>
   );
@@ -1015,10 +1258,10 @@ const Popup = (props) => {
   }
 
   // Workaround for setting max height of notification main
-  let notificationMainElement = document.querySelector("#notification .main");
-  if (notificationMainElement != null) {
-    notificationMainElement.style.maxHeight = styles.height - 100 + "px";
-  }
+  // let notificationMainElement = document.querySelector("#notification .main");
+  // if (notificationMainElement != null) {
+  //   notificationMainElement.style.maxHeight = styles.height - 100 + "px";
+  // }
 
   let fragment = null;
   if (context.popupStack.length > 0) {

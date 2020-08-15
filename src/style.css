@@ -338,6 +338,11 @@ input[type=range]::-ms-thumb {
 .mobile #mini_notif {
   top: 5px;
 }
+@media only screen and (max-width: 750px) {
+  .desktop #mini_notif {
+    top: 5px;
+  }
+}
 #mini_notif .button {
   margin-top: 0;
   margin-right: 3px;
@@ -387,6 +392,12 @@ input[type=range]::-ms-thumb {
   height: 75px;
   top: calc(100% - 100px);
   left: calc(100% - 175px);
+}
+@media only screen and (max-width: 750px) {
+  .desktop #options {
+    top: calc(100% - 85px);
+    left: calc(100% - 160px);
+  }
 }
 .desktop #options button {
   height: 29px;
@@ -569,7 +580,7 @@ input[type=range]::-ms-thumb {
   text-align: center;
 }
 
-#mainSetup .audioFreq span, #mainSetup .audioVolume span {
+#mainSetup tr span {
   vertical-align: top;
   margin: 10px 0 0 8px;
   display: inline-block;
@@ -671,15 +682,16 @@ input[type=range]::-ms-thumb {
   overflow: hidden;
 }
 
-.business_heading {
-  margin-bottom: 3px;
-}
 .business_heading * {
   float: left;
   display: block;
 }
 .business_heading h1 {
   padding-top: 3px;
+}
+
+.content {
+  margin-top: 3px;
 }
 
 .clearfix::after {

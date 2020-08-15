@@ -347,6 +347,11 @@ input {
     .mobile & {
         top: 5px;
     }
+    .desktop & {
+        @media only screen and (max-width: 750px) {
+            top: 5px;
+        }
+    }
 
     .button {
         margin-top: 0;
@@ -395,15 +400,22 @@ input {
 }
 #options {
     .desktop & {
+        $width: 150px;
+        $height: 75px;
 	    background-color: #000;
 	    border: 1px solid #CC212C;
 	    position: absolute;
 	    color: white;
 	    padding: 5px;
-	    width: 150px;
-	    height: 75px;
-	    top: calc(100% - 100px);
-	    left: calc(100% - 175px);
+	    width: $width;
+	    height: $height;
+	    top: calc(100% - #{$height + 25px});
+        left: calc(100% - #{$width + 25px});
+        
+        @media only screen and (max-width: 750px) {
+            top: calc(100% - #{$height + 10px});
+            left: calc(100% - #{$width + 10px});
+        }
 
         button {
             height: 29px;
@@ -614,7 +626,7 @@ input {
 	    text-align: center;
     }
 }
-#mainSetup .audioFreq span, #mainSetup .audioVolume span {
+#mainSetup tr span {
 	vertical-align: top;
 	margin: 10px 0 0 8px;
 	display: inline-block;
@@ -717,8 +729,6 @@ input {
 	overflow: hidden;
 }
 .business_heading {
-	margin-bottom: 3px;
-
     * {
         float: left;
 	    display: block;
@@ -727,6 +737,9 @@ input {
     h1 {
         padding-top: 3px;
     }
+}
+.content {
+    margin-top: 3px;
 }
 .clearfix::after {
 	content: "";

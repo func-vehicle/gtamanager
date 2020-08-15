@@ -5,6 +5,7 @@ import './html5reset.css';
 import './style.css';
 import { InfoContext, defaultUserInfo, shouldUpdate, updateUserInfo } from './InfoContext';
 import Map from './Map';
+import { BannerPaused } from './BannerNotification';
 import InfoTabContainer from './InfoTabContainer';
 import { useWindowDimensions } from './Utility';
 import Popup, { PopupNewUser, PopupPatchnotes, PopupNewWeek, PopupPaused } from './Popup';
@@ -54,8 +55,9 @@ const App = () => {
   // State also contains the updater function so it will be passed down into the context provider
   let defaultState = {
     userInfo: userInfo,
-	  popupStack: popupStack,
-	  running: false,
+    popupStack: popupStack,
+    bannerNotification: <BannerPaused />,
+    running: false,
     setState: setNewState,
   };
 

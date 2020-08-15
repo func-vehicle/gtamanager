@@ -6,9 +6,17 @@ import update from 'immutability-helper';
 import { InfoContext, staticInfo } from './InfoContext';
 import { formatTimeString } from './Utility';
 import blank from "./img/blank.png";
+import { PopupSetupImportExport } from './Popup';
 
 export const TabImportExport = (props) => {
     const context = useContext(InfoContext);
+
+    function showSetupImportExport(e) {
+        let popupStack = [<PopupSetupImportExport />];
+        context.setState((previousState) => update(previousState, {
+            popupStack: {$set: popupStack}
+        }));
+    }
 
     function sourceCar(e) {
         let newValue = Math.min(context.userInfo.importExport.highend_cars + 1, 20);
@@ -74,7 +82,7 @@ export const TabImportExport = (props) => {
                     <img src={blank} className="icons icons-info icons-importExport" alt={staticInfo.importExport.fullName + " icon"}/>
                 </div>
                 <h1>{staticInfo.importExport.shortName}</h1>
-                <button className="button setup">
+                <button onClick={showSetupImportExport} className="button setup">
                     <FontAwesomeIcon icon={faCog} />
                 </button>
             </div>
