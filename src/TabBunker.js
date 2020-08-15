@@ -6,9 +6,17 @@ import update from 'immutability-helper';
 import { InfoContext, staticInfo } from './InfoContext';
 import { TabProgressBar } from './TabProgressBar';
 import blank from "./img/blank.png";
+import { PopupSetupBunker } from './Popup';
 
 export const TabBunker = (props) => {
     const context = useContext(InfoContext);
+
+    function showSetupBunker(e) {
+        let popupStack = [<PopupSetupBunker />];
+        context.setState((previousState) => update(previousState, {
+            popupStack: {$set: popupStack}
+        }));
+    }
 
     function sellAllProduct() {
         context.setState((previousState) => update(previousState, {
@@ -35,12 +43,17 @@ export const TabBunker = (props) => {
     const owned = context.userInfo.bunker.owned;
     let content = null;
     if (owned) {
+        let researchBar = null;
+        if (!context.userInfo.bunker.hide_research) {
+            researchBar = <TabProgressBar business="bunker" type="research" label="Research" />;
+        }
+
         content = (
             <div className="content">
                 <table>
                     <tbody>
                         <TabProgressBar business="bunker" type="product" label="Product" />
-                        <TabProgressBar business="bunker" type="research" label="Research" />
+                        {researchBar}
                         <TabProgressBar business="bunker" type="supplies" label="Supplies" />
                     </tbody>
                 </table>
@@ -59,7 +72,7 @@ export const TabBunker = (props) => {
                     <img src={blank} className="icons icons-info icons-bunker" alt="Bunker icon"/>
                 </div>
                 <h1>{staticInfo.bunker.shortName}</h1>
-                <button className="button setup">
+                <button onClick={showSetupBunker} className="button setup">
                     <FontAwesomeIcon icon={faCog} />
                 </button>
             </div>

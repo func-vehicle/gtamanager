@@ -45,7 +45,7 @@ export const TabImportExport = (props) => {
         sellString = "Sell";
     }
 
-    const owned = context.userInfo.nightclub.owned;
+    const owned = context.userInfo.importExport.owned;
     let content = null;
     if (owned) {
         content = (

@@ -6,6 +6,7 @@ import update from 'immutability-helper';
 import { InfoContext, staticInfo } from './InfoContext';
 import { TabProgressBar } from './TabProgressBar';
 import blank from "./img/blank.png";
+import { PopupSetupMCBusiness } from './Popup';
 
 class TabMCBusiness extends React.Component {
     static contextType = InfoContext;
@@ -14,8 +15,16 @@ class TabMCBusiness extends React.Component {
         super(props);
     
         // This binding is necessary to make `this` work in the callback
+        this.showSetupMCBusiness = this.showSetupMCBusiness.bind(this);
         this.sellAllProduct = this.sellAllProduct.bind(this);
         this.buyFullSupplies = this.buyFullSupplies.bind(this);
+    }
+
+    showSetupMCBusiness(e) {
+        let popupStack = [<PopupSetupMCBusiness business={this.props.business} />];
+        this.context.setState((previousState) => update(previousState, {
+            popupStack: {$set: popupStack}
+        }));
     }
 
     sellAllProduct() {
@@ -72,7 +81,7 @@ class TabMCBusiness extends React.Component {
                         />
                     </div>
                     <h1>{staticInfo[this.props.business].shortName}</h1>
-                    <button className="button setup">
+                    <button onClick={this.showSetupMCBusiness} className="button setup">
                         <FontAwesomeIcon icon={faCog} />
                     </button>
                 </div>

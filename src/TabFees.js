@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import update from 'immutability-helper';
 
-import { InfoContext, staticInfo } from './InfoContext';
+import { InfoContext } from './InfoContext';
 import { formatTimeString } from './Utility';
 import blank from "./img/blank.png";
 
@@ -27,14 +27,14 @@ export const TabFees = (props) => {
     }
 
     return (
-        <div id="fees" class="information">
-            <div class="business_heading clearfix">
-                <div class="icon_wrap">
-                    <img src={blank} class="icons icons-info icons-fees" alt="Daily Fees icon"/>
+        <div id="fees" className="information">
+            <div className="business_heading clearfix">
+                <div className="icon_wrap">
+                    <img src={blank} className="icons icons-info icons-fees" alt="Daily Fees icon"/>
                 </div>
                 <h1>Daily Fees</h1>
             </div>
-            <button class="button purple" disabled="true">{sessionString}</button>
+            <button className="button purple" disabled={true}>{sessionString}</button>
         </div>
     );
 }

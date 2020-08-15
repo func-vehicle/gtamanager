@@ -3,13 +3,20 @@ import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import update from 'immutability-helper';
 
-import { PopupModifyNightclub } from './Popup';
+import { PopupModifyNightclub, PopupSetupNightclub } from './Popup';
 import { InfoContext, staticInfo } from './InfoContext';
 import { TabProgressBar } from './TabProgressBar';
 import blank from "./img/blank.png";
 
 export const TabNightclub = (props) => {
     const context = useContext(InfoContext);
+
+    function showSetupNightclub(e) {
+        let popupStack = [<PopupSetupNightclub />];
+        context.setState((previousState) => update(previousState, {
+            popupStack: {$set: popupStack}
+        }));
+    }
 
     function showModifyNightclub(e) {
         let popupStack = [...context.popupStack];
@@ -55,7 +62,7 @@ export const TabNightclub = (props) => {
                     <img src={blank} className="icons icons-info icons-nightclub" alt={staticInfo.nightclub.fullName + " icon"}/>
                 </div>
                 <h1>{staticInfo.nightclub.shortName}</h1>
-                <button className="button setup">
+                <button onClick={showSetupNightclub} className="button setup">
                     <FontAwesomeIcon icon={faCog} />
                 </button>
             </div>

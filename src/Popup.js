@@ -601,6 +601,22 @@ export const PopupModifyNightclub = (props) => {
 
   const storageFloors = context.userInfo.nightclub.storage_floors;
 
+  let totalProduct = 0;
+  for (let product of staticInfo.nightclub.products) {
+    totalProduct += Math.round(context.userInfo.nightclub[product]);
+  }
+
+  let vehicleRequired;
+  if (totalProduct > 180) {
+    vehicleRequired = "Pounder";
+  }
+  else if (totalProduct > 90) {
+    vehicleRequired = "Mule";
+  }
+  else {
+    vehicleRequired = "Speedo";
+  }
+
   return (
     <div id="nightclubGUI">
       <div className="heading">
@@ -679,7 +695,7 @@ export const PopupModifyNightclub = (props) => {
             </tr>
             <tr className="total">
               <td>Total</td>
-              <td></td>
+              <td>{totalProduct}<br/>({vehicleRequired})</td>
               <td></td>
             </tr>
           </tbody>
@@ -689,6 +705,303 @@ export const PopupModifyNightclub = (props) => {
         <button onClick={sellSelected} disabled={!validateAll()} className="button red">Sell Selected</button>
         <button onClick={sellAll} className="button red">Sell All</button>
         <button onClick={cancelChanges} className="button red">Close</button>
+      </div>
+    </div>
+  );
+}
+
+export const PopupSetupBunker = (props) => {
+
+  const context = useContext(InfoContext);
+  let workingInfo = {...context.userInfo.bunker};
+  const [state, setState] = useState(workingInfo);
+
+  function toggleOwned(e) {
+    let newValue = !state.owned;
+    setState((previousState) => update(previousState, {
+      owned: {$set: newValue}
+    }));
+  }
+
+  function toggleUpgrade(e) {
+    let upgrade = e.target.dataset.value
+    let newValue = !state.upgrades[upgrade];
+    setState((previousState) => update(previousState, {
+      upgrades: {
+        [upgrade]: {$set: newValue}
+      }
+    }));
+  }
+
+  function toggleHideResearch(e) {
+    let newValue = !state.hide_research;
+    setState((previousState) => update(previousState, {
+      hide_research: {$set: newValue}
+    }));
+  }
+
+  function setMode(e) {
+    let newValue = parseInt(e.target.dataset.value, 10);
+    setState((previousState) => update(previousState, {
+      mode: {$set: newValue}
+    }));
+  }
+
+  function cancelChanges(e) {
+    let popupStack = [...context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      popupStack: {$set: popupStack}
+    }));
+  }
+
+  function applyChanges(e) {
+    let popupStack = [...context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      userInfo: {
+        bunker: {$set: state}
+      },
+      popupStack: {$set: popupStack}
+    }));
+  }
+
+  let modeElement = null;
+  if (!state.hide_research) {
+    modeElement = (
+      <tr className="mode">
+        <td>Bunker mode:</td>
+        <td className="onechoice fsz">
+          <button onClick={setMode} disabled={state.mode === 0} className="button orange" data-value="0">Manufacturing</button>
+          <button onClick={setMode} disabled={state.mode === 1} className="button blue" data-value="1">Both</button>
+          <button onClick={setMode} disabled={state.mode === 2} className="button green" data-value="2">Researching</button><br/>
+        </td>
+      </tr>
+    )
+  }
+
+  return (
+    <div id="bunkerSetupGUI" className="setupGUI bunker">
+      <div className="heading">
+        <h1>Bunker Setup</h1>
+      </div>
+      <div className="main">
+        <table>
+          <tbody>
+            <tr className="own">
+              <td>Owned:</td>
+              <td className="onechoice fsz">
+                <button onClick={toggleOwned} disabled={state.owned} className="button green" data-value="1">Yes</button>
+                <button onClick={toggleOwned} disabled={!state.owned} className="button red" data-value="0">No</button>
+              </td>
+            </tr>
+            <tr className="position">
+              <td>Map location:</td>
+              <td className="fsz">
+                <button disabled={!state.owned} className="button blue">Set Location</button>
+              </td>
+            </tr>
+            <tr className="upgrades">
+              <td>Upgrades:</td>
+              <td className="indivchoice fsz">
+                <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.equipment ? "" : " off")} data-value="equipment">Equipment</button>
+                <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.staff ? "" : " off")} data-value="staff">Staff</button>
+                <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.security ? "" : " off")} data-value="security">Security</button>
+              </td>
+            </tr>
+            <tr className="hide_research">
+              <td>Hide research:</td>
+              <td className="onechoice fsz">
+                <button onClick={toggleHideResearch} disabled={state.hide_research} className="button green">Yes</button>
+                <button onClick={toggleHideResearch} disabled={!state.hide_research} className="button red">No</button>
+              </td>
+            </tr>
+            {modeElement}
+          </tbody>
+        </table>
+      </div>
+      <div className="buttons fsz">
+        <button onClick={cancelChanges} className="button red">Cancel</button>
+        <button onClick={applyChanges} className="button red">Apply</button>
+      </div>
+    </div>
+  );
+}
+
+export const PopupSetupMCBusiness = (props) => {
+
+  const context = useContext(InfoContext);
+  let workingInfo = {...context.userInfo[props.business]};
+  const [state, setState] = useState(workingInfo);
+
+  function toggleOwned(e) {
+    let newValue = !state.owned;
+    setState((previousState) => update(previousState, {
+      owned: {$set: newValue}
+    }));
+  }
+
+  function toggleUpgrade(e) {
+    let upgrade = e.target.dataset.value
+    let newValue = !state.upgrades[upgrade];
+    setState((previousState) => update(previousState, {
+      upgrades: {
+        [upgrade]: {$set: newValue}
+      }
+    }));
+  }
+
+  function cancelChanges(e) {
+    let popupStack = [...context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      popupStack: {$set: popupStack}
+    }));
+  }
+
+  function applyChanges(e) {
+    let popupStack = [...context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      userInfo: {
+        [props.business]: {$set: state}
+      },
+      popupStack: {$set: popupStack}
+    }));
+  }
+
+  return (
+    <div id="mcbusinessSetupGUI" className="setupGUI">
+      <div className="heading">
+        <h1>{staticInfo[props.business].fullName} Setup</h1>
+      </div>
+      <div className="main">
+        <table>
+          <tr className="own">
+            <td>Owned:</td>
+            <td className="onechoice fsz">
+              <button onClick={toggleOwned} disabled={state.owned} className="button green" data-value="1">Yes</button>
+              <button onClick={toggleOwned} disabled={!state.owned} className="button red" data-value="0">No</button>
+            </td>
+          </tr>
+          <tr className="position">
+            <td>Map location:</td>
+            <td className="fsz">
+              <button disabled={!state.owned} className="button blue">Set Location</button>
+            </td>
+          </tr>
+          <tr className="upgrades">
+            <td>Upgrades:</td>
+            <td className="indivchoice fsz">
+              <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.equipment ? "" : " off")} data-value="equipment">Equipment</button>
+              <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.staff ? "" : " off")} data-value="staff">Staff</button>
+              <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.security ? "" : " off")} data-value="security">Security</button>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div className="buttons fsz">
+        <button onClick={cancelChanges} className="button red">Cancel</button>
+        <button onClick={applyChanges} className="button red">Apply</button>
+      </div>
+    </div>
+  );
+}
+
+export const PopupSetupNightclub = (props) => {
+
+  const context = useContext(InfoContext);
+  let workingInfo = {...context.userInfo.nightclub};
+  const [state, setState] = useState(workingInfo);
+
+  function toggleOwned(e) {
+    let newValue = !state.owned;
+    setState((previousState) => update(previousState, {
+      owned: {$set: newValue}
+    }));
+  }
+
+  function cancelChanges(e) {
+    let popupStack = [...context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      popupStack: {$set: popupStack}
+    }));
+  }
+
+  function applyChanges(e) {
+    let popupStack = [...context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      userInfo: {
+        nightclub: {$set: state}
+      },
+      popupStack: {$set: popupStack}
+    }));
+  }
+
+  return (
+    <div id="nightclubSetupGUI" className="setupGUI nightclub">
+      <div className="heading">
+        <h1>Nightclub Setup</h1>
+      </div>
+      <div className="main">
+        <table>
+          <tbody>
+            <tr className="own">
+              <td>Owned:</td>
+              <td className="onechoice fsz">
+                <button onClick={toggleOwned} disabled={state.owned} className="button green" data-value="1">Yes</button>
+                <button onClick={toggleOwned} disabled={!state.owned} className="button red" data-value="0">No</button>
+              </td>
+            </tr>
+            <tr className="position">
+              <td>Map location:</td>
+              <td className="fsz">
+                <button className="button blue">Set Location</button>
+              </td>
+            </tr>
+            <tr className="upgrades">
+              <td>Upgrades:</td>
+              <td className="indivchoice fsz">
+                <button className="button blue" data-value="equipment">Equipment</button>
+                <button className="button blue" data-value="staff">Staff</button>
+                <button className="button blue" data-value="security">Security</button>
+              </td>
+            </tr>
+            <tr className="sidebar">
+              <td>Sidebar:</td>
+              <td className="onechoice fsz">
+                <button className="button green" data-value="1">Show all</button>
+                <button className="button orange" data-value="0">Show produced</button>
+              </td>
+            </tr>
+            <tr className="storageFloors">
+              <td>Storage floors:</td>
+              <td className="incDecButtons fsz">
+                <button className="fa fa-minus button minus"></button>
+                <input type="number" className="range_enforced integer_only" name="quantity" value="1" min="1" max="5" />
+                <button className="fa fa-plus button plus"></button>
+              </td>
+            </tr>
+            <tr className="producing">
+              <td>Producing:</td>
+              <td className="indivchoice fsz">
+                <button className="button blue" data-value="cargo">Cargo and Shipments</button>
+                <button className="button blue" data-value="sporting">Sporting Goods</button>
+                <button className="button blue" data-value="imports">South American Imports</button>
+                <button className="button blue" data-value="pharma">Pharmaceutical Research</button>
+                <button className="button blue" data-value="creation">Cash Creation</button>
+                <button className="button blue" data-value="organic">Organic Produce</button>
+                <button className="button blue" data-value="copying">Printing and Copying</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div className="buttons fsz">
+        <button onClick={cancelChanges} className="button red">Cancel</button>
+        <button onClick={applyChanges} className="button red">Apply</button>
       </div>
     </div>
   );

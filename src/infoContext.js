@@ -26,7 +26,7 @@ export let defaultUserInfo = {
 			staff: false,
 			security: false
 		},
-		hide_research: 0,
+		hide_research: false,
 		map_position: {
 			x: 58.47,
 			y: 49.49,
