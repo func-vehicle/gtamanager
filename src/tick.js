@@ -3,13 +3,17 @@ import { capitalize } from './Utility';
 
 let lastTickTime = null;
 
+export function resetLastTickTime() {
+    lastTickTime = null;
+}
+
 function tick(userInfo) {
   if (lastTickTime == null) {
     lastTickTime = new Date().getTime();
     return userInfo;
   }
   let currentTime = new Date().getTime();
-  let deltaSec = (currentTime - lastTickTime) / 10;
+  let deltaSec = (currentTime - lastTickTime) / 1000;
   lastTickTime = currentTime;
   
   // Common strategy: calculate maximum running time in seconds, then actual time

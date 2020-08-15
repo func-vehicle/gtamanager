@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import update from 'immutability-helper';
@@ -9,6 +9,15 @@ import blank from "./img/blank.png";
 
 export const TabWheel = (props) => {
     const context = useContext(InfoContext);
+    const [, setState] = useState(Date.now());
+
+    // Set up timer
+    useEffect(() => {
+        let interval = setInterval(() => setState(Date.now()), 1000);
+        return () => {
+            clearInterval(interval);
+         }
+    }, []);
 
     function spinWheel() {
         let timestamp = new Date().getTime();
@@ -21,8 +30,7 @@ export const TabWheel = (props) => {
         }));
     }
 
-    const disableSpin = new Date().getTime() - context.userInfo.wheel.timestamp <= 86400000;
-    //console.log(context.userInfo.wheel.timestamp, disableSpin, new Date().getTime() - context.userInfo.wheel.timestamp);
+    const disableSpin = (new Date().getTime() - context.userInfo.wheel.timestamp <= 86400000);
     let spinString;
     if (disableSpin) {
         let remainingMs = 86400000 - (new Date().getTime() - context.userInfo.wheel.timestamp)
@@ -37,7 +45,7 @@ export const TabWheel = (props) => {
     if (owned) {
         content = (
             <div className="content">
-                <button onClick={spinWheel} className="button purple">{spinString}</button>
+                <button onClick={spinWheel} disabled={disableSpin} className="button purple">{spinString}</button>
             </div>
         );
     }

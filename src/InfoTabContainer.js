@@ -5,6 +5,7 @@ import TabMCBusiness from './TabMCBusiness';
 import TabNightclub from './TabNightclub';
 import TabImportExport from './TabImportExport';
 import TabWheel from './TabWheel';
+import TabFees from './TabFees';
 import { InfoContext } from './InfoContext';
 
 export const InfoTabContainer = React.forwardRef((props, ref) => {
@@ -40,6 +41,7 @@ export const InfoTabContainer = React.forwardRef((props, ref) => {
             {context.userInfo[key].owned && business_objects[key]}
           </React.Fragment>
         ))}
+        <TabFees />
       </div>
       {!context.userInfo.settings.hide_unowned && inactiveDiv}
     </div>

@@ -75,7 +75,7 @@ const App = () => {
   }, [state.userInfo]);
 
   // Apply tick
-  // TODO: this is pretty ugly...
+  // TODO: Very ugly, has a 1 second delay, fix this.
   const intervalID = useRef(null);
   const upToDate = useRef(state.userInfo);
   useEffect(() => {

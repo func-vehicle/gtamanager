@@ -6,6 +6,7 @@ import Popup, { PopupSetupMain, PopupPaused } from './Popup';
 import { InfoContext } from './InfoContext';
 import { useWindowDimensions } from './Utility';
 import { useWidthDetector } from './useWidthDetector';
+import { resetLastTickTime } from './tick';
 import mapImage512 from './img/bg-512.jpg';
 import mapImage1024 from './img/bg-1024.jpg';
 import mapImage2048 from './img/bg-2048.jpg';
@@ -70,6 +71,7 @@ const Map = React.forwardRef((props, ref) => {
     if (!newRunning) {
       popupStack.push(<PopupPaused />);
     }
+    resetLastTickTime();
     context.setState((previousState) => update(previousState, {
       popupStack: {$set: popupStack},
       running: {$set: newRunning}

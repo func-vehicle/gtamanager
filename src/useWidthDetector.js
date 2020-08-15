@@ -19,7 +19,7 @@ export const useWidthDetector = (containerRef, onWidthChanged) => {
         height: 0,
         border: 0,
         width: '100%',
-        style: 'block',
+        display: 'block',
       });
 
       const container = containerRef.current;

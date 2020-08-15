@@ -29,23 +29,8 @@ class MapIcon extends React.Component {
   render() {
     let userInfo = this.context.userInfo;
 
-    let muteIcon = null;
-    if (userInfo[this.props.business].muted) {
-      muteIcon = (
-        <img
-          id={this.props.business + "_mute"}
-          src={blank}
-          className="icons icons-map icons-mute"
-          alt={this.props.full_name + " mute icon"}
-          style={{
-            top: "calc(" + userInfo[this.props.business].map_position.y + "% - 8px)",
-            left: "calc(" + userInfo[this.props.business].map_position.x + "% + 8px)",
-          }}
-        />
-      )
-    }
-
     let mapIcon = null;
+    let muteIcon = null;
     if (userInfo[this.props.business].owned) {
       mapIcon = (
         <img
@@ -60,6 +45,21 @@ class MapIcon extends React.Component {
           onClick={userInfo[this.props.business].muted != null ? this.muteBusiness : undefined}
         />
       );
+
+      if (userInfo[this.props.business].muted) {
+        muteIcon = (
+          <img
+            id={this.props.business + "_mute"}
+            src={blank}
+            className="icons icons-map icons-mute"
+            alt={this.props.full_name + " mute icon"}
+            style={{
+              top: "calc(" + userInfo[this.props.business].map_position.y + "% - 8px)",
+              left: "calc(" + userInfo[this.props.business].map_position.x + "% + 8px)",
+            }}
+          />
+        )
+      }
     }
 
     return (
