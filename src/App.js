@@ -79,39 +79,60 @@ const App = () => {
   }
 
   // Apply dark mode
-  if (bodyElement != null) {
-    if (state.userInfo.settings.app_style === 1) {
-      bodyElement.classList.add("darkMode");
-    }
-    else {
-      bodyElement.classList.remove("darkMode");
-    }
+  if (state.userInfo.settings.app_style === 1) {
+    bodyElement.classList.add("darkMode");
+  }
+  else {
+    bodyElement.classList.remove("darkMode");
   }
 
   // Save application state
   useEffect(() => {
+    //console.log("UPDATING")
     localStorage.setItem("userInfo", JSON.stringify(state.userInfo));
   }, [state.userInfo]);
 
   // Apply tick
-  // TODO: Very ugly, has a 1 second delay, fix this.
-  const intervalID = useRef(null);
-  const upToDate = useRef(state.userInfo);
+  const runTick = () => {
+    //console.log("runTick!")
+    //console.log(state);
+    if (state.running) {
+      let newUserInfo = tick({...state.userInfo});
+      setState((previousState) => update(previousState, {
+        userInfo: {$set: newUserInfo}
+      }));
+    }
+  }
+
+  let func = useRef(runTick);
+
   useEffect(() => {
-    upToDate.current = state.userInfo;
-    if (intervalID.current == null && state.running) {
-      intervalID.current = setInterval(() => {
-        let newUserInfo = tick({...upToDate.current});
-        setState((previousState) => update(previousState, {
-          userInfo: {$set: newUserInfo}
-        }));
-      }, 1000);
+    console.log("useEffect!");
+    if (!state.running) return;
+    let interval = setInterval(func.current, 1000);
+    return () => {
+      clearInterval(interval);
     }
-    else if (intervalID.current != null && !state.running) {
-      clearInterval(intervalID.current);
-      intervalID.current = null;
-    }
-  }, [state.userInfo, state.running]);
+  }, [state.running]);
+
+  // TODO: Very ugly, has a 1 second delay, fix this.
+  // const intervalID = useRef(null);
+  // const upToDate = useRef(state.userInfo);
+  // useEffect(() => {
+  //   upToDate.current = state.userInfo;
+  //   if (intervalID.current == null && state.running) {
+  //     intervalID.current = setInterval(() => {
+  //       let newUserInfo = tick({...upToDate.current});
+  //       setState((previousState) => update(previousState, {
+  //         userInfo: {$set: newUserInfo}
+  //       }));
+  //     }, 1000);
+  //   }
+  //   else if (intervalID.current != null && !state.running) {
+  //     clearInterval(intervalID.current);
+  //     intervalID.current = null;
+  //   }
+  // }, [state.userInfo, state.running]);
 
   return (
     <InfoContext.Provider value={state}>

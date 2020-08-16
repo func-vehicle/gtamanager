@@ -3,8 +3,8 @@ import { capitalize } from './Utility';
 
 let lastTickTime = null;
 
-export function resetLastTickTime() {
-    lastTickTime = null;
+export function setFirstTickTime() {
+  lastTickTime = new Date().getTime();
 }
 
 function tick(userInfo) {

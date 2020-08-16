@@ -12,7 +12,7 @@ class MapIcon extends React.Component {
 
     // This binding is necessary to make `this` work in the callback
     this.muteBusiness = this.muteBusiness.bind(this);
-}
+  }
 
   muteBusiness() {
     let userInfo = this.context.userInfo;
@@ -28,7 +28,7 @@ class MapIcon extends React.Component {
 
   render() {
     let userInfo = this.context.userInfo;
-
+    
     let mapIcon = null;
     let muteIcon = null;
     if (userInfo[this.props.business].owned) {

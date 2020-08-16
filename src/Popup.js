@@ -1250,6 +1250,90 @@ export const PopupSetupImportExport = (props) => {
   );
 }
 
+export const PopupSetupWheel = (props) => {
+
+  const context = useContext(InfoContext);
+  let workingInfo = {...context.userInfo.wheel};
+  const [state, setState] = useState(workingInfo);
+
+  function toggleOwned(e) {
+    let newValue = !state.owned;
+    setState((previousState) => update(previousState, {
+      owned: {$set: newValue}
+    }));
+  }
+
+  function toggleNotify(e) {
+    let newValue = !state.notify_while_paused;
+    setState((previousState) => update(previousState, {
+      notify_while_paused: {$set: newValue}
+    }));
+  }
+
+  function resetCooldown(e) {
+    setState((previousState) => update(previousState, {
+      timestamp: {$set: 0}
+    }));
+  }
+
+  function cancelChanges(e) {
+    let popupStack = [...context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      popupStack: {$set: popupStack}
+    }));
+  }
+
+  function applyChanges(e) {
+    let popupStack = [...context.popupStack];
+    popupStack.pop();
+    context.setState((previousState) => update(previousState, {
+      userInfo: {
+        wheel: {$set: state}
+      },
+      popupStack: {$set: popupStack}
+    }));
+  }
+
+  return (
+    <div id="wheelSetupGUI" className="setupGUI wheel">
+    <div className="heading">
+      <h1>Lucky Wheel Setup</h1>
+    </div>
+    <div className="main">
+      <table>
+        <tbody>
+          <tr>
+            <td>Display:</td>
+            <td className="onechoice fsz">
+              <button onClick={toggleOwned} disabled={state.owned} className="button green" data-value="1">Yes</button>
+              <button onClick={toggleOwned} disabled={!state.owned} className="button red" data-value="0">No</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Notify:</td>
+            <td className="onechoice fsz">
+              <button onClick={toggleNotify} disabled={state.notify_while_paused} className="button green" data-value="1">Always</button>
+              <button onClick={toggleNotify} disabled={!state.notify_while_paused} className="button orange" data-value="0">Only while running</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Cooldown:</td>
+            <td className="fsz">
+              <button onClick={resetCooldown} disabled={state.timestamp === 0} className="button blue">Reset</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div className="buttons fsz">
+      <button onClick={cancelChanges} className="button red">Cancel</button>
+      <button onClick={applyChanges} className="button red">Apply</button>
+    </div>
+  </div>
+  );
+}
+
 const Popup = (props) => {
   const context = useContext(InfoContext);
 

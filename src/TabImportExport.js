@@ -33,7 +33,7 @@ export const TabImportExport = (props) => {
         let element = e.target.previousSibling;
         let toSell = parseInt(element.options[element.selectedIndex].text, 10);
         let newCars = Math.max(context.userInfo.importExport.highend_cars - toSell, 0);
-        let newTime = (toSell + 1) * 10 * (60 * 1000);  // 10 minutes in ms
+        let newTime = (toSell + 1) * 10 * (60 * 1000);
         context.setState((previousState) => update(previousState, {
             userInfo: {
                 importExport: {

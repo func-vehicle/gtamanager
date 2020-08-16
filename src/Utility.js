@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 
-export let capitalize = function(s) {
+export const capitalize = function(s) {
   return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+export const mod = function(a, n) {
+  return ((a % n) + n) % n; 
 }
 
 function getWindowDimensions() {

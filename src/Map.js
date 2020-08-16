@@ -6,7 +6,7 @@ import BannerNotification from './BannerNotification';
 import Popup, { PopupSetupMain, PopupPaused } from './Popup';
 import { InfoContext } from './InfoContext';
 import { useWindowDimensions } from './Utility';
-import { resetLastTickTime } from './tick';
+import { setFirstTickTime } from './tick';
 import mapImage512 from './img/bg-512.jpg';
 import mapImage1024 from './img/bg-1024.jpg';
 import mapImage2048 from './img/bg-2048.jpg';
@@ -20,7 +20,7 @@ const Map = (props) => {
     if (!newRunning) {
       popupStack.push(<PopupPaused />);
     }
-    resetLastTickTime();
+    setFirstTickTime();
     context.setState((previousState) => update(previousState, {
       popupStack: {$set: popupStack},
       running: {$set: newRunning}

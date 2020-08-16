@@ -5,13 +5,14 @@ import { faArrowLeft, faArrowRight, faCheck, faTimes, faEllipsisV } from '@forta
 
 import { InfoContext, staticInfo } from './InfoContext';
 
-export const BannerPaused = (props) => {
+export const BannerPaused = React.memo(() => {
+
     return (
         <div id="pausedMiniNotif">
             <p>The business manager is paused.</p>
         </div>
     );
-}
+});
 
 export const BannerSelectLocation = (props) => {
 
@@ -52,7 +53,7 @@ export const BannerSelectLocation = (props) => {
             </div>
         </div>
     );
-}
+};
 
 export const BannerCustomLocation = (props) => {
 
@@ -80,9 +81,9 @@ export const BannerCustomLocation = (props) => {
             </div>
         </div>
     );
-}
+};
 
-const BannerNotification = (props) => {
+const BannerNotification = () => {
     const context = useContext(InfoContext);
 
     return (

@@ -3,6 +3,7 @@ import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import update from 'immutability-helper';
 
+import { PopupSetupWheel } from './Popup';
 import { InfoContext, staticInfo } from './InfoContext';
 import { formatTimeString } from './Utility';
 import blank from "./img/blank.png";
@@ -13,11 +14,19 @@ export const TabWheel = (props) => {
 
     // Set up timer
     useEffect(() => {
+        if (!context.userInfo.wheel.owned || new Date().getTime() - context.userInfo.wheel.timestamp > 86400000) return;
         let interval = setInterval(() => setState(Date.now()), 1000);
         return () => {
             clearInterval(interval);
          }
-    }, []);
+    }, [context.userInfo.wheel.timestamp, context.userInfo.wheel.owned]);
+
+    function showSetupWheel(e) {
+        let popupStack = [<PopupSetupWheel />];
+        context.setState((previousState) => update(previousState, {
+            popupStack: {$set: popupStack}
+        }));
+    }
 
     function spinWheel() {
         let timestamp = new Date().getTime();
@@ -57,7 +66,7 @@ export const TabWheel = (props) => {
                     <img src={blank} className="icons icons-info icons-wheel" alt={staticInfo.wheel.fullName + " icon"}/>
                 </div>
                 <h1>{staticInfo.wheel.shortName}</h1>
-                <button className="button setup">
+                <button onClick={showSetupWheel} className="button setup">
                     <FontAwesomeIcon icon={faCog} />
                 </button>
             </div>
