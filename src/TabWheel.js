@@ -1,4 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react';
+import { useDispatch, connect } from 'react-redux';
+import {
+    setWheelTimestamp,
+} from './redux/userInfoSlice.js';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import update from 'immutability-helper';
@@ -8,50 +12,55 @@ import { InfoContext, staticInfo } from './InfoContext';
 import { formatTimeString } from './Utility';
 import blank from "./img/blank.png";
 
-export const TabWheel = (props) => {
-    const context = useContext(InfoContext);
+const mapStateToProps = (state) => {
+    let newProps = {
+        owned: state.userInfo.wheel.owned,
+        timestamp: state.userInfo.wheel.timestamp,
+        upgrades: state.userInfo.bunker.upgrades,
+    }
+    return newProps;
+}
+
+export const TabWheel = React.memo((props) => {
+    //const context = useContext(InfoContext);
+    const dispatch = useDispatch();
     const [, setState] = useState(Date.now());
+
+    console.log("RERENDERING!");
 
     // Set up timer
     useEffect(() => {
-        if (!context.userInfo.wheel.owned || new Date().getTime() - context.userInfo.wheel.timestamp > 86400000) return;
+        if (!props.owned || new Date().getTime() - props.timestamp > 86400000) return;
         let interval = setInterval(() => setState(Date.now()), 1000);
         return () => {
             clearInterval(interval);
          }
-    }, [context.userInfo.wheel.timestamp, context.userInfo.wheel.owned]);
+    }, [props.timestamp, props.owned]);
 
     function showSetupWheel(e) {
         let popupStack = [<PopupSetupWheel />];
-        context.setState((previousState) => update(previousState, {
-            popupStack: {$set: popupStack}
-        }));
+        // context.setState((previousState) => update(previousState, {
+        //     popupStack: {$set: popupStack}
+        // }));
     }
 
     function spinWheel() {
         let timestamp = new Date().getTime();
-        context.setState((previousState) => update(previousState, {
-            userInfo: {
-                wheel: {
-                    timestamp: {$set: timestamp}
-                }
-            }
-        }));
+        dispatch(setWheelTimestamp(timestamp));
     }
 
-    const disableSpin = (new Date().getTime() - context.userInfo.wheel.timestamp <= 86400000);
+    const disableSpin = (new Date().getTime() - props.timestamp <= 86400000);
     let spinString;
     if (disableSpin) {
-        let remainingMs = 86400000 - (new Date().getTime() - context.userInfo.wheel.timestamp)
+        let remainingMs = 86400000 - (new Date().getTime() - props.timestamp)
         spinString = formatTimeString(remainingMs);
     }
     else {
         spinString = "Spin";
     }
 
-    const owned = context.userInfo.wheel.owned;
     let content = null;
-    if (owned) {
+    if (props.owned) {
         content = (
             <div className="content">
                 <button onClick={spinWheel} disabled={disableSpin} className="button purple">{spinString}</button>
@@ -73,6 +82,6 @@ export const TabWheel = (props) => {
             {content}
         </div>
     );
-}
+});
 
-export default TabWheel;
+export default connect(mapStateToProps)(TabWheel);

@@ -1,26 +1,40 @@
-import React, { useContext } from 'react';
-import update from 'immutability-helper';
+import React from 'react';
+import { useDispatch, connect } from 'react-redux';
+import {
+    setResourceValue,
+} from './redux/userInfoSlice.js';
 
-import { InfoContext, staticInfo } from './InfoContext';
+import { staticInfo } from './InfoContext';
 import { capitalize, formatTimeString } from './Utility';
 
-export const TabProgressBar = (props) => {
-    const context = useContext(InfoContext);
+const mapStateToProps = (state, ownProps) => {
+    let newProps = {
+        currentResource: state.userInfo[ownProps.business][ownProps.type],
+        upgrades: state.userInfo[ownProps.business].upgrades,
+        barStyle: state.userInfo.settings.progress_bar_style,
+    }
+    if (ownProps.business === "nightclub") {
+        newProps.storageFloors = state.userInfo.nightclub.storage_floors;
+    }
+    return newProps;
+}
+
+const TabProgressBarElement = React.memo((props) => {
+
+    const dispatch = useDispatch();
 
     // Nightclub product works differently to other businesses, so different calculations are used
 
     function computePortion() {
-        let currentOfType = context.userInfo[props.business][props.type];
         let maxOfType;
         if (props.business === "nightclub") {
-            let storageFloors = context.userInfo.nightclub.storage_floors;
-            maxOfType = staticInfo.nightclub["max"+capitalize(props.type)][storageFloors - 1];
+            maxOfType = staticInfo.nightclub["max"+capitalize(props.type)][props.storageFloors - 1];
         }
         else {
-            let upgradeIndex = (context.userInfo[props.business].upgrades.equipment ? 1 : 0) + (context.userInfo[props.business].upgrades.staff ? 1 : 0);
+            const upgradeIndex = (props.upgrades.equipment ? 1 : 0) + (props.upgrades.staff ? 1 : 0);
             maxOfType = staticInfo[props.business]["max"+capitalize(props.type)][upgradeIndex];
         }
-        return currentOfType/maxOfType;
+        return props.currentResource/maxOfType;
     }
 
     function calculateMsRemaining() {
@@ -29,12 +43,11 @@ export const TabProgressBar = (props) => {
             portion = 1 - portion;
         }
         if (props.business === "nightclub") {
-            let storageFloors = context.userInfo.nightclub.storage_floors;
-            let upgradeIndex = context.userInfo.nightclub.upgrades.equipment ? 1 : 0;
-            return portion * staticInfo.nightclub["max"+capitalize(props.type)][storageFloors - 1] * staticInfo.nightclub["accrue"+capitalize(props.type)][upgradeIndex] * (60*1000);
+            const upgradeIndex = (props.upgrades.equipment ? 1 : 0);
+            return portion * staticInfo.nightclub["max"+capitalize(props.type)][props.storageFloors - 1] * staticInfo.nightclub["accrue"+capitalize(props.type)][upgradeIndex] * (60*1000);
         }
         else {
-            let upgradeIndex = (context.userInfo[props.business].upgrades.equipment ? 1 : 0) + (context.userInfo[props.business].upgrades.staff ? 1 : 0);
+            const upgradeIndex = (props.upgrades.equipment ? 1 : 0) + (props.upgrades.staff ? 1 : 0);
             return portion * staticInfo[props.business]["max"+capitalize(props.type)][upgradeIndex] * (60*1000);
         }
     }
@@ -42,25 +55,23 @@ export const TabProgressBar = (props) => {
     function setTypeValue(e) {
         let maxOfType;
         if (props.business === "nightclub") {
-            let storageFloors = context.userInfo.nightclub.storage_floors;
-            maxOfType = staticInfo.nightclub["max"+capitalize(props.type)][storageFloors - 1];
+            maxOfType = staticInfo.nightclub["max"+capitalize(props.type)][props.storageFloors - 1];
         }
         else {
-            let upgradeIndex = (context.userInfo[props.business].upgrades.equipment ? 1 : 0) + (context.userInfo[props.business].upgrades.staff ? 1 : 0);
+            const upgradeIndex = (props.upgrades.equipment ? 1 : 0) + (props.upgrades.staff ? 1 : 0);
             maxOfType = staticInfo[props.business]["max"+capitalize(props.type)][upgradeIndex];
         }
         let newValue = maxOfType * e.target.value/100;
-        context.setState((previousState) => update(previousState, {
-            userInfo: { 
-                [props.business]: {
-                    [props.type]: {$set: newValue},
-                }
-            }
-        }));
+        let payload = {
+            business: [props.business],
+            resource: [props.type],
+            value: newValue,
+        };
+        dispatch(setResourceValue(payload));
     }
 
     let progressBarOverlay;
-    switch (context.userInfo.settings.progress_bar_style) {
+    switch (props.barStyle) {
         case 1:
             progressBarOverlay = (
                 <div className="fivetick">
@@ -94,7 +105,7 @@ export const TabProgressBar = (props) => {
     }
     
     return (
-        <tr className={props.type + (context.userInfo.settings.progress_bar_style > 1 ? " big" : "")}>
+        <tr className={props.type + (props.barStyle > 1 ? " big" : "")}>
             <td><span>{props.label}</span></td>
             <td><div className="progress_bar">
                 {progressBarOverlay}
@@ -103,4 +114,6 @@ export const TabProgressBar = (props) => {
             </div></td>
         </tr>
     );
-}
+});
+
+export const TabProgressBar = connect(mapStateToProps)(TabProgressBarElement);

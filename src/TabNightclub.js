@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useDispatch, connect } from 'react-redux';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import update from 'immutability-helper';
@@ -8,22 +9,31 @@ import { InfoContext, staticInfo } from './InfoContext';
 import { TabProgressBar } from './TabProgressBar';
 import blank from "./img/blank.png";
 
-export const TabNightclub = (props) => {
-    const context = useContext(InfoContext);
+const mapStateToProps = (state) => {
+    let newProps = {
+        owned: state.userInfo.nightclub.owned,
+        showUnproduced: state.userInfo.nightclub.sidebar,
+        producing: state.userInfo.nightclub.producing,
+    }
+    return newProps;
+}
+
+export const TabNightclub = React.memo((props) => {
+    // const context = useContext(InfoContext);
 
     function showSetupNightclub(e) {
-        let popupStack = [<PopupSetupNightclub />];
-        context.setState((previousState) => update(previousState, {
-            popupStack: {$set: popupStack}
-        }));
+        //let popupStack = [<PopupSetupNightclub />];
+        // context.setState((previousState) => update(previousState, {
+        //     popupStack: {$set: popupStack}
+        // }));
     }
 
     function showModifyNightclub(e) {
-        let popupStack = [...context.popupStack];
-        popupStack.push(<PopupModifyNightclub />);
-        context.setState((previousState) => update(previousState, {
-            popupStack: {$set: popupStack}
-        }));
+        //let popupStack = [...context.popupStack];
+        //popupStack.push(<PopupModifyNightclub />);
+        // context.setState((previousState) => update(previousState, {
+        //     popupStack: {$set: popupStack}
+        // }));
     }
 
     let product_objects = {
@@ -36,16 +46,15 @@ export const TabNightclub = (props) => {
         copying: <TabProgressBar business="nightclub" type="copying" label="Copying" />,
     }
 
-    const owned = context.userInfo.nightclub.owned;
     let content = null;
-    if (owned) {
+    if (props.owned) {
         content = (
             <div className="content">
                 <table>
                     <tbody>
                         {Object.keys(product_objects).map((key) => (
                             <React.Fragment key={key}>
-                                {(!context.userInfo.nightclub.sidebar || context.userInfo.nightclub.producing[key]) && product_objects[key]}
+                                {(!props.showUnproduced || props.producing[key]) && product_objects[key]}
                             </React.Fragment>
                         ))}
                     </tbody>
@@ -69,6 +78,6 @@ export const TabNightclub = (props) => {
             {content}
         </div>
     );
-}
+});
 
-export default TabNightclub;
+export default connect(mapStateToProps)(TabNightclub);

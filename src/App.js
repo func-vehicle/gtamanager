@@ -1,4 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import {
+    pushPopup,
+    unshiftPopup
+} from './redux/popupSlice.js';
 import update from 'immutability-helper';
 
 import './html5reset.css';
@@ -12,6 +17,8 @@ import Popup, { PopupNewUser, PopupPatchnotes, PopupNewWeek, PopupPaused } from 
 import tick from './tick';
 
 const App = () => {
+  const dispatch = useDispatch();
+
   // Allow children to arbitrarily use setState
   let setNewState = (func) => {
     setState(func);
@@ -22,12 +29,12 @@ const App = () => {
 
   if (userInfo == null) {
     userInfo = {...defaultUserInfo};
-    popupStack.push(<PopupNewUser />);
+    dispatch(pushPopup(<PopupNewUser />));
   }
   else {
     if (shouldUpdate(userInfo)) {
       userInfo = updateUserInfo(userInfo);
-      popupStack.unshift(<PopupPatchnotes />);
+      dispatch(unshiftPopup(<PopupPatchnotes />));
     }
     // Check if new week
     // This is called "Friday" but actually it's Thursday in UTC
@@ -47,9 +54,9 @@ const App = () => {
     recentFriday.setUTCMilliseconds(0);
     if (recentFriday.toUTCString() !== userInfo.recentFriday) {
       userInfo.recentFriday = recentFriday.toUTCString();
-      popupStack.unshift(<PopupNewWeek />);
+      dispatch(unshiftPopup(<PopupNewWeek />));
     }
-    popupStack.unshift(<PopupPaused />);
+    dispatch(unshiftPopup(<PopupPaused />));
   }
 
   // State also contains the updater function so it will be passed down into the context provider
@@ -114,25 +121,6 @@ const App = () => {
       clearInterval(interval);
     }
   }, [state.running]);
-
-  // TODO: Very ugly, has a 1 second delay, fix this.
-  // const intervalID = useRef(null);
-  // const upToDate = useRef(state.userInfo);
-  // useEffect(() => {
-  //   upToDate.current = state.userInfo;
-  //   if (intervalID.current == null && state.running) {
-  //     intervalID.current = setInterval(() => {
-  //       let newUserInfo = tick({...upToDate.current});
-  //       setState((previousState) => update(previousState, {
-  //         userInfo: {$set: newUserInfo}
-  //       }));
-  //     }, 1000);
-  //   }
-  //   else if (intervalID.current != null && !state.running) {
-  //     clearInterval(intervalID.current);
-  //     intervalID.current = null;
-  //   }
-  // }, [state.userInfo, state.running]);
 
   return (
     <InfoContext.Provider value={state}>

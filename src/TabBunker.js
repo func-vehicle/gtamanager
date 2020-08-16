@@ -1,4 +1,8 @@
 import React, { useContext } from 'react';
+import { useDispatch, connect } from 'react-redux';
+import {
+    setResourceValue,
+} from './redux/userInfoSlice.js';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import update from 'immutability-helper';
@@ -8,43 +12,51 @@ import { TabProgressBar } from './TabProgressBar';
 import blank from "./img/blank.png";
 import { PopupSetupBunker } from './Popup';
 
-export const TabBunker = (props) => {
-    const context = useContext(InfoContext);
+const mapStateToProps = (state) => {
+    let newProps = {
+        owned: state.userInfo.bunker.owned,
+        hideResearch: state.userInfo.bunker.hide_research,
+        upgrades: state.userInfo.bunker.upgrades,
+    }
+    return newProps;
+}
+
+export const TabBunker = React.memo((props) => {
+    //const context = useContext(InfoContext);
+    const dispatch = useDispatch();
+
+    const upgradeIndex = (props.upgrades.equipment ? 1 : 0) + (props.upgrades.staff ? 1 : 0);
 
     function showSetupBunker(e) {
-        let popupStack = [<PopupSetupBunker />];
-        context.setState((previousState) => update(previousState, {
-            popupStack: {$set: popupStack}
-        }));
+        //let popupStack = [<PopupSetupBunker />];
+        // context.setState((previousState) => update(previousState, {
+        //     popupStack: {$set: popupStack}
+        // }));
     }
 
     function sellAllProduct() {
-        context.setState((previousState) => update(previousState, {
-            userInfo: { 
-                bunker: {
-                    product: {$set: 0},
-                }
-            }
-        }));
+        let payload = {
+            business: "bunker",
+            resource: "product",
+            value: 0,
+        };
+        dispatch(setResourceValue(payload));
     }
 
     function buyFullSupplies() {
-        let upgradeIndex = (context.userInfo.bunker.upgrades.equipment ? 1 : 0) + (context.userInfo.bunker.upgrades.staff ? 1 : 0);
         let maxSupplies = staticInfo.bunker.maxSupplies[upgradeIndex];
-        context.setState((previousState) => update(previousState, {
-            userInfo: { 
-                bunker: {
-                    supplies: {$set: maxSupplies},
-                }
-            }
-        }));
+        let payload = {
+            business: "bunker",
+            resource: "supplies",
+            value: maxSupplies,
+        };
+        dispatch(setResourceValue(payload));
     }
-
-    const owned = context.userInfo.bunker.owned;
+    
     let content = null;
-    if (owned) {
+    if (props.owned) {
         let researchBar = null;
-        if (!context.userInfo.bunker.hide_research) {
+        if (props.hideResearch) {
             researchBar = <TabProgressBar business="bunker" type="research" label="Research" />;
         }
 
@@ -79,6 +91,6 @@ export const TabBunker = (props) => {
             {content}
         </div>
     );
-}
+});
 
-export default TabBunker;
+export default connect(mapStateToProps)(TabBunker);

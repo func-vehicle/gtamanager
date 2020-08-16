@@ -1,4 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { useDispatch, connect } from 'react-redux';
+import {
+    setResourceValue,
+} from './redux/userInfoSlice.js';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import update from 'immutability-helper';
@@ -8,87 +12,81 @@ import { TabProgressBar } from './TabProgressBar';
 import blank from "./img/blank.png";
 import { PopupSetupMCBusiness } from './Popup';
 
-class TabMCBusiness extends React.Component {
-    static contextType = InfoContext;
+const mapStateToProps = (state, ownProps) => {
+    let newProps = {
+        owned: state.userInfo[ownProps.business].owned,
+        upgrades: state.userInfo[ownProps.business].upgrades,
+    }
+    return newProps;
+}
 
-    constructor(props) {
-        super(props);
-    
-        // This binding is necessary to make `this` work in the callback
-        this.showSetupMCBusiness = this.showSetupMCBusiness.bind(this);
-        this.sellAllProduct = this.sellAllProduct.bind(this);
-        this.buyFullSupplies = this.buyFullSupplies.bind(this);
+const TabMCBusiness = (props) => {
+    //const context = useContext(InfoContext);
+    const dispatch = useDispatch();
+
+    function showSetupMCBusiness(e) {
+        //let popupStack = [<PopupSetupMCBusiness business={props.business} />];
+        // context.setState((previousState) => update(previousState, {
+        //     popupStack: {$set: popupStack}
+        // }));
     }
 
-    showSetupMCBusiness(e) {
-        let popupStack = [<PopupSetupMCBusiness business={this.props.business} />];
-        this.context.setState((previousState) => update(previousState, {
-            popupStack: {$set: popupStack}
-        }));
+    function sellAllProduct() {
+        let payload = {
+            business: props.business,
+            resource: "product",
+            value: 0,
+        };
+        dispatch(setResourceValue(payload));
     }
 
-    sellAllProduct() {
-        this.context.setState((previousState) => update(previousState, {
-            userInfo: { 
-                [this.props.business]: {
-                    product: {$set: 0},
-                }
-            }
-        }));
+    function buyFullSupplies() {
+        let upgradeIndex = (props.upgrades.equipment ? 1 : 0) + (props.upgrades.staff ? 1 : 0);
+        let maxSupplies = staticInfo[props.business].maxSupplies[upgradeIndex];
+        let payload = {
+            business: props.business,
+            resource: "supplies",
+            value: maxSupplies,
+        };
+        dispatch(setResourceValue(payload));
     }
 
-    buyFullSupplies() {
-        let userInfo = this.context.userInfo;
-        let upgradeIndex = (userInfo[this.props.business].upgrades.equipment ? 1 : 0) + (userInfo[this.props.business].upgrades.staff ? 1 : 0);
-        let maxSupplies = staticInfo[this.props.business].maxSupplies[upgradeIndex];
-        this.context.setState((previousState) => update(previousState, {
-            userInfo: { 
-                [this.props.business]: {
-                    supplies: {$set: maxSupplies},
-                }
-            }
-        }));
-    }
-
-    render() {
-        const owned = this.context.userInfo[this.props.business].owned;
-        let content = null;
-        if (owned) {
-            content = (
-                <div className="content">
-                    <table>
-                        <tbody>
-                            <TabProgressBar business={this.props.business} type="product" label="Product" />
-                            <TabProgressBar business={this.props.business} type="supplies" label="Supplies" />
-                        </tbody>
-                    </table>
-                    <div className="fsz">
-                        <button onClick={this.buyFullSupplies} className="button green">Resupply</button>
-                        <button onClick={this.sellAllProduct} className="button blue">Sell</button>
-                    </div>
+    let content = null;
+    if (props.owned) {
+        content = (
+            <div className="content">
+                <table>
+                    <tbody>
+                        <TabProgressBar business={props.business} type="product" label="Product" />
+                        <TabProgressBar business={props.business} type="supplies" label="Supplies" />
+                    </tbody>
+                </table>
+                <div className="fsz">
+                    <button onClick={buyFullSupplies} className="button green">Resupply</button>
+                    <button onClick={sellAllProduct} className="button blue">Sell</button>
                 </div>
-            );
-        }
-
-        return (
-            <div id={this.props.business} className="information">
-                <div className="business_heading clearfix">
-                    <div className="icon_wrap">
-                        <img
-                            src={blank}
-                            className={"icons icons-info icons-" + this.props.business}
-                            alt={staticInfo[this.props.business].fullName + " icon"}
-                        />
-                    </div>
-                    <h1>{staticInfo[this.props.business].shortName}</h1>
-                    <button onClick={this.showSetupMCBusiness} className="button setup">
-                        <FontAwesomeIcon icon={faCog} />
-                    </button>
-                </div>
-                {content}
             </div>
         );
     }
+
+    return (
+        <div id={props.business} className="information">
+            <div className="business_heading clearfix">
+                <div className="icon_wrap">
+                    <img
+                        src={blank}
+                        className={"icons icons-info icons-" + props.business}
+                        alt={staticInfo[props.business].fullName + " icon"}
+                    />
+                </div>
+                <h1>{staticInfo[props.business].shortName}</h1>
+                <button onClick={showSetupMCBusiness} className="button setup">
+                    <FontAwesomeIcon icon={faCog} />
+                </button>
+            </div>
+            {content}
+        </div>
+    );
 }
 
-export default TabMCBusiness;
+export default connect(mapStateToProps)(TabMCBusiness);

@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { connect, useDispatch } from 'react-redux';
 import update from 'immutability-helper';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -7,6 +8,7 @@ import Patchnotes, { patchArray } from './Patchnotes';
 import { InfoContext, defaultUserInfo, shouldUpdate, updateUserInfo, staticInfo } from './InfoContext';
 import { inRange, isInteger, capitalize } from './Utility';
 import { BannerSelectLocation } from './BannerNotification';
+import { popPopup } from './redux/popupSlice';
 
 export const PopupPushDenied = (props) => {
 
@@ -150,14 +152,10 @@ export const PopupNewWeek = (props) => {
 
 export const PopupPaused = (props) => {
 
-  const context = useContext(InfoContext);
+  const dispatch = useDispatch();
 
   function cancelChanges(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      popupStack: {$set: popupStack}
-    }));
+    dispatch(popPopup());
   }
 
   return (
@@ -1334,16 +1332,44 @@ export const PopupSetupWheel = (props) => {
   );
 }
 
-const Popup = (props) => {
-  const context = useContext(InfoContext);
+const stringElementMap = {
+  PopupPushDenied: <PopupPushDenied />,
+  PopupNewUser: <PopupNewUser />,
+  PopupPatchnotes: <PopupPatchnotes />,
+  PopupNewWeek: <PopupNewWeek />,
+  PopupPaused: <PopupPaused />,
+  PopupSetupMain: <PopupSetupMain />,
+  PopupResetEverything: <PopupResetEverything />,
+  PopupModifyNightclub: <PopupModifyNightclub />,
+  PopupSetupBunker: <PopupSetupBunker />,
+  PopupSetupMCBusiness: <PopupSetupMCBusiness />,
+  PopupSetupNightclub: <PopupSetupNightclub />,
+  PopupSetupImportExport: <PopupSetupImportExport />,
+  PopupSetupWheel: <PopupSetupWheel />,
+}
 
+export function convertPopup(value) {
+  if (typeof value === 'string') {
+    return stringElementMap[value];
+  }
+  return value.type.name;
+}
+
+const mapStateToProps = (state) => {
+  let newProps = {
+    popupStack: state.popupStack,
+  }
+  return newProps;
+}
+
+const Popup = (props) => {
   let fragment = null;
-  if (context.popupStack.length > 0) {
+  if (props.popupStack.length > 0) {
     fragment = (
       <React.Fragment>
         <div id="overlay"></div>
         <div id="notification">
-          {context.popupStack[context.popupStack.length - 1]}
+          {convertPopup(props.popupStack[props.popupStack.length - 1])}
         </div>
       </React.Fragment>
     )
@@ -1352,4 +1378,4 @@ const Popup = (props) => {
   return fragment;
 }
 
-export default Popup;
+export default connect(mapStateToProps)(Popup);

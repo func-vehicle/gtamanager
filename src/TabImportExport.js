@@ -1,4 +1,9 @@
 import React, { useContext } from 'react';
+import { useDispatch, connect } from 'react-redux';
+import {
+    setResourceValue,
+    setImportExportCooldown,
+} from './redux/userInfoSlice.js';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import update from 'immutability-helper';
@@ -8,58 +13,66 @@ import { formatTimeString } from './Utility';
 import blank from "./img/blank.png";
 import { PopupSetupImportExport } from './Popup';
 
+const mapStateToProps = (state) => {
+    let newProps = {
+        owned: state.userInfo.importExport.owned,
+        highendCars: state.userInfo.importExport.highend_cars,
+        cooldown: state.userInfo.importExport.cooldown,
+    }
+    return newProps;
+}
+
 export const TabImportExport = (props) => {
-    const context = useContext(InfoContext);
+    //const context = useContext(InfoContext);
+    const dispatch = useDispatch();
 
     function showSetupImportExport(e) {
-        let popupStack = [<PopupSetupImportExport />];
-        context.setState((previousState) => update(previousState, {
-            popupStack: {$set: popupStack}
-        }));
+        // let popupStack = [<PopupSetupImportExport />];
+        // context.setState((previousState) => update(previousState, {
+        //     popupStack: {$set: popupStack}
+        // }));
     }
 
     function sourceCar(e) {
-        let newValue = Math.min(context.userInfo.importExport.highend_cars + 1, 20);
-        context.setState((previousState) => update(previousState, {
-            userInfo: {
-                importExport: {
-                    highend_cars: {$set: newValue}
-                }
-            }
-        }));
+        let newValue = Math.min(props.highendCars + 1, 20);
+        let payload = {
+            business: "importExport",
+            resource: "highend_cars",
+            value: newValue,
+        };
+        dispatch(setResourceValue(payload));
     }
 
     function sellCars(e) {
         let element = e.target.previousSibling;
         let toSell = parseInt(element.options[element.selectedIndex].text, 10);
-        let newCars = Math.max(context.userInfo.importExport.highend_cars - toSell, 0);
+        let newCars = Math.max(props.highendCars - toSell, 0);
         let newTime = (toSell + 1) * 10 * (60 * 1000);
-        context.setState((previousState) => update(previousState, {
-            userInfo: {
-                importExport: {
-                    highend_cars: {$set: newCars},
-                    cooldown: {$set: newTime},
-                }
-            }
-        }));
+        let payload = {
+            business: "importExport",
+            resource: "highend_cars",
+            value: newCars,
+        };
+        dispatch(setResourceValue(payload));
+        payload = newTime;
+        dispatch(setImportExportCooldown(payload));
     }
 
-    const disableSell = context.userInfo.importExport.cooldown > 0;
+    const disableSell = props.cooldown > 0;
     let sellString;
     if (disableSell) {
-        sellString = formatTimeString(context.userInfo.importExport.cooldown);
+        sellString = formatTimeString(props.cooldown);
     }
     else {
         sellString = "Sell";
     }
 
-    const owned = context.userInfo.importExport.owned;
     let content = null;
-    if (owned) {
+    if (props.owned) {
         content = (
             <div className="content">
                 <div className="fsz">
-                    <button onClick={sourceCar} className="button green">Source ({context.userInfo.importExport.highend_cars})</button>
+                    <button onClick={sourceCar} className="button green">Source ({props.highendCars})</button>
                     {/* <button className="button purple">View</button> */}
                 </div>
                 <div>
@@ -91,4 +104,4 @@ export const TabImportExport = (props) => {
     );
 }
 
-export default TabImportExport;
+export default connect(mapStateToProps)(TabImportExport);
