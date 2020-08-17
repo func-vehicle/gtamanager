@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useDispatch, connect } from 'react-redux';
 import {
     pushPopup,
@@ -7,12 +7,13 @@ import {
 import {
   toggleNotifications,
 } from './redux/userInfoSlice.js';
-import update from 'immutability-helper';
+import {
+  toggleRunning, setBanner,
+} from './redux/sessionSlice.js';
 
 import MapIcon from './MapIcon';
 import BannerNotification from './BannerNotification';
-import Popup, { PopupSetupMain, PopupPaused } from './Popup';
-import { InfoContext } from './InfoContext';
+import Popup from './Popup';
 import { useWindowDimensions } from './Utility';
 import { setFirstTickTime } from './tick';
 import mapImage512 from './img/bg-512.jpg';
@@ -21,33 +22,31 @@ import mapImage2048 from './img/bg-2048.jpg';
 
 const mapStateToProps = (state) => {
   let newProps = {
+    running: state.session.running,
     audioEnabled: state.userInfo.settings.audio.enabled,
   }
   return newProps;
 }
 
 const Map = (props) => {
-  const context = useContext(InfoContext);
+
   const dispatch = useDispatch();
 
-  function toggleRunning() {
-    let newRunning = !context.running;
-    if (!newRunning) {
+  function handleRunning() {
+    if (props.running) {
       dispatch(clearStack());
-      dispatch(pushPopup(<PopupPaused />))
+      dispatch(pushPopup("PopupPaused"));
+      dispatch(setBanner("BannerPaused"));
+    }
+    else {
+      dispatch(setBanner(null));
     }
     setFirstTickTime();
-    context.setState((previousState) => update(previousState, {
-      running: {$set: newRunning}
-    }));
-  }
-
-  function toggleNotifications2() {
-    dispatch(toggleNotifications());
+    dispatch(toggleRunning());
   }
 
   function showSetupMain() {
-    dispatch(pushPopup(<PopupSetupMain />))
+    dispatch(pushPopup("PopupSetupMain"));
   }
 
   const {width} = useWindowDimensions();
@@ -58,11 +57,11 @@ const Map = (props) => {
   }
 
   let toggleButton;
-  if (!context.running) {
-    toggleButton = <button onClick={toggleRunning} className="button toggle green">Start</button>;
+  if (!props.running) {
+    toggleButton = <button onClick={handleRunning} className="button toggle green">Start</button>;
   }
   else {
-    toggleButton = <button onClick={toggleRunning} className="button toggle blue">Pause</button>;
+    toggleButton = <button onClick={handleRunning} className="button toggle blue">Pause</button>;
   }
   
   return (
@@ -87,7 +86,7 @@ const Map = (props) => {
         <BannerNotification />
         <div id="options" className="fsz">
           {toggleButton}
-          <button onClick={toggleNotifications2} className={"button audio red" + (!props.audioEnabled ? " off" : "")}>Sound</button>
+          <button onClick={() => dispatch(toggleNotifications())} className={"button audio red" + (!props.audioEnabled ? " off" : "")}>Sound</button>
           <button onClick={showSetupMain} className="button setup red">Setup</button>
         </div>
         {popupElement}

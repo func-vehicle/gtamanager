@@ -8,10 +8,6 @@ export function setFirstTickTime() {
 }
 
 function tick(userInfo) {
-  if (lastTickTime == null) {
-    lastTickTime = new Date().getTime();
-    return userInfo;
-  }
   let currentTime = new Date().getTime();
   let deltaSec = (currentTime - lastTickTime) / 1000;
   lastTickTime = currentTime;
@@ -94,10 +90,6 @@ function tick(userInfo) {
   if (userInfo["importExport"]["cooldown"] > 0) {
       userInfo["importExport"]["cooldown"] = Math.max(userInfo["importExport"]["cooldown"] - deltaSec*1000, 0);
   }
-
-  // Session Timer
-  //feesCooldown -= deltaSec*1000;
-  //feesCooldown = (feesCooldown + 288000) % 2880001;
 
   return userInfo;
 }

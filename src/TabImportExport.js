@@ -1,20 +1,19 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useDispatch, connect } from 'react-redux';
 import {
     setResourceValue,
     setImportExportCooldown,
 } from './redux/userInfoSlice.js';
 import { 
-    pushPopup
+    pushPopup,
+    clearStack,
 } from './redux/popupSlice.js';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import update from 'immutability-helper';
 
-import { InfoContext, staticInfo } from './InfoContext';
+import { staticInfo } from './InfoContext';
 import { formatTimeString } from './Utility';
 import blank from "./img/blank.png";
-import { PopupSetupImportExport } from './Popup';
 
 
 const mapStateToProps = (state) => {
@@ -31,7 +30,8 @@ export const TabImportExport = (props) => {
     const dispatch = useDispatch();
 
     function showSetupImportExport(e) {
-        dispatch(pushPopup(<PopupSetupImportExport />));
+        dispatch(clearStack());
+        dispatch(pushPopup("PopupSetupImportExport"));
     }
 
     function sourceCar(e) {

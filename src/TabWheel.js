@@ -1,17 +1,19 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, connect } from 'react-redux';
 import {
     setWheelTimestamp,
 } from './redux/userInfoSlice.js';
+import {
+    pushPopup,
+    clearStack,
+} from './redux/popupSlice.js';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import update from 'immutability-helper';
 
-import { PopupSetupWheel } from './Popup';
-import { InfoContext, staticInfo } from './InfoContext';
+import { staticInfo } from './InfoContext';
 import { formatTimeString } from './Utility';
 import blank from "./img/blank.png";
-import { pushPopup } from './redux/popupSlice.js';
+
 
 const mapStateToProps = (state) => {
     let newProps = {
@@ -27,8 +29,6 @@ export const TabWheel = (props) => {
     const dispatch = useDispatch();
     const [, setState] = useState(Date.now());
 
-    console.log("RERENDERING!");
-
     // Set up timer
     useEffect(() => {
         if (!props.owned || new Date().getTime() - props.timestamp > 86400000) return;
@@ -39,7 +39,8 @@ export const TabWheel = (props) => {
     }, [props.timestamp, props.owned]);
 
     function showSetupWheel(e) {
-        dispatch(pushPopup(<PopupSetupWheel />));
+        dispatch(clearStack());
+        dispatch(pushPopup("PopupSetupWheel"));
     }
 
     function spinWheel() {

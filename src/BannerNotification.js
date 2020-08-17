@@ -1,23 +1,29 @@
-import React, { useContext, useState } from 'react';
-import update from 'immutability-helper';
+import React, { useState, useEffect } from 'react';
+import { connect, useDispatch } from 'react-redux';
+import {
+    setBanner,
+} from './redux/sessionSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faCheck, faTimes, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 
-import { InfoContext, staticInfo } from './InfoContext';
+import { staticInfo } from './InfoContext';
 
-export const BannerPaused = React.memo(() => {
-
+export const BannerPaused = () => {
     return (
         <div id="pausedMiniNotif">
             <p>The business manager is paused.</p>
         </div>
     );
-});
+}
 
 export const BannerSelectLocation = (props) => {
 
-    const context = useContext(InfoContext);
+    const dispatch = useDispatch();
     const [state, setState] = useState(0);
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, []);
 
     const numLocations = staticInfo[props.business].locations.length;
     let currentLocation = staticInfo[props.business].locations[state];
@@ -30,13 +36,16 @@ export const BannerSelectLocation = (props) => {
         setState((state + 1) % numLocations);
     }
 
+    function cancel() {
+        dispatch(setBanner("BannerPaused"));
+    }
+
+    function confirmLocation() {
+        dispatch(setBanner("BannerPaused"));
+    }
+
     function changeToManual() {
-        let bannerElement = <BannerCustomLocation
-            business={props.business}
-        />
-        context.setState((previousState) => update(previousState, {
-            bannerNotification: {$set: bannerElement}
-        }));
+        dispatch(setBanner(["BannerCustomLocation", { business: props.business }]));
     }
 
     return (
@@ -47,8 +56,8 @@ export const BannerSelectLocation = (props) => {
                 <button onClick={nextLocation} className="button red"><FontAwesomeIcon icon={faArrowRight} /></button>
             </div>
             <div className="right">
-                <button className="button red"><FontAwesomeIcon icon={faCheck} /></button>
-                <button className="button red"><FontAwesomeIcon icon={faTimes} /></button>
+                <button onClick={cancel} className="button red"><FontAwesomeIcon icon={faCheck} /></button>
+                <button onClick={confirmLocation} className="button red"><FontAwesomeIcon icon={faTimes} /></button>
                 <button onClick={changeToManual} className="button red"><FontAwesomeIcon icon={faEllipsisV} /></button>
             </div>
         </div>
@@ -57,15 +66,10 @@ export const BannerSelectLocation = (props) => {
 
 export const BannerCustomLocation = (props) => {
 
-    const context = useContext(InfoContext);
+    const dispatch = useDispatch();
 
     function changeToSelect() {
-        let bannerElement = <BannerSelectLocation
-            business={props.business}
-        />
-        context.setState((previousState) => update(previousState, {
-            bannerNotification: {$set: bannerElement}
-        }));
+        dispatch(setBanner(["BannerSelectLocation", { business: props.business }]));
     }
 
     return (
@@ -83,14 +87,39 @@ export const BannerCustomLocation = (props) => {
     );
 };
 
-const BannerNotification = () => {
-    const context = useContext(InfoContext);
-
-    return (
-        <div id="mini_notif">
-            {context.bannerNotification}
-        </div>
-    );
+const stringElementMap = {
+    BannerPaused,
+    BannerSelectLocation,
+    BannerCustomLocation,
 }
 
-export default BannerNotification;
+function createBanner(object) {
+    // Value is either an array with string name and object properties
+    if (Array.isArray(object)) {
+        return React.createElement(stringElementMap[object[0]], object[1]);
+    }
+    // Or just the string name
+    return React.createElement(stringElementMap[object]);
+}
+
+const mapStateToProps = (state) => {
+    let newProps = {
+        banner: state.session.banner,
+    }
+    return newProps;
+}
+
+const BannerNotification = (props) => {
+    let bannerContainer = null;
+    if (props.banner != null) {
+        bannerContainer = (
+            <div id="mini_notif">
+                {createBanner(props.banner)}
+            </div>
+        );
+    }
+
+    return bannerContainer;
+}
+
+export default connect(mapStateToProps)(BannerNotification);

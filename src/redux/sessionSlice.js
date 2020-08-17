@@ -1,32 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { convertPopup } from '../Popup';
 
 export const slice = createSlice({
-  name: 'popupStack',
-  initialState: [],
+  name: 'session',
+  initialState: {
+    running: false,
+    banner: "BannerPaused",
+  },
   reducers: {
     // Redux Toolkit allows us to write "mutating" logic in reducers. It
     // doesn't actually mutate the state because it uses the immer library,
     // which detects changes to a "draft state" and produces a brand new
     // immutable state based off those changes
-    pushPopup: (state, action) => {
-      let str = convertPopup(action.payload);
-      state.push(str);
+    // func_vehicle: cannot reassign state, must use other methods!
+    toggleRunning: (state) => {
+      state.running = !state.running;
     },
-    unshiftPopup: (state, action) => {
-      let str = convertPopup(action.payload);
-      state.unshift(str);
-    },
-    popPopup: (state) => {
-      state.pop();
-    },
-    clearStack: (state) => {
-      state = [];
-    },
+    setBanner: (state, action) => {
+      state.banner = action.payload;
+    }
   },
 });
 
-export const { pushPopup, unshiftPopup, popPopup, clearStack } = slice.actions;
+export const { toggleRunning, setBanner } = slice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This

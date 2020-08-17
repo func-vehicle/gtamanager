@@ -1,15 +1,22 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import update from 'immutability-helper';
 
-import { InfoContext } from './InfoContext';
 import { formatTimeString, mod } from './Utility';
 import blank from "./img/blank.png";
 
-export const TabFees = (props) => {
-    const context = useContext(InfoContext);
+const mapStateToProps = (state) => {
+    let newProps = {
+        running: state.session.running,
+    }
+    return newProps;
+}
+
+const TabFees = (props) => {
+    
     const [state, setState] = useState({
-        finish: new Date().getTime(),
-        current: new Date().getTime() + 2880000,
+        current: null,
+        finish: null,
     });
     
     // Update timer
@@ -21,19 +28,32 @@ export const TabFees = (props) => {
 
     // Set up reference point, interval
     useEffect(() => {
-        if (!context.running) return;
+        if (!props.running) return;
         setState((previousState) => update(previousState, {
             finish: {$set: new Date().getTime() + 2880000}
         }));
         let interval = setInterval(updateState, 1000);
         return () => {
             clearInterval(interval);
+            setState((previousState) => update(previousState, {
+                current: {$set: null},
+                finish: {$set: null},
+            }));
         }
-    }, [context.running]);
+    }, [props.running]);
 
     let sessionString;
-    if (context.running) {
-        let remainingMs = mod(state.finish - state.current, 2881000);
+    if (props.running) {
+        // Workaround for first render after running change
+        let current = state.current;
+        if (current == null) {
+            current = new Date().getTime();
+        }
+        let finish = state.finish;
+        if (finish == null) {
+            finish = new Date().getTime() + 2880000;
+        }
+        let remainingMs = mod(finish - current, 2881000);
         sessionString = formatTimeString(remainingMs);
     }
     else {
@@ -53,4 +73,4 @@ export const TabFees = (props) => {
     );
 }
 
-export default TabFees;
+export default connect(mapStateToProps)(TabFees);

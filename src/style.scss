@@ -244,10 +244,14 @@ input {
     & #bg {
         max-height: 100vh;
         max-width: 100%;
-	    display: block;
+        display: block;
+        
+        .mobile & {
+            max-height: unset;
+        }
     }
     
-    &::selection, *::selection {
+    &::selection, img::selection {
         color: rgba(0, 0, 0, 0);
     }
 }

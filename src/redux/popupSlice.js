@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { convertPopup } from '../Popup';
 
 export const slice = createSlice({
   name: 'popupStack',
@@ -9,19 +8,18 @@ export const slice = createSlice({
     // doesn't actually mutate the state because it uses the immer library,
     // which detects changes to a "draft state" and produces a brand new
     // immutable state based off those changes
+    // func_vehicle: cannot reassign state, must use other methods!
     pushPopup: (state, action) => {
-      let str = convertPopup(action.payload);
-      state.push(str);
+      state.push(action.payload);
     },
     unshiftPopup: (state, action) => {
-      let str = convertPopup(action.payload);
-      state.unshift(str);
+      state.unshift(action.payload);
     },
     popPopup: (state) => {
       state.pop();
     },
     clearStack: (state) => {
-      state = [];
+      state.length = 0
     },
   },
 });

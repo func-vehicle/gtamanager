@@ -1,19 +1,18 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useDispatch, connect } from 'react-redux';
 import {
     setResourceValue,
 } from './redux/userInfoSlice.js';
 import { 
-    pushPopup
+    pushPopup,
+    clearStack,
 } from './redux/popupSlice.js';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import update from 'immutability-helper';
 
 import { staticInfo } from './InfoContext';
 import { TabProgressBar } from './TabProgressBar';
 import blank from "./img/blank.png";
-import { PopupSetupMCBusiness } from './Popup';
 
 const mapStateToProps = (state, ownProps) => {
     let newProps = {
@@ -28,7 +27,8 @@ const TabMCBusiness = (props) => {
     const dispatch = useDispatch();
 
     function showSetupMCBusiness(e) {
-        dispatch(pushPopup(<PopupSetupMCBusiness business={props.business} />));
+        dispatch(clearStack());
+        dispatch(pushPopup(["PopupSetupMCBusiness", { business: props.business }]));
     }
 
     function sellAllProduct() {

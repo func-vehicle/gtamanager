@@ -222,7 +222,10 @@ input[type=range]::-ms-thumb {
   max-width: 100%;
   display: block;
 }
-#map::selection, #map *::selection {
+.mobile #map #bg {
+  max-height: unset;
+}
+#map::selection, #map img::selection {
   color: rgba(0, 0, 0, 0);
 }
 

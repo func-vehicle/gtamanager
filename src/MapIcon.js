@@ -1,74 +1,67 @@
 import React from 'react';
-import update from 'immutability-helper';
+import { connect, useDispatch } from 'react-redux';
+import {
+  toggleBusinessMuted,
+} from './redux/userInfoSlice';
 
-import { InfoContext } from './InfoContext';
 import blank from './img/blank.png';
 
-class MapIcon extends React.Component {
-  static contextType = InfoContext;
-
-  constructor(props) {
-    super(props);
-
-    // This binding is necessary to make `this` work in the callback
-    this.muteBusiness = this.muteBusiness.bind(this);
+const mapStateToProps = (state, ownProps) => {
+  let newProps = {
+    owned: state.userInfo[ownProps.business].owned,
+    muted: state.userInfo[ownProps.business].muted,
+    position: state.userInfo[ownProps.business].map_position,
   }
-
-  muteBusiness() {
-    let userInfo = this.context.userInfo;
-    let newValue = !userInfo[this.props.business].muted;
-    this.context.setState((previousState) => update(previousState, {
-      userInfo: { 
-        [this.props.business]: {
-          muted: {$set: newValue},
-        }
-      }
-    }));
-  }
-
-  render() {
-    let userInfo = this.context.userInfo;
-    
-    let mapIcon = null;
-    let muteIcon = null;
-    if (userInfo[this.props.business].owned) {
-      mapIcon = (
-        <img
-          id={this.props.business + "_map"}
-          src={blank}
-          className={"icons icons-map icons-" + this.props.business + (userInfo[this.props.business].muted != null ? " clickable" : "")}
-          alt={this.props.full_name + " icon"}
-          style={{
-            top: userInfo[this.props.business].map_position.y + "%",
-            left: userInfo[this.props.business].map_position.x + "%",
-          }}
-          onClick={userInfo[this.props.business].muted != null ? this.muteBusiness : undefined}
-        />
-      );
-
-      if (userInfo[this.props.business].muted) {
-        muteIcon = (
-          <img
-            id={this.props.business + "_mute"}
-            src={blank}
-            className="icons icons-map icons-mute"
-            alt={this.props.full_name + " mute icon"}
-            style={{
-              top: "calc(" + userInfo[this.props.business].map_position.y + "% - 8px)",
-              left: "calc(" + userInfo[this.props.business].map_position.x + "% + 8px)",
-            }}
-          />
-        )
-      }
-    }
-
-    return (
-      <React.Fragment>
-        {mapIcon}
-        {muteIcon}
-      </React.Fragment>
-    );
-  }
+  return newProps;
 }
 
-export default MapIcon;
+export const MapIcon = (props) => {
+
+  const dispatch = useDispatch();
+  
+  function muteBusiness() {
+    dispatch(toggleBusinessMuted(props.business));
+  }
+  
+  let mapIcon = null;
+  let muteIcon = null;
+  if (props.owned) {
+    mapIcon = (
+      <img
+        id={props.business + "_map"}
+        src={blank}
+        className={"icons icons-map icons-" + props.business + (props.muted != null ? " clickable" : "")}
+        alt={props.full_name + " icon"}
+        style={{
+          top: props.position.y + "%",
+          left: props.position.x + "%",
+        }}
+        onClick={props.muted != null ? muteBusiness : undefined}
+      />
+    );
+
+    if (props.muted) {
+      muteIcon = (
+        <img
+          id={props.business + "_mute"}
+          src={blank}
+          className="icons icons-map icons-mute"
+          alt={props.full_name + " mute icon"}
+          style={{
+            top: "calc(" + props.position.y + "% - 8px)",
+            left: "calc(" + props.position.x + "% + 8px)",
+          }}
+        />
+      )
+    }
+  }
+
+  return (
+    <React.Fragment>
+      {mapIcon}
+      {muteIcon}
+    </React.Fragment>
+  );
+}
+
+export default connect(mapStateToProps)(MapIcon);

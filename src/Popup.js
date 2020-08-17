@@ -1,20 +1,31 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
+import {
+  popPopup,
+  pushPopup,
+  unshiftPopup,
+  clearStack,
+} from './redux/popupSlice';
+import {
+  setRootObject,
+  setUserInfo,
+  setResourceValue,
+} from './redux/userInfoSlice';
+import {
+  toggleRunning,
+  setBanner,
+ } from './redux/sessionSlice';
 import update from 'immutability-helper';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import Patchnotes, { patchArray } from './Patchnotes';
-import { InfoContext, defaultUserInfo, shouldUpdate, updateUserInfo, staticInfo } from './InfoContext';
+import { defaultUserInfo, shouldUpdate, updateUserInfo, staticInfo } from './InfoContext';
 import { inRange, isInteger, capitalize } from './Utility';
-import { BannerSelectLocation } from './BannerNotification';
-import { popPopup } from './redux/popupSlice';
 
 export const PopupPushDenied = (props) => {
 
   const dispatch = useDispatch();
-
-  const context = useContext(InfoContext);
 
   return (
     <div id="pushDeniedNotice">
@@ -35,8 +46,6 @@ export const PopupPushDenied = (props) => {
 export const PopupNewUser = (props) => {
 
   const dispatch = useDispatch();
-
-  const context = useContext(InfoContext);
 
   return (
     <div id="newUserNotice">
@@ -74,7 +83,6 @@ export const PopupPatchnotes = (props) => {
 
   const dispatch = useDispatch();
 
-  const context = useContext(InfoContext);
   const [state, setState] = useState(patchArray.length - 1);
 
   function decrementPage(e) {
@@ -107,8 +115,6 @@ export const PopupPatchnotes = (props) => {
 export const PopupNewWeek = (props) => {
 
   const dispatch = useDispatch();
-
-  const context = useContext(InfoContext);
 
   return (
     <div id="newWeekNotice">
@@ -146,12 +152,17 @@ export const PopupPaused = (props) => {
   );
 }
 
-export const PopupSetupMain = (props) => {
+export const PopupSetupMain = connect((state) => {
+  let newProps = {
+    userInfo: state.userInfo,
+    running: state.session.running,
+  }
+  return newProps;
+})((props) => {
 
   const dispatch = useDispatch();
 
-  const context = useContext(InfoContext);
-  let workingInfo = JSON.parse(JSON.stringify(context.userInfo.settings));
+  let workingInfo = props.userInfo.settings;
   const [state, setState] = useState(workingInfo);
 
   function validateIndividual(e) {
@@ -241,7 +252,7 @@ export const PopupSetupMain = (props) => {
   function downloadData(e) {
     // https://stackoverflow.com/questions/19721439/
 		var name = "manager_data.json";
-		var file = new Blob([JSON.stringify(context.userInfo)], {type: "text/json"});
+		var file = new Blob([JSON.stringify(props.userInfo)], {type: "text/json"});
       var isIE = false || !!document.documentMode;
       if (isIE) {
         window.navigator.msSaveOrOpenBlob(file, name);
@@ -270,52 +281,37 @@ export const PopupSetupMain = (props) => {
 		}
 		reader.onload = function(e) {
       let userInfo = JSON.parse(reader.result);
-      let popupStack = [];
+      dispatch(clearStack());
+      if (props.running) {
+        dispatch(toggleRunning());
+      }
       if (userInfo == null) {
         userInfo = {...defaultUserInfo};
-        popupStack.push(<PopupNewUser />);
+        dispatch(pushPopup("PopupNewUser"));
       }
       else {
         if (shouldUpdate(userInfo)) {
           userInfo = updateUserInfo(userInfo);
-          popupStack.unshift(<PopupPatchnotes />);
+          dispatch(unshiftPopup("PopupPatchnotes"));
         }
-        popupStack.unshift(<PopupPaused />);
+        dispatch(unshiftPopup("PopupPaused"));
       }
-      context.setState((previousState) => update(previousState, {
-        userInfo: {$set: userInfo},
-        popupStack: {$set: popupStack},
-        running: {$set: false},
-      }));
+      dispatch(setUserInfo(userInfo));
 		};
 		reader.readAsText(file);
   }
 
   function showResetEverything(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.push(<PopupResetEverything />);
-    context.setState((previousState) => update(previousState, {
-      popupStack: {$set: popupStack}
-    }));
+    dispatch(pushPopup("PopupResetEverything"));
   }
 
   function showPatchnotes(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.push(<PopupPatchnotes />);
-    context.setState((previousState) => update(previousState, {
-      popupStack: {$set: popupStack}
-    }));
+    dispatch(pushPopup("PopupPatchnotes"));
   }
 
   function applyChanges(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      userInfo: {
-        settings: {$set: state}
-      },
-      popupStack: {$set: popupStack}
-    }));
+    dispatch(setRootObject({ key: "settings", value: state }));
+    dispatch(popPopup());
   }
 
   return (
@@ -396,20 +392,15 @@ export const PopupSetupMain = (props) => {
       </div>
     </div>
   );
-}
+});
 
 export const PopupResetEverything = (props) => {
 
   const dispatch = useDispatch();
 
-  const context = useContext(InfoContext);
-
   function confirmReset(e) {
-    context.setState((previousState) => update(previousState, {
-      userInfo: {$set: {...defaultUserInfo}},
-      popupStack: {$set: []},
-      running: {$set: false},
-    }));
+    dispatch(setUserInfo(defaultUserInfo));
+    dispatch(clearStack());
   }
 
   return (
@@ -428,11 +419,15 @@ export const PopupResetEverything = (props) => {
   );
 }
 
-export const PopupModifyNightclub = (props) => {
+export const PopupModifyNightclub = connect((state) => {
+  let newProps = {
+    nightclub: state.userInfo.nightclub,
+  }
+  return newProps;
+})((props) => {
 
   const dispatch = useDispatch();
 
-  const context = useContext(InfoContext);
   let workingInfo = {
     cargo: 0,
     sporting: 0,
@@ -502,20 +497,16 @@ export const PopupModifyNightclub = (props) => {
   }
 
   function sellSelected(e) {
-    let oldNightclub = context.userInfo.nightclub;
-    context.setState((previousState) => update(previousState, {
-      userInfo: {
-        nightclub: {
-          cargo: {$set: oldNightclub.cargo - state.cargo},
-          sporting: {$set: oldNightclub.sporting - state.sporting},
-          imports: {$set: oldNightclub.imports - state.imports},
-          pharma: {$set: oldNightclub.pharma - state.pharma},
-          creation: {$set: oldNightclub.creation - state.creation},
-          organic: {$set: oldNightclub.organic - state.organic},
-          copying: {$set: oldNightclub.copying - state.copying},
-        }
+    for (let product of staticInfo.nightclub.products) {
+      if (state[product] === 0)
+        continue;
+      let payload = {
+        business: "nightclub",
+        resource: product,
+        value: Math.max(props.nightclub[product] - state[product], 0),
       }
-    }));
+      dispatch(setResourceValue(payload));
+    }
     setState((previousState) => update(previousState, {
       cargo: {$set: 0},
       sporting: {$set: 0},
@@ -528,19 +519,14 @@ export const PopupModifyNightclub = (props) => {
   }
 
   function sellAll(e) {
-    context.setState((previousState) => update(previousState, {
-      userInfo: {
-        nightclub: {
-          cargo: {$set: 0},
-          sporting: {$set: 0},
-          imports: {$set: 0},
-          pharma: {$set: 0},
-          creation: {$set: 0},
-          organic: {$set: 0},
-          copying: {$set: 0},
-        }
+    for (let product of staticInfo.nightclub.products) {
+      let payload = {
+        business: "nightclub",
+        resource: product,
+        value: 0,
       }
-    }));
+      dispatch(setResourceValue(payload));
+    }
     setState((previousState) => update(previousState, {
       cargo: {$set: 0},
       sporting: {$set: 0},
@@ -552,11 +538,11 @@ export const PopupModifyNightclub = (props) => {
     }));
   }
 
-  const storageFloors = context.userInfo.nightclub.storage_floors;
+  const storageFloors = props.nightclub.storage_floors;
 
   let totalProduct = 0;
   for (let product of staticInfo.nightclub.products) {
-    totalProduct += Math.round(context.userInfo.nightclub[product]);
+    totalProduct += Math.round(props.nightclub[product]);
   }
 
   let vehicleRequired;
@@ -585,64 +571,64 @@ export const PopupModifyNightclub = (props) => {
             </tr>
             <tr>
               <td>Cargo and Shipments</td>
-              <td>{Math.round(context.userInfo.nightclub.cargo)}/{staticInfo.nightclub.maxCargo[storageFloors - 1]}</td>
+              <td>{Math.round(props.nightclub.cargo)}/{staticInfo.nightclub.maxCargo[storageFloors - 1]}</td>
               <td className="incDecButtons">
                 <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
-                <input name="cargo" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.cargo} min="0" max="50" />
+                <input name="cargo" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.cargo} min="0" max={staticInfo.nightclub.maxCargo[storageFloors - 1]} />
                 <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
             <tr>
               <td>Sporting Goods</td>
-              <td>{Math.round(context.userInfo.nightclub.sporting)}/{staticInfo.nightclub.maxSporting[storageFloors - 1]}</td>
+              <td>{Math.round(props.nightclub.sporting)}/{staticInfo.nightclub.maxSporting[storageFloors - 1]}</td>
               <td className="incDecButtons">
                 <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
-                <input name="sporting" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.sporting} min="0" max="100" />
+                <input name="sporting" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.sporting} min="0" max={staticInfo.nightclub.maxSporting[storageFloors - 1]} />
                 <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
             <tr>
               <td>South American Imports</td>
-              <td>{Math.round(context.userInfo.nightclub.imports)}/{staticInfo.nightclub.maxImports[storageFloors - 1]}</td>
+              <td>{Math.round(props.nightclub.imports)}/{staticInfo.nightclub.maxImports[storageFloors - 1]}</td>
               <td className="incDecButtons">
                 <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
-                <input name="imports" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.imports} min="0" max="10" />
+                <input name="imports" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.imports} min="0" max={staticInfo.nightclub.maxImports[storageFloors - 1]} />
                 <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
             <tr>
               <td>Pharmaceutical Research</td>
-              <td>{Math.round(context.userInfo.nightclub.pharma)}/{staticInfo.nightclub.maxPharma[storageFloors - 1]}</td>
+              <td>{Math.round(props.nightclub.pharma)}/{staticInfo.nightclub.maxPharma[storageFloors - 1]}</td>
               <td className="incDecButtons">
                 <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
-                <input name="pharma" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.pharma} min="0" max="20" />
+                <input name="pharma" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.pharma} min="0" max={staticInfo.nightclub.maxPharma[storageFloors - 1]} />
                 <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
             <tr>
               <td>Cash Creation</td>
-              <td>{Math.round(context.userInfo.nightclub.creation)}/{staticInfo.nightclub.maxCreation[storageFloors - 1]}</td>
+              <td>{Math.round(props.nightclub.creation)}/{staticInfo.nightclub.maxCreation[storageFloors - 1]}</td>
               <td className="incDecButtons">
                 <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
-                <input name="creation" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.creation} min="0" max="40" />
+                <input name="creation" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.creation} min="0" max={staticInfo.nightclub.maxCreation[storageFloors - 1]} />
                 <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
             <tr>
               <td>Organic Produce</td>
-              <td>{Math.round(context.userInfo.nightclub.organic)}/{staticInfo.nightclub.maxOrganic[storageFloors - 1]}</td>
+              <td>{Math.round(props.nightclub.organic)}/{staticInfo.nightclub.maxOrganic[storageFloors - 1]}</td>
               <td className="incDecButtons">
                 <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
-                <input name="organic" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.organic} min="0" max="80" />
+                <input name="organic" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.organic} min="0" max={staticInfo.nightclub.maxOrganic[storageFloors - 1]} />
                 <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
             <tr>
               <td>Printing and Copying</td>
-              <td>{Math.round(context.userInfo.nightclub.copying)}/{staticInfo.nightclub.maxCopying[storageFloors - 1]}</td>
+              <td>{Math.round(props.nightclub.copying)}/{staticInfo.nightclub.maxCopying[storageFloors - 1]}</td>
               <td className="incDecButtons">
                 <button onClick={decrementor} className="button"><FontAwesomeIcon icon={faMinus} /></button>
-                <input name="copying" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.copying} min="0" max="60" />
+                <input name="copying" type="number" onKeyPress={isInteger} onChange={validateIndividual} className="range_enforced integer_only" value={state.copying} min="0" max={staticInfo.nightclub.maxCopying[storageFloors - 1]} />
                 <button onClick={incrementor} className="button"><FontAwesomeIcon icon={faPlus} /></button>
               </td>
             </tr>
@@ -661,14 +647,18 @@ export const PopupModifyNightclub = (props) => {
       </div>
     </div>
   );
-}
+});
 
-export const PopupSetupBunker = (props) => {
+export const PopupSetupBunker = connect((state) => {
+  let newProps = {
+    bunker: state.userInfo.bunker,
+  }
+  return newProps;
+})((props) => {
 
   const dispatch = useDispatch();
 
-  const context = useContext(InfoContext);
-  let workingInfo = {...context.userInfo.bunker};
+  let workingInfo = props.bunker;
   const [state, setState] = useState(workingInfo);
 
   function toggleOwned(e) {
@@ -679,12 +669,7 @@ export const PopupSetupBunker = (props) => {
   }
 
   function setLocation(e) {
-    let bannerElement = <BannerSelectLocation
-      business="bunker"
-    />
-    context.setState((previousState) => update(previousState, {
-      bannerNotification: {$set: bannerElement}
-    }));
+    dispatch(setBanner(["BannerSelectLocation", { business: "bunker" }]));
   }
 
   function toggleUpgrade(e) {
@@ -713,14 +698,8 @@ export const PopupSetupBunker = (props) => {
   }
 
   function applyChanges(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      userInfo: {
-        bunker: {$set: state}
-      },
-      popupStack: {$set: popupStack}
-    }));
+    dispatch(setRootObject({ key: "bunker", value: state }));
+    dispatch(popPopup());
   }
 
   let modeElement = null;
@@ -783,14 +762,18 @@ export const PopupSetupBunker = (props) => {
       </div>
     </div>
   );
-}
+});
 
-export const PopupSetupMCBusiness = (props) => {
+export const PopupSetupMCBusiness = connect((state, ownProps) => {
+  let newProps = {
+    [ownProps.business]: state.userInfo[ownProps.business],
+  }
+  return newProps;
+})((props) => {
 
   const dispatch = useDispatch();
 
-  const context = useContext(InfoContext);
-  let workingInfo = {...context.userInfo[props.business]};
+  let workingInfo = props[props.business];
   const [state, setState] = useState(workingInfo);
 
   function toggleOwned(e) {
@@ -811,14 +794,8 @@ export const PopupSetupMCBusiness = (props) => {
   }
 
   function applyChanges(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      userInfo: {
-        [props.business]: {$set: state}
-      },
-      popupStack: {$set: popupStack}
-    }));
+    dispatch(setRootObject({ key: props.business, value: state }));
+    dispatch(popPopup());
   }
 
   return (
@@ -859,14 +836,19 @@ export const PopupSetupMCBusiness = (props) => {
       </div>
     </div>
   );
-}
+});
 
-export const PopupSetupNightclub = (props) => {
+
+export const PopupSetupNightclub = connect((state, ownProps) => {
+  let newProps = {
+    nightclub: state.userInfo.nightclub,
+  }
+  return newProps;
+})((props) => {
 
   const dispatch = useDispatch();
 
-  const context = useContext(InfoContext);
-  let workingInfo = {...context.userInfo.nightclub};
+  let workingInfo = props.nightclub;
   const [state, setState] = useState(workingInfo);
 
   function validateIndividual(e) {
@@ -966,14 +948,8 @@ export const PopupSetupNightclub = (props) => {
     for (let product of staticInfo.nightclub.products) {
       newState[product] = Math.min(state[product], staticInfo.nightclub["max"+capitalize(product)][state.storage_floors - 1]);
     }
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      userInfo: {
-        nightclub: {$set: newState}
-      },
-      popupStack: {$set: popupStack}
-    }));
+    dispatch(setRootObject({ key: "nightclub", value: newState }));
+    dispatch(popPopup());
   }
 
   return (
@@ -1041,14 +1017,18 @@ export const PopupSetupNightclub = (props) => {
       </div>
     </div>
   );
-}
+});
 
-export const PopupSetupImportExport = (props) => {
+export const PopupSetupImportExport = connect((state) => {
+  let newProps = {
+    importExport: state.userInfo.importExport,
+  }
+  return newProps;
+})((props) => {
 
   const dispatch = useDispatch();
 
-  const context = useContext(InfoContext);
-  let workingInfo = {...context.userInfo.importExport};
+  let workingInfo = props.importExport;
   const [state, setState] = useState(workingInfo);
 
   function validateIndividual(e) {
@@ -1122,14 +1102,8 @@ export const PopupSetupImportExport = (props) => {
   }
 
   function applyChanges(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      userInfo: {
-        importExport: {$set: state}
-      },
-      popupStack: {$set: popupStack}
-    }));
+    dispatch(setRootObject({ key: "importExport", value: state }));
+    dispatch(popPopup());
   }
 
   return (
@@ -1176,14 +1150,18 @@ export const PopupSetupImportExport = (props) => {
       </div>
     </div>
   );
-}
+});
 
-export const PopupSetupWheel = (props) => {
+export const PopupSetupWheel = connect((state) => {
+  let newProps = {
+    wheel: state.userInfo.wheel,
+  }
+  return newProps;
+})((props) => {
 
   const dispatch = useDispatch();
 
-  const context = useContext(InfoContext);
-  let workingInfo = {...context.userInfo.wheel};
+  let workingInfo = props.wheel;
   const [state, setState] = useState(workingInfo);
 
   function toggleOwned(e) {
@@ -1207,14 +1185,8 @@ export const PopupSetupWheel = (props) => {
   }
 
   function applyChanges(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      userInfo: {
-        wheel: {$set: state}
-      },
-      popupStack: {$set: popupStack}
-    }));
+    dispatch(setRootObject({ key: "wheel", value: state }));
+    dispatch(popPopup());
   }
 
   return (
@@ -1228,15 +1200,15 @@ export const PopupSetupWheel = (props) => {
           <tr>
             <td>Display:</td>
             <td className="onechoice fsz">
-              <button onClick={toggleOwned} disabled={state.owned} className="button green" data-value="1">Yes</button>
-              <button onClick={toggleOwned} disabled={!state.owned} className="button red" data-value="0">No</button>
+              <button onClick={toggleOwned} disabled={state.owned} className="button green">Yes</button>
+              <button onClick={toggleOwned} disabled={!state.owned} className="button red">No</button>
             </td>
           </tr>
           <tr>
             <td>Notify:</td>
             <td className="onechoice fsz">
-              <button onClick={toggleNotify} disabled={state.notify_while_paused} className="button green" data-value="1">Always</button>
-              <button onClick={toggleNotify} disabled={!state.notify_while_paused} className="button orange" data-value="0">Only while running</button>
+              <button onClick={toggleNotify} disabled={state.notify_while_paused} className="button green">Always</button>
+              <button onClick={toggleNotify} disabled={!state.notify_while_paused} className="button orange">Only while running</button>
             </td>
           </tr>
           <tr>
@@ -1254,47 +1226,58 @@ export const PopupSetupWheel = (props) => {
     </div>
   </div>
   );
-}
+});
 
 const stringElementMap = {
-  PopupPushDenied: <PopupPushDenied />,
-  PopupNewUser: <PopupNewUser />,
-  PopupPatchnotes: <PopupPatchnotes />,
-  PopupNewWeek: <PopupNewWeek />,
-  PopupPaused: <PopupPaused />,
-  PopupSetupMain: <PopupSetupMain />,
-  PopupResetEverything: <PopupResetEverything />,
-  PopupModifyNightclub: <PopupModifyNightclub />,
-  PopupSetupBunker: <PopupSetupBunker />,
-  PopupSetupMCBusiness: <PopupSetupMCBusiness />,
-  PopupSetupNightclub: <PopupSetupNightclub />,
-  PopupSetupImportExport: <PopupSetupImportExport />,
-  PopupSetupWheel: <PopupSetupWheel />,
+  PopupPushDenied,
+  PopupNewUser,
+  PopupPatchnotes,
+  PopupNewWeek,
+  PopupPaused,
+  PopupSetupMain,
+  PopupResetEverything,
+  PopupModifyNightclub,
+  PopupSetupBunker,
+  PopupSetupMCBusiness,
+  PopupSetupNightclub,
+  PopupSetupImportExport,
+  PopupSetupWheel,
 }
 
-export function convertPopup(value) {
-  if (Array.isArray(value)) {
-    var element = React.cloneElement(stringElementMap[value[0]], value[1]);
-    return element;
+function createPopup(object) {
+  // Value is either an array with string name and object properties
+  if (Array.isArray(object)) {
+    return React.createElement(stringElementMap[object[0]], object[1]);
   }
-  return [value.type.name, value.props];
+  // Or just the string name
+  return React.createElement(stringElementMap[object]);
 }
 
 const mapStateToProps = (state) => {
+  let banner = state.session.banner;
+  if (Array.isArray(banner)) {
+    banner = banner[0];
+  }
   let newProps = {
     popupStack: state.popupStack,
+    banner: banner,
   }
   return newProps;
 }
 
 const Popup = (props) => {
   let fragment = null;
+  let style = null;
+  // Hide setup dialog when setting location to keep state
+  if (props.banner === "BannerSelectLocation" || props.banner === "BannerCustomLocation") {
+    style = {display: "none"};
+  }
   if (props.popupStack.length > 0) {
     fragment = (
       <React.Fragment>
-        <div id="overlay"></div>
-        <div id="notification">
-          {convertPopup(props.popupStack[props.popupStack.length - 1])}
+        <div id="overlay" style={style}></div>
+        <div id="notification" style={style}>
+          {createPopup(props.popupStack[props.popupStack.length - 1])}
         </div>
       </React.Fragment>
     )

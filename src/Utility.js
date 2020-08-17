@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export const capitalize = function(s) {
   return s.charAt(0).toUpperCase() + s.slice(1);
@@ -76,6 +76,23 @@ export const useWidthDetector = (containerRef, onWidthChanged) => {
     }
   }, [containerRef, onWidthChanged]);
 };
+
+// DEBUG
+export function useTraceUpdate(props) {
+  const prev = useRef(props);
+  useEffect(() => {
+    const changedProps = Object.entries(props).reduce((ps, [k, v]) => {
+      if (prev.current[k] !== v) {
+        ps[k] = [prev.current[k], v];
+      }
+      return ps;
+    }, {});
+    if (Object.keys(changedProps).length > 0) {
+      console.log('Changed props:', changedProps);
+    }
+    prev.current = props;
+  });
+}
 
 export function isInteger(e) {
   // https://stackoverflow.com/questions/469357/html-text-input-allow-only-numeric-input/469419#469419

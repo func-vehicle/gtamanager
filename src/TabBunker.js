@@ -1,16 +1,18 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useDispatch, connect } from 'react-redux';
 import {
     setResourceValue,
 } from './redux/userInfoSlice.js';
+import {
+    pushPopup,
+    clearStack,
+} from './redux/popupSlice';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import update from 'immutability-helper';
 
-import { InfoContext, staticInfo } from './InfoContext';
+import { staticInfo } from './InfoContext';
 import { TabProgressBar } from './TabProgressBar';
 import blank from "./img/blank.png";
-import { PopupSetupBunker } from './Popup';
 
 const mapStateToProps = (state) => {
     let newProps = {
@@ -22,16 +24,14 @@ const mapStateToProps = (state) => {
 }
 
 export const TabBunker = React.memo((props) => {
-    //const context = useContext(InfoContext);
+
     const dispatch = useDispatch();
 
     const upgradeIndex = (props.upgrades.equipment ? 1 : 0) + (props.upgrades.staff ? 1 : 0);
 
     function showSetupBunker(e) {
-        //let popupStack = [<PopupSetupBunker />];
-        // context.setState((previousState) => update(previousState, {
-        //     popupStack: {$set: popupStack}
-        // }));
+        dispatch(clearStack());
+        dispatch(pushPopup("PopupSetupBunker"));
     }
 
     function sellAllProduct() {
@@ -56,7 +56,7 @@ export const TabBunker = React.memo((props) => {
     let content = null;
     if (props.owned) {
         let researchBar = null;
-        if (props.hideResearch) {
+        if (!props.hideResearch) {
             researchBar = <TabProgressBar business="bunker" type="research" label="Research" />;
         }
 

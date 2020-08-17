@@ -1,14 +1,15 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useDispatch, connect } from 'react-redux';
+import {
+    pushPopup,
+    clearStack,
+} from './redux/popupSlice';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import update from 'immutability-helper';
 
-import { PopupModifyNightclub, PopupSetupNightclub } from './Popup';
-import { InfoContext, staticInfo } from './InfoContext';
+import { staticInfo } from './InfoContext';
 import { TabProgressBar } from './TabProgressBar';
 import blank from "./img/blank.png";
-import { pushPopup } from './redux/popupSlice';
 
 const mapStateToProps = (state) => {
     let newProps = {
@@ -24,11 +25,13 @@ export const TabNightclub = React.memo((props) => {
     const dispatch = useDispatch();
 
     function showSetupNightclub(e) {
-        dispatch(pushPopup(<PopupSetupNightclub />));
+        dispatch(clearStack());
+        dispatch(pushPopup("PopupSetupNightclub"));
     }
 
     function showModifyNightclub(e) {
-        dispatch(pushPopup(<PopupModifyNightclub />));
+        dispatch(clearStack());
+        dispatch(pushPopup("PopupModifyNightclub"));
     }
 
     let product_objects = {

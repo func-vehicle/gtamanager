@@ -1,47 +1,42 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, connect } from 'react-redux';
 import {
     pushPopup,
     unshiftPopup
 } from './redux/popupSlice.js';
-import update from 'immutability-helper';
 
 import './html5reset.css';
 import './style.css';
-import { InfoContext, defaultUserInfo, shouldUpdate, updateUserInfo } from './InfoContext';
+import { defaultUserInfo, shouldUpdate, updateUserInfo } from './InfoContext';
 import Map from './Map';
-import { BannerPaused } from './BannerNotification';
 import InfoTabContainer from './InfoTabContainer';
 import { useWindowDimensions } from './Utility';
-import Popup, { PopupNewUser, PopupPatchnotes, PopupNewWeek, PopupPaused } from './Popup';
-import tick from './tick';
+import Popup from './Popup';
+import { runTick } from './redux/userInfoSlice.js';
 
 const mapStateToProps = (state) => {
   let newProps = {
     appStyle: state.userInfo.settings.app_style,
+    running: state.session.running,
   }
   return newProps;
 }
 
 const App = (props) => {
+
   const dispatch = useDispatch();
-
-  // Allow children to arbitrarily use setState
-  let setNewState = (func) => {
-    setState(func);
-  }
-
-  let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
+  
+  // Initial setup
   useEffect(() => {
+    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
     if (userInfo == null) {
       userInfo = {...defaultUserInfo};
-      dispatch(pushPopup(<PopupNewUser />));
+      dispatch(pushPopup("PopupNewUser"));
     }
     else {
       if (shouldUpdate(userInfo)) {
         userInfo = updateUserInfo(userInfo);
-        dispatch(unshiftPopup(<PopupPatchnotes />));
+        dispatch(unshiftPopup("PopupPatchnotes"));
       }
       // Check if new week
       // This is called "Friday" but actually it's Thursday in UTC
@@ -61,22 +56,23 @@ const App = (props) => {
       recentFriday.setUTCMilliseconds(0);
       if (recentFriday.toUTCString() !== userInfo.recentFriday) {
         userInfo.recentFriday = recentFriday.toUTCString();
-        dispatch(unshiftPopup(<PopupNewWeek />));
+        dispatch(unshiftPopup("PopupNewWeek"));
       }
-      dispatch(unshiftPopup(<PopupPaused />));
+      dispatch(unshiftPopup("PopupPaused"));
     }
-  }, [])
-  
-  // State also contains the updater function so it will be passed down into the context provider
-  let defaultState = {
-    userInfo: userInfo,
-    bannerNotification: <BannerPaused />,
-    running: false,
-    setState: setNewState,
-  };
+  }, [dispatch]);
 
-  // Create the state
-  const [state, setState] = useState(defaultState);
+  // Run tick while running
+  useEffect(() => {
+    let interval = setInterval(() => {
+      if (props.running) {
+        dispatch(runTick());
+      }
+    }, 1000);
+    return () => {
+      clearInterval(interval);
+    }
+  }, [dispatch, props.running]);
 
   // Use fullscreen popup
   const {width} = useWindowDimensions();
@@ -100,37 +96,12 @@ const App = (props) => {
     bodyElement.classList.remove("darkMode");
   }
 
-  // Save application state
-  useEffect(() => {
-    localStorage.setItem("userInfo", JSON.stringify(state.userInfo));
-  }, [state.userInfo]);
-
-  // Apply tick
-  const runTick = () => {
-    if (state.running) {
-      let newUserInfo = tick({...state.userInfo});
-      setState((previousState) => update(previousState, {
-        userInfo: {$set: newUserInfo}
-      }));
-    }
-  }
-
-  let func = useRef(runTick);
-
-  useEffect(() => {
-    if (!state.running) return;
-    let interval = setInterval(func.current, 1000);
-    return () => {
-      clearInterval(interval);
-    }
-  }, [state.running]);
-
   return (
-    <InfoContext.Provider value={state}>
+    <React.Fragment>
       <Map />
       <InfoTabContainer />
       {popupElement}
-    </InfoContext.Provider>
+    </React.Fragment>
   );
 }
 

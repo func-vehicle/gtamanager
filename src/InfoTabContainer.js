@@ -24,20 +24,20 @@ const business_objects = {
 const mapStateToProps = (state) => {
   let newProps = {
     hideUnowned: state.userInfo.settings.hide_unowned,
-    owned: {},
   }
   for (let business of Object.keys(business_objects)) {
-    newProps.owned[business] = state.userInfo[business].owned;
+    newProps[business] = state.userInfo[business].owned;
   }
   return newProps;
 }
 
 const InfoTabContainer = (props) => {
+ 
   let inactiveDiv = (
     <div id="inactiveBusinesses" className="business-section">
       {Object.keys(business_objects).map((key) => (
         <React.Fragment key={key}>
-          {!props.owned[key] && business_objects[key]}
+          {!props[key] && business_objects[key]}
         </React.Fragment>
       ))}
     </div>
@@ -67,7 +67,7 @@ const InfoTabContainer = (props) => {
       <div id="activeBusinesses" className="business-section">
         {Object.keys(business_objects).map((key) => (
           <React.Fragment key={key}>
-            {props.owned[key] && business_objects[key]}
+            {props[key] && business_objects[key]}
           </React.Fragment>
         ))}
         <TabFees />
