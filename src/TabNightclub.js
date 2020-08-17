@@ -8,6 +8,7 @@ import { PopupModifyNightclub, PopupSetupNightclub } from './Popup';
 import { InfoContext, staticInfo } from './InfoContext';
 import { TabProgressBar } from './TabProgressBar';
 import blank from "./img/blank.png";
+import { pushPopup } from './redux/popupSlice';
 
 const mapStateToProps = (state) => {
     let newProps = {
@@ -19,21 +20,15 @@ const mapStateToProps = (state) => {
 }
 
 export const TabNightclub = React.memo((props) => {
-    // const context = useContext(InfoContext);
+    
+    const dispatch = useDispatch();
 
     function showSetupNightclub(e) {
-        //let popupStack = [<PopupSetupNightclub />];
-        // context.setState((previousState) => update(previousState, {
-        //     popupStack: {$set: popupStack}
-        // }));
+        dispatch(pushPopup(<PopupSetupNightclub />));
     }
 
     function showModifyNightclub(e) {
-        //let popupStack = [...context.popupStack];
-        //popupStack.push(<PopupModifyNightclub />);
-        // context.setState((previousState) => update(previousState, {
-        //     popupStack: {$set: popupStack}
-        // }));
+        dispatch(pushPopup(<PopupModifyNightclub />));
     }
 
     let product_objects = {

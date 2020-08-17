@@ -3,11 +3,14 @@ import { useDispatch, connect } from 'react-redux';
 import {
     setResourceValue,
 } from './redux/userInfoSlice.js';
+import { 
+    pushPopup
+} from './redux/popupSlice.js';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import update from 'immutability-helper';
 
-import { InfoContext, staticInfo } from './InfoContext';
+import { staticInfo } from './InfoContext';
 import { TabProgressBar } from './TabProgressBar';
 import blank from "./img/blank.png";
 import { PopupSetupMCBusiness } from './Popup';
@@ -21,14 +24,11 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const TabMCBusiness = (props) => {
-    //const context = useContext(InfoContext);
+
     const dispatch = useDispatch();
 
     function showSetupMCBusiness(e) {
-        //let popupStack = [<PopupSetupMCBusiness business={props.business} />];
-        // context.setState((previousState) => update(previousState, {
-        //     popupStack: {$set: popupStack}
-        // }));
+        dispatch(pushPopup(<PopupSetupMCBusiness business={props.business} />));
     }
 
     function sellAllProduct() {

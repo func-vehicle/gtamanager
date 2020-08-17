@@ -4,6 +4,9 @@ import {
     setResourceValue,
     setImportExportCooldown,
 } from './redux/userInfoSlice.js';
+import { 
+    pushPopup
+} from './redux/popupSlice.js';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import update from 'immutability-helper';
@@ -12,6 +15,7 @@ import { InfoContext, staticInfo } from './InfoContext';
 import { formatTimeString } from './Utility';
 import blank from "./img/blank.png";
 import { PopupSetupImportExport } from './Popup';
+
 
 const mapStateToProps = (state) => {
     let newProps = {
@@ -23,14 +27,11 @@ const mapStateToProps = (state) => {
 }
 
 export const TabImportExport = (props) => {
-    //const context = useContext(InfoContext);
+
     const dispatch = useDispatch();
 
     function showSetupImportExport(e) {
-        // let popupStack = [<PopupSetupImportExport />];
-        // context.setState((previousState) => update(previousState, {
-        //     popupStack: {$set: popupStack}
-        // }));
+        dispatch(pushPopup(<PopupSetupImportExport />));
     }
 
     function sourceCar(e) {

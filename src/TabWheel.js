@@ -11,6 +11,7 @@ import { PopupSetupWheel } from './Popup';
 import { InfoContext, staticInfo } from './InfoContext';
 import { formatTimeString } from './Utility';
 import blank from "./img/blank.png";
+import { pushPopup } from './redux/popupSlice.js';
 
 const mapStateToProps = (state) => {
     let newProps = {
@@ -21,8 +22,8 @@ const mapStateToProps = (state) => {
     return newProps;
 }
 
-export const TabWheel = React.memo((props) => {
-    //const context = useContext(InfoContext);
+export const TabWheel = (props) => {
+
     const dispatch = useDispatch();
     const [, setState] = useState(Date.now());
 
@@ -38,10 +39,7 @@ export const TabWheel = React.memo((props) => {
     }, [props.timestamp, props.owned]);
 
     function showSetupWheel(e) {
-        let popupStack = [<PopupSetupWheel />];
-        // context.setState((previousState) => update(previousState, {
-        //     popupStack: {$set: popupStack}
-        // }));
+        dispatch(pushPopup(<PopupSetupWheel />));
     }
 
     function spinWheel() {
@@ -82,6 +80,6 @@ export const TabWheel = React.memo((props) => {
             {content}
         </div>
     );
-});
+};
 
 export default connect(mapStateToProps)(TabWheel);

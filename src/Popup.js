@@ -12,15 +12,9 @@ import { popPopup } from './redux/popupSlice';
 
 export const PopupPushDenied = (props) => {
 
-  const context = useContext(InfoContext);
+  const dispatch = useDispatch();
 
-  function cancelChanges(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      popupStack: {$set: popupStack}
-    }));
-  }
+  const context = useContext(InfoContext);
 
   return (
     <div id="pushDeniedNotice">
@@ -32,7 +26,7 @@ export const PopupPushDenied = (props) => {
         request to appear again when you press this button.</p>
       </div>
       <div className="buttons fsz">
-        <button onClick={cancelChanges} className="button red">OK</button>
+        <button onClick={() => dispatch(popPopup())} className="button red">OK</button>
       </div>
     </div>
   );
@@ -40,15 +34,9 @@ export const PopupPushDenied = (props) => {
 
 export const PopupNewUser = (props) => {
 
-  const context = useContext(InfoContext);
+  const dispatch = useDispatch();
 
-  function cancelChanges(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      popupStack: {$set: popupStack}
-    }));
-  }
+  const context = useContext(InfoContext);
 
   return (
     <div id="newUserNotice">
@@ -76,13 +64,15 @@ export const PopupNewUser = (props) => {
         considering using this manager long term.</p>
       </div>
       <div className="buttons fsz">
-        <button onClick={cancelChanges} className="button red">OK</button>
+        <button onClick={() => dispatch(popPopup())} className="button red">OK</button>
       </div>
   </div>
   );
 }
 
 export const PopupPatchnotes = (props) => {
+
+  const dispatch = useDispatch();
 
   const context = useContext(InfoContext);
   const [state, setState] = useState(patchArray.length - 1);
@@ -97,14 +87,6 @@ export const PopupPatchnotes = (props) => {
     setState(newPage);
   }
 
-  function cancelChanges(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      popupStack: {$set: popupStack}
-    }));
-  }
-
   return (
     <div id="updateNotice">
       <div className="heading clearfix">
@@ -116,7 +98,7 @@ export const PopupPatchnotes = (props) => {
       </div>
       <Patchnotes page={state}/>
       <div className="buttons">
-        <button onClick={cancelChanges} className="button red">OK</button>
+        <button onClick={() => dispatch(popPopup())} className="button red">OK</button>
       </div>
     </div>
   );
@@ -124,15 +106,9 @@ export const PopupPatchnotes = (props) => {
 
 export const PopupNewWeek = (props) => {
 
-  const context = useContext(InfoContext);
+  const dispatch = useDispatch();
 
-  function cancelChanges(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      popupStack: {$set: popupStack}
-    }));
-  }
+  const context = useContext(InfoContext);
 
   return (
     <div id="newWeekNotice">
@@ -144,7 +120,7 @@ export const PopupNewWeek = (props) => {
         <br/><a target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/gtaonline/search?q=%22weekly+gta+online+bonuses%22&restrict_sr=on&sort=new&t=week">Click here</a> to see what's new.</p>
       </div>
       <div className="buttons fsz">
-        <button onClick={cancelChanges} className="button red">OK</button>
+        <button onClick={() => dispatch(popPopup())} className="button red">OK</button>
       </div>
     </div>
   );
@@ -153,10 +129,6 @@ export const PopupNewWeek = (props) => {
 export const PopupPaused = (props) => {
 
   const dispatch = useDispatch();
-
-  function cancelChanges(e) {
-    dispatch(popPopup());
-  }
 
   return (
     <div id="pauseNotice">
@@ -168,13 +140,15 @@ export const PopupPaused = (props) => {
         when you are in free roam / contact missions in order to be accurate.</p>
       </div>
       <div className="buttons fsz">
-        <button onClick={cancelChanges} className="button red">OK</button>
+        <button onClick={() => dispatch(popPopup())} className="button red">OK</button>
       </div>
     </div>
   );
 }
 
 export const PopupSetupMain = (props) => {
+
+  const dispatch = useDispatch();
 
   const context = useContext(InfoContext);
   let workingInfo = JSON.parse(JSON.stringify(context.userInfo.settings));
@@ -344,14 +318,6 @@ export const PopupSetupMain = (props) => {
     }));
   }
 
-  function cancelChanges(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      popupStack: {$set: popupStack}
-    }));
-  }
-
   return (
     <div id="mainSetup" className="setupGUI">
 			<div className="heading">
@@ -425,7 +391,7 @@ export const PopupSetupMain = (props) => {
         </table>
       </div>
       <div className="buttons fsz">
-        <button onClick={cancelChanges} className="button cancel red">Cancel</button>
+        <button onClick={() => dispatch(popPopup())} className="button cancel red">Cancel</button>
         <button onClick={applyChanges} disabled={!validateAll()} className="button apply red">Apply</button>
       </div>
     </div>
@@ -434,15 +400,9 @@ export const PopupSetupMain = (props) => {
 
 export const PopupResetEverything = (props) => {
 
-  const context = useContext(InfoContext);
+  const dispatch = useDispatch();
 
-  function cancelChanges(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      popupStack: {$set: popupStack}
-    }));
-  }
+  const context = useContext(InfoContext);
 
   function confirmReset(e) {
     context.setState((previousState) => update(previousState, {
@@ -461,14 +421,16 @@ export const PopupResetEverything = (props) => {
         <p>This will reset everything! Are you sure you want to continue?</p>
       </div>
       <div className="buttons fsz">
-        <button onClick={cancelChanges} className="button cancel red">Cancel</button>
-        <button onClick={confirmReset} className="button reset red">Reset</button>
+        <button onClick={() => dispatch(popPopup())} className="button red">Cancel</button>
+        <button onClick={confirmReset} className="button red">Reset</button>
       </div>
     </div>
   );
 }
 
 export const PopupModifyNightclub = (props) => {
+
+  const dispatch = useDispatch();
 
   const context = useContext(InfoContext);
   let workingInfo = {
@@ -590,14 +552,6 @@ export const PopupModifyNightclub = (props) => {
     }));
   }
 
-  function cancelChanges(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      popupStack: {$set: popupStack}
-    }));
-  }
-
   const storageFloors = context.userInfo.nightclub.storage_floors;
 
   let totalProduct = 0;
@@ -703,13 +657,15 @@ export const PopupModifyNightclub = (props) => {
       <div className="buttons fsz">
         <button onClick={sellSelected} disabled={!validateAll()} className="button red">Sell Selected</button>
         <button onClick={sellAll} className="button red">Sell All</button>
-        <button onClick={cancelChanges} className="button red">Close</button>
+        <button onClick={() => dispatch(popPopup())} className="button red">Close</button>
       </div>
     </div>
   );
 }
 
 export const PopupSetupBunker = (props) => {
+
+  const dispatch = useDispatch();
 
   const context = useContext(InfoContext);
   let workingInfo = {...context.userInfo.bunker};
@@ -753,14 +709,6 @@ export const PopupSetupBunker = (props) => {
     let newValue = parseInt(e.target.dataset.value, 10);
     setState((previousState) => update(previousState, {
       mode: {$set: newValue}
-    }));
-  }
-
-  function cancelChanges(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      popupStack: {$set: popupStack}
     }));
   }
 
@@ -830,7 +778,7 @@ export const PopupSetupBunker = (props) => {
         </table>
       </div>
       <div className="buttons fsz">
-        <button onClick={cancelChanges} className="button red">Cancel</button>
+        <button onClick={() => dispatch(popPopup())} className="button red">Cancel</button>
         <button onClick={applyChanges} className="button red">Apply</button>
       </div>
     </div>
@@ -838,6 +786,8 @@ export const PopupSetupBunker = (props) => {
 }
 
 export const PopupSetupMCBusiness = (props) => {
+
+  const dispatch = useDispatch();
 
   const context = useContext(InfoContext);
   let workingInfo = {...context.userInfo[props.business]};
@@ -857,14 +807,6 @@ export const PopupSetupMCBusiness = (props) => {
       upgrades: {
         [upgrade]: {$set: newValue}
       }
-    }));
-  }
-
-  function cancelChanges(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      popupStack: {$set: popupStack}
     }));
   }
 
@@ -912,7 +854,7 @@ export const PopupSetupMCBusiness = (props) => {
         </table>
       </div>
       <div className="buttons fsz">
-        <button onClick={cancelChanges} className="button red">Cancel</button>
+        <button onClick={() => dispatch(popPopup())} className="button red">Cancel</button>
         <button onClick={applyChanges} className="button red">Apply</button>
       </div>
     </div>
@@ -920,6 +862,8 @@ export const PopupSetupMCBusiness = (props) => {
 }
 
 export const PopupSetupNightclub = (props) => {
+
+  const dispatch = useDispatch();
 
   const context = useContext(InfoContext);
   let workingInfo = {...context.userInfo.nightclub};
@@ -1016,14 +960,6 @@ export const PopupSetupNightclub = (props) => {
     }));
   }
 
-  function cancelChanges(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      popupStack: {$set: popupStack}
-    }));
-  }
-
   function applyChanges(e) {
     let newState = {...state};
     // If lowering no. of storage floors, make sure product doesn't exceed new maximum
@@ -1100,7 +1036,7 @@ export const PopupSetupNightclub = (props) => {
         </table>
       </div>
       <div className="buttons fsz">
-        <button onClick={cancelChanges} className="button red">Cancel</button>
+        <button onClick={() => dispatch(popPopup())} className="button red">Cancel</button>
         <button onClick={applyChanges} disabled={!validateAll()} className="button red">Apply</button>
       </div>
     </div>
@@ -1108,6 +1044,8 @@ export const PopupSetupNightclub = (props) => {
 }
 
 export const PopupSetupImportExport = (props) => {
+
+  const dispatch = useDispatch();
 
   const context = useContext(InfoContext);
   let workingInfo = {...context.userInfo.importExport};
@@ -1183,14 +1121,6 @@ export const PopupSetupImportExport = (props) => {
     }));
   }
 
-  function cancelChanges(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      popupStack: {$set: popupStack}
-    }));
-  }
-
   function applyChanges(e) {
     let popupStack = [...context.popupStack];
     popupStack.pop();
@@ -1241,7 +1171,7 @@ export const PopupSetupImportExport = (props) => {
         </table>
       </div>
       <div className="buttons fsz">
-        <button onClick={cancelChanges} className="button red">Cancel</button>
+        <button onClick={() => dispatch(popPopup())} className="button red">Cancel</button>
         <button onClick={applyChanges} disabled={!validateAll()} className="button red">Apply</button>
       </div>
     </div>
@@ -1249,6 +1179,8 @@ export const PopupSetupImportExport = (props) => {
 }
 
 export const PopupSetupWheel = (props) => {
+
+  const dispatch = useDispatch();
 
   const context = useContext(InfoContext);
   let workingInfo = {...context.userInfo.wheel};
@@ -1271,14 +1203,6 @@ export const PopupSetupWheel = (props) => {
   function resetCooldown(e) {
     setState((previousState) => update(previousState, {
       timestamp: {$set: 0}
-    }));
-  }
-
-  function cancelChanges(e) {
-    let popupStack = [...context.popupStack];
-    popupStack.pop();
-    context.setState((previousState) => update(previousState, {
-      popupStack: {$set: popupStack}
     }));
   }
 
@@ -1325,7 +1249,7 @@ export const PopupSetupWheel = (props) => {
       </table>
     </div>
     <div className="buttons fsz">
-      <button onClick={cancelChanges} className="button red">Cancel</button>
+      <button onClick={() => dispatch(popPopup())} className="button red">Cancel</button>
       <button onClick={applyChanges} className="button red">Apply</button>
     </div>
   </div>
@@ -1349,10 +1273,11 @@ const stringElementMap = {
 }
 
 export function convertPopup(value) {
-  if (typeof value === 'string') {
-    return stringElementMap[value];
+  if (Array.isArray(value)) {
+    var element = React.cloneElement(stringElementMap[value[0]], value[1]);
+    return element;
   }
-  return value.type.name;
+  return [value.type.name, value.props];
 }
 
 const mapStateToProps = (state) => {

@@ -1,4 +1,12 @@
 import React, { useContext } from 'react';
+import { useDispatch, connect } from 'react-redux';
+import {
+    pushPopup,
+    clearStack,
+} from './redux/popupSlice.js';
+import {
+  toggleNotifications,
+} from './redux/userInfoSlice.js';
 import update from 'immutability-helper';
 
 import MapIcon from './MapIcon';
@@ -11,40 +19,35 @@ import mapImage512 from './img/bg-512.jpg';
 import mapImage1024 from './img/bg-1024.jpg';
 import mapImage2048 from './img/bg-2048.jpg';
 
+const mapStateToProps = (state) => {
+  let newProps = {
+    audioEnabled: state.userInfo.settings.audio.enabled,
+  }
+  return newProps;
+}
+
 const Map = (props) => {
   const context = useContext(InfoContext);
+  const dispatch = useDispatch();
 
   function toggleRunning() {
     let newRunning = !context.running;
-    let popupStack = [];
     if (!newRunning) {
-      popupStack.push(<PopupPaused />);
+      dispatch(clearStack());
+      dispatch(pushPopup(<PopupPaused />))
     }
     setFirstTickTime();
     context.setState((previousState) => update(previousState, {
-      popupStack: {$set: popupStack},
       running: {$set: newRunning}
     }));
   }
 
-  function toggleNotifications() {
-    let newValue = !context.userInfo.settings.audio.enabled;
-    context.setState((previousState) => update(previousState, {
-      userInfo: {
-        settings: {
-          audio: {
-            enabled: {$set: newValue}
-          }
-        }
-      }
-    }));
+  function toggleNotifications2() {
+    dispatch(toggleNotifications());
   }
 
   function showSetupMain() {
-    let newStack = [<PopupSetupMain />];
-    context.setState((previousState) => update(previousState, {
-      popupStack: {$set: newStack}
-    }));
+    dispatch(pushPopup(<PopupSetupMain />))
   }
 
   const {width} = useWindowDimensions();
@@ -84,7 +87,7 @@ const Map = (props) => {
         <BannerNotification />
         <div id="options" className="fsz">
           {toggleButton}
-          <button onClick={toggleNotifications} className={"button audio red" + (!context.userInfo.settings.audio.enabled ? " off" : "")}>Sound</button>
+          <button onClick={toggleNotifications2} className={"button audio red" + (!props.audioEnabled ? " off" : "")}>Sound</button>
           <button onClick={showSetupMain} className="button setup red">Setup</button>
         </div>
         {popupElement}
@@ -93,4 +96,4 @@ const Map = (props) => {
   );
 }
 
-export default Map;
+export default connect(mapStateToProps)(Map);

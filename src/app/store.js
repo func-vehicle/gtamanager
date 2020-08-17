@@ -1,6 +1,6 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import userInfoReducer from '../redux/userInfoSlice';
-import popupReducer, { pushPopup, unshiftPopup } from '../redux/popupSlice';
+import popupReducer from '../redux/popupSlice';
 
 export default configureStore({
   reducer: {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, connect } from 'react-redux';
 import {
     pushPopup,
     unshiftPopup
@@ -16,7 +16,14 @@ import { useWindowDimensions } from './Utility';
 import Popup, { PopupNewUser, PopupPatchnotes, PopupNewWeek, PopupPaused } from './Popup';
 import tick from './tick';
 
-const App = () => {
+const mapStateToProps = (state) => {
+  let newProps = {
+    appStyle: state.userInfo.settings.app_style,
+  }
+  return newProps;
+}
+
+const App = (props) => {
   const dispatch = useDispatch();
 
   // Allow children to arbitrarily use setState
@@ -25,44 +32,44 @@ const App = () => {
   }
 
   let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  let popupStack = [];
 
-  if (userInfo == null) {
-    userInfo = {...defaultUserInfo};
-    dispatch(pushPopup(<PopupNewUser />));
-  }
-  else {
-    if (shouldUpdate(userInfo)) {
-      userInfo = updateUserInfo(userInfo);
-      dispatch(unshiftPopup(<PopupPatchnotes />));
+  useEffect(() => {
+    if (userInfo == null) {
+      userInfo = {...defaultUserInfo};
+      dispatch(pushPopup(<PopupNewUser />));
     }
-    // Check if new week
-    // This is called "Friday" but actually it's Thursday in UTC
-    var recentFriday = new Date();
-    // Use last Friday if Friday today but before 10AM UTC
-    if (recentFriday.getUTCDay() === 4 && recentFriday.getUTCHours() < 10) {
-      recentFriday.setUTCDate(recentFriday.getUTCDate() - 7);
+    else {
+      if (shouldUpdate(userInfo)) {
+        userInfo = updateUserInfo(userInfo);
+        dispatch(unshiftPopup(<PopupPatchnotes />));
+      }
+      // Check if new week
+      // This is called "Friday" but actually it's Thursday in UTC
+      var recentFriday = new Date();
+      // Use last Friday if Friday today but before 10AM UTC
+      if (recentFriday.getUTCDay() === 4 && recentFriday.getUTCHours() < 10) {
+        recentFriday.setUTCDate(recentFriday.getUTCDate() - 7);
+      }
+      // Find recent Friday
+      while (recentFriday.getUTCDay() !== 4) {
+        recentFriday.setUTCDate(recentFriday.getUTCDate() - 1);
+      }
+      // Set time to 10AM UTC
+      recentFriday.setUTCHours(10);
+      recentFriday.setUTCMinutes(0);
+      recentFriday.setUTCSeconds(0);
+      recentFriday.setUTCMilliseconds(0);
+      if (recentFriday.toUTCString() !== userInfo.recentFriday) {
+        userInfo.recentFriday = recentFriday.toUTCString();
+        dispatch(unshiftPopup(<PopupNewWeek />));
+      }
+      dispatch(unshiftPopup(<PopupPaused />));
     }
-    // Find recent Friday
-    while (recentFriday.getUTCDay() !== 4) {
-      recentFriday.setUTCDate(recentFriday.getUTCDate() - 1);
-    }
-    // Set time to 10AM UTC
-    recentFriday.setUTCHours(10);
-    recentFriday.setUTCMinutes(0);
-    recentFriday.setUTCSeconds(0);
-    recentFriday.setUTCMilliseconds(0);
-    if (recentFriday.toUTCString() !== userInfo.recentFriday) {
-      userInfo.recentFriday = recentFriday.toUTCString();
-      dispatch(unshiftPopup(<PopupNewWeek />));
-    }
-    dispatch(unshiftPopup(<PopupPaused />));
-  }
-
+  }, [])
+  
   // State also contains the updater function so it will be passed down into the context provider
   let defaultState = {
     userInfo: userInfo,
-    popupStack: popupStack,
     bannerNotification: <BannerPaused />,
     running: false,
     setState: setNewState,
@@ -86,7 +93,7 @@ const App = () => {
   }
 
   // Apply dark mode
-  if (state.userInfo.settings.app_style === 1) {
+  if (props.appStyle === 1) {
     bodyElement.classList.add("darkMode");
   }
   else {
@@ -95,14 +102,11 @@ const App = () => {
 
   // Save application state
   useEffect(() => {
-    //console.log("UPDATING")
     localStorage.setItem("userInfo", JSON.stringify(state.userInfo));
   }, [state.userInfo]);
 
   // Apply tick
   const runTick = () => {
-    //console.log("runTick!")
-    //console.log(state);
     if (state.running) {
       let newUserInfo = tick({...state.userInfo});
       setState((previousState) => update(previousState, {
@@ -114,7 +118,6 @@ const App = () => {
   let func = useRef(runTick);
 
   useEffect(() => {
-    console.log("useEffect!");
     if (!state.running) return;
     let interval = setInterval(func.current, 1000);
     return () => {
@@ -131,4 +134,4 @@ const App = () => {
   );
 }
 
-export default App;
+export default connect(mapStateToProps)(App);

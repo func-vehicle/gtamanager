@@ -12,7 +12,7 @@ export let defaultUserInfo = {
 			interval: 3,
 		},
 		progress_bar_style: 2,
-		app_style: 0,
+		app_style: 1,
 	},
 	bunker: {
 		owned: false,

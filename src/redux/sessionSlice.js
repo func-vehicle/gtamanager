@@ -1,33 +1,32 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { defaultUserInfo } from '../InfoContext';
+import { convertPopup } from '../Popup';
 
 export const slice = createSlice({
-  name: 'userInfo',
-  initialState: defaultUserInfo,
+  name: 'popupStack',
+  initialState: [],
   reducers: {
     // Redux Toolkit allows us to write "mutating" logic in reducers. It
     // doesn't actually mutate the state because it uses the immer library,
     // which detects changes to a "draft state" and produces a brand new
     // immutable state based off those changes
-    setResourceValue: (state, action) => {
-      state[action.payload.business][action.payload.resource] = action.payload.value;
+    pushPopup: (state, action) => {
+      let str = convertPopup(action.payload);
+      state.push(str);
     },
-    setWheelTimestamp: (state, action) => {
-      state.wheel.timestamp = action.payload;
+    unshiftPopup: (state, action) => {
+      let str = convertPopup(action.payload);
+      state.unshift(str);
     },
-    setImportExportCooldown: (state, action) => {
-      state.importExport.cooldown = action.payload;
+    popPopup: (state) => {
+      state.pop();
     },
-    toggleNotifications: (state) => {
-      state.settings.audio.enabled = !state.settings.audio.enabled;
-    }
+    clearStack: (state) => {
+      state = [];
+    },
   },
 });
 
-export const {
-  setResourceValue, setWheelTimestamp, setImportExportCooldown,
-  toggleNotifications,
-} = slice.actions;
+export const { pushPopup, unshiftPopup, popPopup, clearStack } = slice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
@@ -43,6 +42,7 @@ export const {
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state) => state.counter.value)`
+// func_vehicle: will cause rerender if anything in state changes. Do not use.
 
 //export const selectCount = state => state.counter.value;
 
