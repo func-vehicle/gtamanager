@@ -4,18 +4,21 @@ export const slice = createSlice({
   name: 'session',
   initialState: {
     running: false,
-    banner: "BannerPaused",
+    banner: ["BannerPaused", {}],
   },
   reducers: {
     // Redux Toolkit allows us to write "mutating" logic in reducers. It
     // doesn't actually mutate the state because it uses the immer library,
     // which detects changes to a "draft state" and produces a brand new
     // immutable state based off those changes
-    // func_vehicle: cannot reassign state, must use other methods!
+    // func_vehicle: Can reassign state by returning new state
     toggleRunning: (state) => {
       state.running = !state.running;
     },
     setBanner: (state, action) => {
+      if (!Array.isArray(action.payload)) {
+        action.payload = [action.payload, {}];
+      }
       state.banner = action.payload;
     }
   },

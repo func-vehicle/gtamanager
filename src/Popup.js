@@ -14,7 +14,10 @@ import {
 import {
   toggleRunning,
   setBanner,
- } from './redux/sessionSlice';
+} from './redux/sessionSlice';
+import {
+  configureLocationSetter,
+} from './redux/locationSlice';
 import update from 'immutability-helper';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -652,6 +655,8 @@ export const PopupModifyNightclub = connect((state) => {
 export const PopupSetupBunker = connect((state) => {
   let newProps = {
     bunker: state.userInfo.bunker,
+    xPosition: state.location.x,
+    yPosition: state.location.y,
   }
   return newProps;
 })((props) => {
@@ -669,6 +674,7 @@ export const PopupSetupBunker = connect((state) => {
   }
 
   function setLocation(e) {
+    dispatch(configureLocationSetter("bunker"));
     dispatch(setBanner(["BannerSelectLocation", { business: "bunker" }]));
   }
 
@@ -697,8 +703,24 @@ export const PopupSetupBunker = connect((state) => {
     }));
   }
 
+  function cancelChanges(e) {
+    dispatch(popPopup());
+  }
+
   function applyChanges(e) {
-    dispatch(setRootObject({ key: "bunker", value: state }));
+    let newState = {...state};
+    // Use selected position
+    if (props.xPosition != null) {
+      newState.map_position = {
+        x: props.xPosition,
+        y: props.yPosition,
+      }
+    }
+    // Do not override resource changes since opening popup
+    newState.product = props.bunker.product;
+    newState.research = props.bunker.research;
+    newState.supplies = props.bunker.supplies;
+    dispatch(setRootObject({ key: "bunker", value: newState }));
     dispatch(popPopup());
   }
 
@@ -757,7 +779,7 @@ export const PopupSetupBunker = connect((state) => {
         </table>
       </div>
       <div className="buttons fsz">
-        <button onClick={() => dispatch(popPopup())} className="button red">Cancel</button>
+        <button onClick={cancelChanges} className="button red">Cancel</button>
         <button onClick={applyChanges} className="button red">Apply</button>
       </div>
     </div>
@@ -1245,19 +1267,12 @@ const stringElementMap = {
 }
 
 function createPopup(object) {
-  // Value is either an array with string name and object properties
-  if (Array.isArray(object)) {
+  // Value is an array with string name and object properties
     return React.createElement(stringElementMap[object[0]], object[1]);
-  }
-  // Or just the string name
-  return React.createElement(stringElementMap[object]);
 }
 
 const mapStateToProps = (state) => {
-  let banner = state.session.banner;
-  if (Array.isArray(banner)) {
-    banner = banner[0];
-  }
+  let banner = state.session.banner[0];
   let newProps = {
     popupStack: state.popupStack,
     banner: banner,

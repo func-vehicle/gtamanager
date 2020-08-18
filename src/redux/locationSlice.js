@@ -1,36 +1,46 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const slice = createSlice({
-  name: 'popupStack',
-  initialState: [],
+  name: 'location',
+  initialState: {
+    business: null,
+    mode: null,
+    index: null,
+    x: null,
+    y: null,
+  },
   reducers: {
     // Redux Toolkit allows us to write "mutating" logic in reducers. It
     // doesn't actually mutate the state because it uses the immer library,
     // which detects changes to a "draft state" and produces a brand new
     // immutable state based off those changes
     // func_vehicle: Can reassign state by returning new state
-    pushPopup: (state, action) => {
-      if (!Array.isArray(action.payload)) {
-        action.payload = [action.payload, {}];
+    configureLocationSetter: (state, action) => {
+      return {
+        business: action.payload,
+        mode: 0,
+        index: 0,
+        x: null,
+        y: null,
       }
-      state.push(action.payload);
     },
-    unshiftPopup: (state, action) => {
-      if (!Array.isArray(action.payload)) {
-        action.payload = [action.payload, {}];
-      }
-      state.unshift(action.payload);
+    toggleMode: (state) => {
+      state.mode = state.mode === 0 ? 1 : 0;
     },
-    popPopup: (state) => {
-      state.pop();
+    setSelectedIndex: (state, action) => {
+      state.index = action.payload;
     },
-    clearStack: (state) => {
-      state.length = 0
+    setCoordinates: (state, action) => {
+      state.x = action.payload[0];
+      state.y = action.payload[1];
     },
   },
 });
 
-export const { pushPopup, unshiftPopup, popPopup, clearStack } = slice.actions;
+export const {
+    clearLocationSetter, configureLocationSetter, toggleMode,
+    setSelectedIndex, setCoordinates,
+} = slice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This

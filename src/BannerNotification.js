@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import {
     setBanner,
@@ -7,6 +7,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faCheck, faTimes, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 
 import { staticInfo } from './InfoContext';
+import {
+    toggleMode,
+    setSelectedIndex,
+    setCoordinates,
+} from './redux/locationSlice';
+import { mod } from './Utility';
 
 export const BannerPaused = () => {
     return (
@@ -16,35 +22,44 @@ export const BannerPaused = () => {
     );
 }
 
-export const BannerSelectLocation = (props) => {
+export const BannerSelectLocation = connect((state) => {
+    let newProps = {
+        index: state.location.index,
+    }
+    return newProps;
+})((props) => {
 
     const dispatch = useDispatch();
-    const [state, setState] = useState(0);
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, []);
 
     const numLocations = staticInfo[props.business].locations.length;
-    let currentLocation = staticInfo[props.business].locations[state];
+    const currentLocation = staticInfo[props.business].locations[props.index];
 
     function previousLocation() {
-        setState((state - 1 + numLocations) % numLocations);
+        let newIndex = mod(props.index - 1, numLocations);
+        dispatch(setSelectedIndex(newIndex));
     }
 
     function nextLocation() {
-        setState((state + 1) % numLocations);
+        let newIndex = mod(props.index + 1, numLocations);
+        dispatch(setSelectedIndex(newIndex));
     }
 
     function cancel() {
+        dispatch(setCoordinates([null, null]));
         dispatch(setBanner("BannerPaused"));
     }
 
     function confirmLocation() {
+        dispatch(setCoordinates([currentLocation.x, currentLocation.y]));
         dispatch(setBanner("BannerPaused"));
     }
 
     function changeToManual() {
+        dispatch(toggleMode());
         dispatch(setBanner(["BannerCustomLocation", { business: props.business }]));
     }
 
@@ -56,19 +71,20 @@ export const BannerSelectLocation = (props) => {
                 <button onClick={nextLocation} className="button red"><FontAwesomeIcon icon={faArrowRight} /></button>
             </div>
             <div className="right">
-                <button onClick={cancel} className="button red"><FontAwesomeIcon icon={faCheck} /></button>
-                <button onClick={confirmLocation} className="button red"><FontAwesomeIcon icon={faTimes} /></button>
+                <button onClick={confirmLocation} className="button red"><FontAwesomeIcon icon={faCheck} /></button>
+                <button onClick={cancel} className="button red"><FontAwesomeIcon icon={faTimes} /></button>
                 <button onClick={changeToManual} className="button red"><FontAwesomeIcon icon={faEllipsisV} /></button>
             </div>
         </div>
     );
-};
+});
 
 export const BannerCustomLocation = (props) => {
 
     const dispatch = useDispatch();
 
     function changeToSelect() {
+        dispatch(toggleMode());
         dispatch(setBanner(["BannerSelectLocation", { business: props.business }]));
     }
 
@@ -94,12 +110,8 @@ const stringElementMap = {
 }
 
 function createBanner(object) {
-    // Value is either an array with string name and object properties
-    if (Array.isArray(object)) {
-        return React.createElement(stringElementMap[object[0]], object[1]);
-    }
-    // Or just the string name
-    return React.createElement(stringElementMap[object]);
+    // Value is an array with string name and object properties
+    return React.createElement(stringElementMap[object[0]], object[1]);
 }
 
 const mapStateToProps = (state) => {
