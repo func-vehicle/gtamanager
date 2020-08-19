@@ -1,10 +1,46 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { defaultUserInfo } from '../InfoContext';
+import { defaultUserInfo, shouldUpdate, updateUserInfo } from '../InfoContext';
 import tick from '../tick';
+
+function loadData(dispatch) {
+  let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  if (userInfo == null) {
+    userInfo = {...defaultUserInfo};
+    //dispatch(pushPopup("PopupNewUser"));
+  }
+  else {
+    if (shouldUpdate(userInfo)) {
+      userInfo = updateUserInfo(userInfo);
+      //dispatch(unshiftPopup("PopupPatchnotes"));
+    }
+    // Check if new week
+    // This is called "Friday" but actually it's Thursday in UTC
+    var recentFriday = new Date();
+    // Use last Friday if Friday today but before 10AM UTC
+    if (recentFriday.getUTCDay() === 4 && recentFriday.getUTCHours() < 10) {
+      recentFriday.setUTCDate(recentFriday.getUTCDate() - 7);
+    }
+    // Find recent Friday
+    while (recentFriday.getUTCDay() !== 4) {
+      recentFriday.setUTCDate(recentFriday.getUTCDate() - 1);
+    }
+    // Set time to 10AM UTC
+    recentFriday.setUTCHours(10);
+    recentFriday.setUTCMinutes(0);
+    recentFriday.setUTCSeconds(0);
+    recentFriday.setUTCMilliseconds(0);
+    if (recentFriday.toUTCString() !== userInfo.recentFriday) {
+      userInfo.recentFriday = recentFriday.toUTCString();
+      //dispatch(unshiftPopup("PopupNewWeek"));
+    }
+    //dispatch(unshiftPopup("PopupPaused"));
+  }
+  return userInfo;
+}
 
 export const slice = createSlice({
   name: 'userInfo',
-  initialState: defaultUserInfo,
+  initialState: loadData(),
   reducers: {
     // Redux Toolkit allows us to write "mutating" logic in reducers. It
     // doesn't actually mutate the state because it uses the immer library,

@@ -24,6 +24,7 @@ export const BannerPaused = () => {
 
 export const BannerSelectLocation = connect((state) => {
     let newProps = {
+        business: state.location.business,
         index: state.location.index,
     }
     return newProps;
@@ -79,9 +80,24 @@ export const BannerSelectLocation = connect((state) => {
     );
 });
 
-export const BannerCustomLocation = (props) => {
+export const BannerCustomLocation = connect((state) => {
+    let newProps = {
+        xPos: state.location.x,
+        yPos: state.location.y,
+    }
+    return newProps;
+})((props) => {
 
     const dispatch = useDispatch();
+
+    function cancel() {
+        dispatch(setCoordinates([null, null]));
+        dispatch(setBanner("BannerPaused"));
+    }
+
+    function confirmLocation() {
+        dispatch(setBanner("BannerPaused"));
+    }
 
     function changeToSelect() {
         dispatch(toggleMode());
@@ -95,13 +111,13 @@ export const BannerCustomLocation = (props) => {
                 <p className="mobile-only">Tap map to choose custom location.</p>
             </div>
             <div className="right">
-                <button className="button red"><FontAwesomeIcon icon={faCheck} /></button>
-                <button className="button red"><FontAwesomeIcon icon={faTimes} /></button>
+                <button onClick={confirmLocation} disabled={props.xPos == null} className="button red"><FontAwesomeIcon icon={faCheck} /></button>
+                <button onClick={cancel} className="button red"><FontAwesomeIcon icon={faTimes} /></button>
                 <button onClick={changeToSelect} className="button red"><FontAwesomeIcon icon={faEllipsisV} /></button>
             </div>
         </div>
     );
-};
+});
 
 const stringElementMap = {
     BannerPaused,
@@ -123,7 +139,7 @@ const mapStateToProps = (state) => {
 
 const BannerNotification = (props) => {
     let bannerContainer = null;
-    if (props.banner != null) {
+    if (props.banner[0] != null) {
         bannerContainer = (
             <div id="mini_notif">
                 {createBanner(props.banner)}

@@ -15,6 +15,15 @@ export const slice = createSlice({
     // which detects changes to a "draft state" and produces a brand new
     // immutable state based off those changes
     // func_vehicle: Can reassign state by returning new state
+    resetLocationSetter: (state, action) => {
+      return {
+        business: null,
+        mode: null,
+        index: null,
+        x: null,
+        y: null,
+      }
+    },
     configureLocationSetter: (state, action) => {
       return {
         business: action.payload,
@@ -38,7 +47,7 @@ export const slice = createSlice({
 });
 
 export const {
-    clearLocationSetter, configureLocationSetter, toggleMode,
+    resetLocationSetter, clearLocationSetter, configureLocationSetter, toggleMode,
     setSelectedIndex, setCoordinates,
 } = slice.actions;
 

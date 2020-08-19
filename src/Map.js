@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, connect } from 'react-redux';
 import {
     pushPopup,
@@ -13,7 +13,7 @@ import {
 } from './redux/sessionSlice.js';
 
 import MapIcon from './MapIcon';
-import MapGhostIcon from './MapGhostIcon';
+import MapGhostIcon, { MapPlaceableIcon } from './MapGhostIcon';
 import BannerNotification from './BannerNotification';
 import Popup from './Popup';
 import { staticInfo } from './InfoContext';
@@ -22,30 +22,101 @@ import { setFirstTickTime } from './tick';
 import mapImage512 from './img/bg-512.jpg';
 import mapImage1024 from './img/bg-1024.jpg';
 import mapImage2048 from './img/bg-2048.jpg';
+import { setCoordinates } from './redux/locationSlice.js';
 
 export const MapSetLocation = connect((state) => {
   let newProps = {
     business: state.location.business,
     mode: state.location.mode,
-    index: state.location.index,
   }
   return newProps;
 })((props) => {
 
-  let locations = staticInfo[props.business].locations;
-  let iconArray = [];
+  const dispatch = useDispatch();
+
+  // For custom
+  const container = document.getElementById("bg");
+
+  const [state, setState] = useState([null, null]);
+  const [placing, setPlacing] = useState(true);
+  const [limits, setLimits] = useState({
+    top: 18,
+    left: 18,
+    bottom: container.offsetHeight - 18,
+    right: container.offsetWidth - 18,
+  });
+
+  // So window resizing is taken into account
+  const { width } = useWindowDimensions();
+  useEffect(() => {
+    setLimits({
+      top: 18,
+      left: 18,
+      bottom: container.offsetHeight - 18,
+      right: container.offsetWidth - 18,
+    })
+  }, [width, container]);
+
+  // Ensure position unset when changing modes
+  useEffect(() => {
+    dispatch(setCoordinates([null, null]));
+  }, [dispatch, props.mode]);
   
+  useEffect(() => {
+    if (props.mode === 1 && !placing) {
+      // Unset position, user wants to place again
+      const togglePlacing = (e) => {
+        dispatch(setCoordinates([null, null]));
+        setPlacing(!placing);
+      }
+      const placeIcon = document.getElementById("icon-placing");
+      placeIcon.addEventListener("click", togglePlacing);
+
+      return () => {
+        placeIcon.removeEventListener("click", togglePlacing);
+      }
+    }
+    else if (props.mode === 1) {
+      const updatePosition = (e) => {
+        let xAllowed = e.clientX > limits.left && e.clientX < limits.right;
+        let yAllowed = e.clientY > limits.top && e.clientY < limits.bottom;
+        if (xAllowed && yAllowed) {
+          let xPos = e.clientX/container.offsetWidth * 100;
+          let yPos = e.clientY/container.offsetHeight * 100;
+          setState([xPos, yPos]);
+        }
+      }
+
+      const togglePlacing = (e) => {
+        dispatch(setCoordinates(state));
+        setPlacing(!placing);
+      }
+
+      document.body.addEventListener("mousemove", updatePosition);
+      container.addEventListener("click", togglePlacing);
+
+      console.log("ACTIVE")
+
+      return () => {
+        document.body.removeEventListener("mousemove", updatePosition);
+        container.removeEventListener("click", togglePlacing);
+      }
+    }
+  }, [dispatch, container, props.mode, placing, limits, state]);
+
+  // Select
   if (props.mode === 0) {
+    let locations = staticInfo[props.business].locations;
+    let iconArray = [];
+
     for (let i = 0; i < locations.length; i++) {
-      iconArray.push(<MapGhostIcon business={props.business} index={i} selected={i === props.index} key={i} />)
+      iconArray.push(<MapGhostIcon business={props.business} index={i} key={i} />)
     }
     return iconArray;
   }
+  // Custom
   else {
-    useEffect(() => {
-      console.log("TEST");
-    }, []);
-    return null;
+    return <MapPlaceableIcon business={props.business} x={state[0]} y={state[1]} />;
   }
   
 });

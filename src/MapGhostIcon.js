@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import {
   setSelectedIndex
 } from './redux/locationSlice';
@@ -7,7 +7,29 @@ import {
 import { staticInfo } from './InfoContext';
 import blank from './img/blank.png';
 
-export const MapGhostIcon = React.memo((props) => {
+export const MapPlaceableIcon = (props) => {
+  return (
+    <img
+      src={blank}
+      id="icon-placing"
+      className={"icons icons-map icons-placing icons-" + props.business + " clickable"}
+      alt={props.business + " icon"}
+      style={{
+          top: props.y + "%",
+          left: props.x + "%",
+      }}
+    />
+  );
+}
+
+const mapStateToProps = (state, ownProps) => {
+  let newProps = {
+    selected: state.location.index === ownProps.index,
+  }
+  return newProps;
+}
+
+export const MapGhostIcon = (props) => {
 
   const dispatch = useDispatch();
   
@@ -29,6 +51,6 @@ export const MapGhostIcon = React.memo((props) => {
       onClick={props.selected ? undefined : setSelected}
     />
   );
-});
+}
 
-export default MapGhostIcon;
+export default connect(mapStateToProps)(MapGhostIcon);

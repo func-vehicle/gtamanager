@@ -19,7 +19,7 @@ const mapStateToProps = (state, ownProps) => {
     return newProps;
 }
 
-const TabProgressBarElement = React.memo((props) => {
+const TabProgressBarElement = (props) => {
 
     const dispatch = useDispatch();
 
@@ -114,6 +114,6 @@ const TabProgressBarElement = React.memo((props) => {
             </div></td>
         </tr>
     );
-});
+}
 
 export const TabProgressBar = connect(mapStateToProps)(TabProgressBarElement);

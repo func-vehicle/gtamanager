@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import {
   popPopup,
@@ -16,7 +16,7 @@ import {
   setBanner,
 } from './redux/sessionSlice';
 import {
-  configureLocationSetter,
+  configureLocationSetter, resetLocationSetter,
 } from './redux/locationSlice';
 import update from 'immutability-helper';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -675,7 +675,7 @@ export const PopupSetupBunker = connect((state) => {
 
   function setLocation(e) {
     dispatch(configureLocationSetter("bunker"));
-    dispatch(setBanner(["BannerSelectLocation", { business: "bunker" }]));
+    dispatch(setBanner("BannerSelectLocation"));
   }
 
   function toggleUpgrade(e) {
@@ -717,9 +717,14 @@ export const PopupSetupBunker = connect((state) => {
       }
     }
     // Do not override resource changes since opening popup
-    newState.product = props.bunker.product;
-    newState.research = props.bunker.research;
-    newState.supplies = props.bunker.supplies;
+    // However, need to change value so ratio is maintained
+    let oldUpgradeIndex = (props.bunker.upgrades.equipment ? 1 : 0) + (props.bunker.upgrades.staff ? 1 : 0);
+    let newUpgradeIndex = (state.upgrades.equipment ? 1 : 0) + (state.upgrades.staff ? 1 : 0);
+    for (let resource of ["product", "research", "supplies"]) {
+      let oldMax = staticInfo.bunker["max"+capitalize(resource)][oldUpgradeIndex];
+      let newMax = staticInfo.bunker["max"+capitalize(resource)][newUpgradeIndex];
+      newState[resource] = props.bunker[resource] * (newMax / oldMax);
+    }
     dispatch(setRootObject({ key: "bunker", value: newState }));
     dispatch(popPopup());
   }
@@ -789,6 +794,8 @@ export const PopupSetupBunker = connect((state) => {
 export const PopupSetupMCBusiness = connect((state, ownProps) => {
   let newProps = {
     [ownProps.business]: state.userInfo[ownProps.business],
+    xPosition: state.location.x,
+    yPosition: state.location.y,
   }
   return newProps;
 })((props) => {
@@ -798,11 +805,23 @@ export const PopupSetupMCBusiness = connect((state, ownProps) => {
   let workingInfo = props[props.business];
   const [state, setState] = useState(workingInfo);
 
+  // Workaround for not updating when clicking setup of another MC business
+  const [business, setBusiness] = useState(props.business);
+  if (props.business !== business) {
+    setBusiness(props.business);
+    setState(props[props.business]);
+  }
+
   function toggleOwned(e) {
     let newValue = !state.owned;
     setState((previousState) => update(previousState, {
       owned: {$set: newValue}
     }));
+  }
+
+  function setLocation(e) {
+    dispatch(configureLocationSetter(props.business));
+    dispatch(setBanner("BannerSelectLocation"));
   }
 
   function toggleUpgrade(e) {
@@ -816,7 +835,24 @@ export const PopupSetupMCBusiness = connect((state, ownProps) => {
   }
 
   function applyChanges(e) {
-    dispatch(setRootObject({ key: props.business, value: state }));
+    let newState = {...state};
+    // Use selected position
+    if (props.xPosition != null) {
+      newState.map_position = {
+        x: props.xPosition,
+        y: props.yPosition,
+      }
+    }
+    // Do not override resource changes since opening popup
+    // However, need to change value so ratio is maintained
+    let oldUpgradeIndex = (props[props.business].upgrades.equipment ? 1 : 0) + (props[props.business].upgrades.staff ? 1 : 0);
+    let newUpgradeIndex = (state.upgrades.equipment ? 1 : 0) + (state.upgrades.staff ? 1 : 0);
+    for (let resource of ["product", "supplies"]) {
+      let oldMax = staticInfo[props.business]["max"+capitalize(resource)][oldUpgradeIndex];
+      let newMax = staticInfo[props.business]["max"+capitalize(resource)][newUpgradeIndex];
+      newState[resource] = props[props.business][resource] * (newMax / oldMax);
+    }
+    dispatch(setRootObject({ key: [props.business], value: newState }));
     dispatch(popPopup());
   }
 
@@ -838,7 +874,7 @@ export const PopupSetupMCBusiness = connect((state, ownProps) => {
             <tr>
               <td>Map location:</td>
               <td className="fsz">
-                <button disabled={!state.owned} className="button blue">Set Location</button>
+                <button onClick={setLocation} disabled={!state.owned} className="button blue">Set Location</button>
               </td>
             </tr>
             <tr>
@@ -864,6 +900,8 @@ export const PopupSetupMCBusiness = connect((state, ownProps) => {
 export const PopupSetupNightclub = connect((state, ownProps) => {
   let newProps = {
     nightclub: state.userInfo.nightclub,
+    xPosition: state.location.x,
+    yPosition: state.location.y,
   }
   return newProps;
 })((props) => {
@@ -937,6 +975,11 @@ export const PopupSetupNightclub = connect((state, ownProps) => {
     }));
   }
 
+  function setLocation(e) {
+    dispatch(configureLocationSetter("nightclub"));
+    dispatch(setBanner("BannerSelectLocation"));
+  }
+
   function toggleUpgrade(e) {
     let upgrade = e.target.dataset.value;
     let newValue = !state.upgrades[upgrade];
@@ -966,9 +1009,16 @@ export const PopupSetupNightclub = connect((state, ownProps) => {
 
   function applyChanges(e) {
     let newState = {...state};
+    // Use selected position
+    if (props.xPosition != null) {
+      newState.map_position = {
+        x: props.xPosition,
+        y: props.yPosition,
+      }
+    }
     // If lowering no. of storage floors, make sure product doesn't exceed new maximum
     for (let product of staticInfo.nightclub.products) {
-      newState[product] = Math.min(state[product], staticInfo.nightclub["max"+capitalize(product)][state.storage_floors - 1]);
+      newState[product] = Math.min(props.nightclub[product], staticInfo.nightclub["max"+capitalize(product)][state.storage_floors - 1]);
     }
     dispatch(setRootObject({ key: "nightclub", value: newState }));
     dispatch(popPopup());
@@ -992,7 +1042,7 @@ export const PopupSetupNightclub = connect((state, ownProps) => {
             <tr>
               <td>Map location:</td>
               <td className="fsz">
-                <button className="button blue">Set Location</button>
+                <button onClick={setLocation} className="button blue">Set Location</button>
               </td>
             </tr>
             <tr>
@@ -1268,7 +1318,7 @@ const stringElementMap = {
 
 function createPopup(object) {
   // Value is an array with string name and object properties
-    return React.createElement(stringElementMap[object[0]], object[1]);
+  return React.createElement(stringElementMap[object[0]], object[1]);
 }
 
 const mapStateToProps = (state) => {
@@ -1281,12 +1331,26 @@ const mapStateToProps = (state) => {
 }
 
 const Popup = (props) => {
+
+  const dispatch = useDispatch();
+
   let fragment = null;
   let style = null;
-  // Hide setup dialog when setting location to keep state
+
+  // Hide setup dialog when setting location to preserve state
   if (props.banner === "BannerSelectLocation" || props.banner === "BannerCustomLocation") {
-    style = {display: "none"};
+    style = { display: "none" };
   }
+
+  // Reset location setter if popup changes
+  const previousPopup = props.popupStack.length > 0 ? props.popupStack[props.popupStack.length - 1] : null;
+  const previousRef = useRef(previousPopup);
+  useEffect(() => {
+    if (props.popupStack.length === 0 || previousRef.current !== props.popupStack[props.popupStack.length - 1]) {
+      dispatch(resetLocationSetter());
+    }
+  }, [dispatch, props.popupStack]);
+
   if (props.popupStack.length > 0) {
     fragment = (
       <React.Fragment>
