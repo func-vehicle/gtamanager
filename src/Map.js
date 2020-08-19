@@ -60,6 +60,7 @@ export const MapSetLocation = connect((state) => {
   // Ensure position unset when changing modes
   useEffect(() => {
     dispatch(setCoordinates([null, null]));
+    setPlacing(true);
   }, [dispatch, props.mode]);
   
   useEffect(() => {
@@ -116,7 +117,7 @@ export const MapSetLocation = connect((state) => {
   }
   // Custom
   else {
-    return <MapPlaceableIcon business={props.business} x={state[0]} y={state[1]} />;
+    return <MapPlaceableIcon business={props.business} x={state[0]} y={state[1]} clickable={!placing} />;
   }
   
 });

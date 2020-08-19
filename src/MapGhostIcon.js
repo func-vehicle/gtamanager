@@ -12,7 +12,7 @@ export const MapPlaceableIcon = (props) => {
     <img
       src={blank}
       id="icon-placing"
-      className={"icons icons-map icons-placing icons-" + props.business + " clickable"}
+      className={"icons icons-map icons-" + props.business + (props.clickable ? " clickable" : " icons-placing")}
       alt={props.business + " icon"}
       style={{
           top: props.y + "%",
