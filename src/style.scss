@@ -238,6 +238,10 @@ input {
 }
 
 /* MAP */
+#mapscreen {
+    position: relative;
+    height: min-content;
+}
 #map {
     position: relative;
 

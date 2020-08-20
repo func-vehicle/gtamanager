@@ -104,11 +104,28 @@ export const BannerCustomLocation = connect((state) => {
         dispatch(setBanner(["BannerSelectLocation", { business: props.business }]));
     }
 
+    let hint;
+    if (props.xPos == null) {
+        hint = (
+            <React.Fragment>
+                <p className="desktop-only">Click map to choose custom location.</p>
+                <p className="mobile-only">Tap map to choose custom location.</p>
+            </React.Fragment>
+        );
+    }
+    else {
+        hint = (
+            <React.Fragment>
+                <p className="desktop-only">Click icon to relocate.</p>
+                <p className="mobile-only">Tap icon to relocate.</p>
+            </React.Fragment>
+        );
+    }
+
     return (
         <div id="customLocation" className="has-buttons">
             <div className="left">
-                <p className="desktop-only">Click map to choose custom location.</p>
-                <p className="mobile-only">Tap map to choose custom location.</p>
+                {hint}
             </div>
             <div className="right">
                 <button onClick={confirmLocation} disabled={props.xPos == null} className="button red"><FontAwesomeIcon icon={faCheck} /></button>

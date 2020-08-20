@@ -214,6 +214,11 @@ input[type=range]::-ms-thumb {
 }
 
 /* MAP */
+#mapscreen {
+  position: relative;
+  height: min-content;
+}
+
 #map {
   position: relative;
 }

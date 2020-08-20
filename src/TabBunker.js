@@ -23,7 +23,7 @@ const mapStateToProps = (state) => {
     return newProps;
 }
 
-export const TabBunker = React.memo((props) => {
+export const TabBunker = (props) => {
 
     const dispatch = useDispatch();
 
@@ -91,6 +91,6 @@ export const TabBunker = React.memo((props) => {
             {content}
         </div>
     );
-});
+}
 
 export default connect(mapStateToProps)(TabBunker);

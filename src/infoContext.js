@@ -169,6 +169,7 @@ export const staticInfo = {
 		fullName: "Bunker",
 		shortName: "Bunker",
 		upgrades: ["equipment", "staff", "security"],
+		resources: ["product", "research", "supplies"],
 		maxProduct: [1000, 850, 700],
 		maxResearch: [500, 340, 210],
 		maxSupplies: [100, 127.5, 140],
@@ -235,6 +236,7 @@ export const staticInfo = {
 		fullName: "Cocaine",
 		shortName: "Cocaine",
 		upgrades: ["equipment", "staff", "security"],
+		resources: ["product", "supplies"],
 		maxProduct: [500, 400, 300],
 		maxSupplies: [100, 120, 120],
 		locations: [
@@ -264,6 +266,7 @@ export const staticInfo = {
 		fullName: "Meth",
 		shortName: "Meth",
 		upgrades: ["equipment", "staff", "security"],
+		resources: ["product", "supplies"],
 		maxProduct: [600, 480, 360],
 		maxSupplies: [120, 144, 144],
 		locations: [
@@ -293,6 +296,7 @@ export const staticInfo = {
 		fullName: "Counterfeit Cash",
 		shortName: "Counterfeit Cash",
 		upgrades: ["equipment", "staff", "security"],
+		resources: ["product", "supplies"],
 		maxProduct: [480, 400, 320],
 		maxSupplies: [120, 150, 160],
 		locations: [
@@ -322,6 +326,7 @@ export const staticInfo = {
 		fullName: "Weed",
 		shortName: "Weed",
 		upgrades: ["equipment", "staff", "security"],
+		resources: ["product", "supplies"],
 		maxProduct: [480, 400, 320],
 		maxSupplies: [150, 187.5, 200],
 		locations: [
@@ -351,6 +356,7 @@ export const staticInfo = {
 		fullName: "Document Forgery",
 		shortName: "Doc. Forgery",
 		upgrades: ["equipment", "staff", "security"],
+		resources: ["product", "supplies"],
 		maxProduct: [300, 240, 180],
 		maxSupplies: [125, 150, 150],
 		locations: [

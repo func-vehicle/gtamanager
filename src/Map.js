@@ -60,6 +60,7 @@ export const MapSetLocation = connect((state) => {
   // Ensure position unset when changing modes
   useEffect(() => {
     dispatch(setCoordinates([null, null]));
+    setState([null, null]);
     setPlacing(true);
   }, [dispatch, props.mode]);
   
@@ -68,6 +69,7 @@ export const MapSetLocation = connect((state) => {
       // Unset position, user wants to place again
       const togglePlacing = (e) => {
         dispatch(setCoordinates([null, null]));
+        setState([null, null]);
         setPlacing(!placing);
       }
       const placeIcon = document.getElementById("icon-placing");
@@ -78,19 +80,32 @@ export const MapSetLocation = connect((state) => {
       }
     }
     else if (props.mode === 1) {
-      const updatePosition = (e) => {
+      const getPosition = (e) => {
+        console.log(limits);
         let xAllowed = e.clientX > limits.left && e.clientX < limits.right;
         let yAllowed = e.clientY > limits.top && e.clientY < limits.bottom;
         if (xAllowed && yAllowed) {
           let xPos = e.clientX/container.offsetWidth * 100;
           let yPos = e.clientY/container.offsetHeight * 100;
-          setState([xPos, yPos]);
+          return [xPos, yPos];
+        }
+        return null;
+      }
+
+      const updatePosition = (e) => {
+        let position = getPosition(e);
+        if (position != null) {
+          setState(position);
         }
       }
 
       const togglePlacing = (e) => {
-        dispatch(setCoordinates(state));
-        setPlacing(!placing);
+        let position = getPosition(e);
+        console.log(position)
+        if (position != null) {
+          dispatch(setCoordinates(position));
+          setPlacing(!placing);
+        }
       }
 
       document.body.addEventListener("mousemove", updatePosition);
@@ -103,7 +118,7 @@ export const MapSetLocation = connect((state) => {
         container.removeEventListener("click", togglePlacing);
       }
     }
-  }, [dispatch, container, props.mode, placing, limits, state]);
+  }, [dispatch, container, props.mode, placing, limits]);
 
   // Select
   if (props.mode === 0) {
@@ -122,41 +137,7 @@ export const MapSetLocation = connect((state) => {
   
 });
 
-export const MapRegular = connect((state) => {
-  let newProps = {
-    audioEnabled: state.userInfo.settings.audio.enabled,
-    running: state.session.running,
-  }
-  return newProps;
-})((props) => {
-
-  const dispatch = useDispatch();
-
-  function handleRunning() {
-    if (props.running) {
-      dispatch(clearStack());
-      dispatch(pushPopup("PopupPaused"));
-      dispatch(setBanner("BannerPaused"));
-    }
-    else {
-      dispatch(setBanner(null));
-    }
-    setFirstTickTime();
-    dispatch(toggleRunning());
-  }
-
-  function showSetupMain() {
-    dispatch(pushPopup("PopupSetupMain"));
-  }
-
-  let toggleButton;
-  if (!props.running) {
-    toggleButton = <button onClick={handleRunning} className="button toggle green">Start</button>;
-  }
-  else {
-    toggleButton = <button onClick={handleRunning} className="button toggle blue">Pause</button>;
-  }
-
+export const MapRegular = React.memo(() => {
   return (
     <React.Fragment>
       <MapIcon business="bunker" />
@@ -168,11 +149,6 @@ export const MapRegular = connect((state) => {
       <MapIcon business="nightclub" />
       <MapIcon business="importExport" />
       <MapIcon business="wheel" />
-      <div id="options" className="fsz">
-        {toggleButton}
-        <button onClick={() => dispatch(toggleNotifications())} className={"button audio red" + (!props.audioEnabled ? " off" : "")}>Sound</button>
-        <button onClick={showSetupMain} className="button setup red">Setup</button>
-      </div>
     </React.Fragment>
   );
 });
@@ -180,17 +156,55 @@ export const MapRegular = connect((state) => {
 const mapStateToProps = (state) => {
   let newProps = {
     banner: state.session.banner,
+    audioEnabled: state.userInfo.settings.audio.enabled,
+    running: state.session.running,
   }
   return newProps;
 }
 
 const Map = (props) => {
 
+  const dispatch = useDispatch();
+
   const {width} = useWindowDimensions();
 
   let mapDetails;
+  let optionsSection = null;
   if (props.banner[0] == null || props.banner[0] === "BannerPaused") {
     mapDetails = <MapRegular />;
+
+    function handleRunning() {
+      if (props.running) {
+        dispatch(clearStack());
+        dispatch(pushPopup("PopupPaused"));
+        dispatch(setBanner("BannerPaused"));
+      }
+      else {
+        dispatch(setBanner(null));
+      }
+      setFirstTickTime();
+      dispatch(toggleRunning());
+    }
+
+    function showSetupMain() {
+      dispatch(pushPopup("PopupSetupMain"));
+    }
+
+    let toggleButton;
+    if (!props.running) {
+      toggleButton = <button onClick={handleRunning} className="button toggle green">Start</button>;
+    }
+    else {
+      toggleButton = <button onClick={handleRunning} className="button toggle blue">Pause</button>;
+    }
+
+    optionsSection = (
+      <div id="options" className="fsz">
+        {toggleButton}
+        <button onClick={() => dispatch(toggleNotifications())} className={"button audio red" + (!props.audioEnabled ? " off" : "")}>Sound</button>
+        <button onClick={showSetupMain} className="button setup red">Setup</button>
+      </div>
+    );
   }
   else {
     mapDetails = <MapSetLocation />;
@@ -202,7 +216,7 @@ const Map = (props) => {
   }
   
   return (
-    <div>
+    <div id="mapscreen">
       <div id="map">
         <img
           id="bg"
@@ -215,6 +229,7 @@ const Map = (props) => {
         <BannerNotification />
         {popupElement}
       </div>
+      {optionsSection}
     </div>
   );
 }
