@@ -36,11 +36,11 @@ export const TabImportExport = (props) => {
     }
 
     function sourceCar(e) {
-        let newValue = Math.min(props.highendCars + 1, 20);
+        let newCars = Math.min(props.highendCars + 1, 20);
         let payload = {
             business: "importExport",
             resource: "highend_cars",
-            value: newValue,
+            value: newCars,
         };
         dispatch(setResourceValue(payload));
     }
@@ -75,7 +75,7 @@ export const TabImportExport = (props) => {
             <div className="content">
                 <div className="fsz">
                     <button onClick={sourceCar} className="button green">Source ({props.highendCars})</button>
-                    {/* <button className="button purple">View</button> */}
+                    {/* <button disabled={props.disableSetup} className="button purple">View</button> */}
                 </div>
                 <div>
                     <select>

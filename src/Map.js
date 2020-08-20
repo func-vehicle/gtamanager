@@ -100,7 +100,6 @@ export const MapSetLocation = connect((state) => {
 
       const togglePlacing = (e) => {
         let position = getPosition(e);
-        console.log(position)
         if (position != null) {
           dispatch(setCoordinates(position));
           setPlacing(!placing);

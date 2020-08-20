@@ -8,16 +8,26 @@ import { staticInfo } from './InfoContext';
 import blank from './img/blank.png';
 
 export const MapPlaceableIcon = (props) => {
+  let style;
+  if (props.x == null) {
+    style = {
+      display: "none",
+    }
+  }
+  else {
+    style = {
+      top: props.y + "%",
+      left: props.x + "%",
+    }
+  }
+
   return (
     <img
       src={blank}
       id="icon-placing"
       className={"icons icons-map icons-" + props.business + (props.clickable ? " clickable" : " icons-placing")}
       alt={props.business + " icon"}
-      style={{
-          top: props.y + "%",
-          left: props.x + "%",
-      }}
+      style={style}
     />
   );
 }
