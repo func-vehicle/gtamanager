@@ -19,6 +19,7 @@ const mapStateToProps = (state) => {
         owned: state.userInfo.bunker.owned,
         hideResearch: state.userInfo.bunker.hide_research,
         upgrades: state.userInfo.bunker.upgrades,
+        disableSetup: state.session.banner[0] === "BannerSelectLocation" || state.session.banner[0] === "BannerCustomLocation",
     }
     return newProps;
 }
@@ -84,7 +85,7 @@ export const TabBunker = (props) => {
                     <img src={blank} className="icons icons-info icons-bunker" alt="Bunker icon"/>
                 </div>
                 <h1>{staticInfo.bunker.shortName}</h1>
-                <button onClick={showSetupBunker} className="button setup">
+                <button onClick={showSetupBunker} disabled={props.disableSetup} className="button setup">
                     <FontAwesomeIcon icon={faCog} />
                 </button>
             </div>

@@ -18,6 +18,7 @@ const mapStateToProps = (state, ownProps) => {
     let newProps = {
         owned: state.userInfo[ownProps.business].owned,
         upgrades: state.userInfo[ownProps.business].upgrades,
+        disableSetup: state.session.banner[0] === "BannerSelectLocation" || state.session.banner[0] === "BannerCustomLocation",
     }
     return newProps;
 }
@@ -80,7 +81,7 @@ const TabMCBusiness = (props) => {
                     />
                 </div>
                 <h1>{staticInfo[props.business].shortName}</h1>
-                <button onClick={showSetupMCBusiness} className="button setup">
+                <button onClick={showSetupMCBusiness} disabled={props.disableSetup} className="button setup">
                     <FontAwesomeIcon icon={faCog} />
                 </button>
             </div>

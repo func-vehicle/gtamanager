@@ -16,6 +16,7 @@ const mapStateToProps = (state) => {
         owned: state.userInfo.nightclub.owned,
         showUnproduced: state.userInfo.nightclub.sidebar,
         producing: state.userInfo.nightclub.producing,
+        disableSetup: state.session.banner[0] === "BannerSelectLocation" || state.session.banner[0] === "BannerCustomLocation",
     }
     return newProps;
 }
@@ -57,7 +58,7 @@ export const TabNightclub = React.memo((props) => {
                         ))}
                     </tbody>
                 </table>
-                <button onClick={showModifyNightclub} className="button purple">Modify</button>
+                <button onClick={showModifyNightclub} disabled={props.disableSetup} className="button purple">Modify</button>
             </div>
         );
     }
@@ -69,7 +70,7 @@ export const TabNightclub = React.memo((props) => {
                     <img src={blank} className="icons icons-info icons-nightclub" alt={staticInfo.nightclub.fullName + " icon"}/>
                 </div>
                 <h1>{staticInfo.nightclub.shortName}</h1>
-                <button onClick={showSetupNightclub} className="button setup">
+                <button onClick={showSetupNightclub} disabled={props.disableSetup} className="button setup">
                     <FontAwesomeIcon icon={faCog} />
                 </button>
             </div>

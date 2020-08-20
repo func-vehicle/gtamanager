@@ -21,6 +21,7 @@ const mapStateToProps = (state) => {
         owned: state.userInfo.importExport.owned,
         highendCars: state.userInfo.importExport.highend_cars,
         cooldown: state.userInfo.importExport.cooldown,
+        disableSetup: state.session.banner[0] === "BannerSelectLocation" || state.session.banner[0] === "BannerCustomLocation",
     }
     return newProps;
 }
@@ -96,7 +97,7 @@ export const TabImportExport = (props) => {
                     <img src={blank} className="icons icons-info icons-importExport" alt={staticInfo.importExport.fullName + " icon"}/>
                 </div>
                 <h1>{staticInfo.importExport.shortName}</h1>
-                <button onClick={showSetupImportExport} className="button setup">
+                <button onClick={showSetupImportExport} disabled={props.disableSetup} className="button setup">
                     <FontAwesomeIcon icon={faCog} />
                 </button>
             </div>

@@ -20,6 +20,7 @@ const mapStateToProps = (state) => {
         owned: state.userInfo.wheel.owned,
         timestamp: state.userInfo.wheel.timestamp,
         upgrades: state.userInfo.bunker.upgrades,
+        disableSetup: state.session.banner[0] === "BannerSelectLocation" || state.session.banner[0] === "BannerCustomLocation",
     }
     return newProps;
 }
@@ -74,7 +75,7 @@ export const TabWheel = (props) => {
                     <img src={blank} className="icons icons-info icons-wheel" alt={staticInfo.wheel.fullName + " icon"}/>
                 </div>
                 <h1>{staticInfo.wheel.shortName}</h1>
-                <button onClick={showSetupWheel} className="button setup">
+                <button onClick={showSetupWheel} disabled={props.disableSetup} className="button setup">
                     <FontAwesomeIcon icon={faCog} />
                 </button>
             </div>

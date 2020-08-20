@@ -26,6 +26,7 @@ export const BannerSelectLocation = connect((state) => {
     let newProps = {
         business: state.location.business,
         index: state.location.index,
+        running: state.session.running,
     }
     return newProps;
 })((props) => {
@@ -51,12 +52,22 @@ export const BannerSelectLocation = connect((state) => {
 
     function cancel() {
         dispatch(setCoordinates([null, null]));
-        dispatch(setBanner("BannerPaused"));
+        if (props.running) {
+            dispatch(setBanner(null));
+        }
+        else {
+            dispatch(setBanner("BannerPaused"));
+        }
     }
 
     function confirmLocation() {
         dispatch(setCoordinates([currentLocation.x, currentLocation.y]));
-        dispatch(setBanner("BannerPaused"));
+        if (props.running) {
+            dispatch(setBanner(null));
+        }
+        else {
+            dispatch(setBanner("BannerPaused"));
+        }
     }
 
     function changeToManual() {
@@ -84,6 +95,7 @@ export const BannerCustomLocation = connect((state) => {
     let newProps = {
         xPos: state.location.x,
         yPos: state.location.y,
+        running: state.session.running,
     }
     return newProps;
 })((props) => {
@@ -92,11 +104,21 @@ export const BannerCustomLocation = connect((state) => {
 
     function cancel() {
         dispatch(setCoordinates([null, null]));
-        dispatch(setBanner("BannerPaused"));
+        if (props.running) {
+            dispatch(setBanner(null));
+        }
+        else {
+            dispatch(setBanner("BannerPaused"));
+        }
     }
 
     function confirmLocation() {
-        dispatch(setBanner("BannerPaused"));
+        if (props.running) {
+            dispatch(setBanner(null));
+        }
+        else {
+            dispatch(setBanner("BannerPaused"));
+        }
     }
 
     function changeToSelect() {

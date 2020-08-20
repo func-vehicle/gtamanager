@@ -512,10 +512,6 @@ export const staticInfo = {
 	}
 }
 
-// export const stringToPopupTable = {
-
-// }
-
 export function shouldUpdate(userInfo) {
 	return userInfo.version !== defaultUserInfo.version;
 }

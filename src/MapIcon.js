@@ -18,17 +18,18 @@ const mapStateToProps = (state, ownProps) => {
     notify: false,
   }
 
-  if (!newProps.owned) {
-    return newProps;
-  }
-
   // TODO: doesn't work if wheel naturally comes off cooldown
-  if (ownProps.business === "wheel") {
+  if (ownProps.business === "wheel" && (state.session.running || businessInfo.notify_while_paused )) {
     if (new Date().getTime() - businessInfo.timestamp > 5000) {
       newProps.notify = true;
       return newProps;
     }
   }
+
+  if (!newProps.owned || !state.session.running) {
+    return newProps;
+  }
+
   else if (["bunker", "coke", "meth", "cash", "weed", "forgery"].includes(ownProps.business)) {
     let upgradeIndex = (businessInfo.upgrades.equipment ? 1 : 0) + (businessInfo.upgrades.staff ? 1 : 0);
     for (let resource of staticInfo[ownProps.business].resources) {

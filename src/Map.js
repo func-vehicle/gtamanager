@@ -81,7 +81,6 @@ export const MapSetLocation = connect((state) => {
     }
     else if (props.mode === 1) {
       const getPosition = (e) => {
-        console.log(limits);
         let xAllowed = e.clientX > limits.left && e.clientX < limits.right;
         let yAllowed = e.clientY > limits.top && e.clientY < limits.bottom;
         if (xAllowed && yAllowed) {
@@ -110,8 +109,6 @@ export const MapSetLocation = connect((state) => {
 
       document.body.addEventListener("mousemove", updatePosition);
       container.addEventListener("click", togglePlacing);
-
-      console.log("ACTIVE")
 
       return () => {
         document.body.removeEventListener("mousemove", updatePosition);
