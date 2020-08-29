@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import update from 'immutability-helper';
 
 import { formatTimeString, mod } from './Utility';
 import blank from "./img/blank.png";
@@ -8,52 +7,33 @@ import blank from "./img/blank.png";
 const mapStateToProps = (state) => {
     let newProps = {
         running: state.session.running,
+        updateState: state.session.running && state.session.updateState,
     }
     return newProps;
 }
 
 const TabFees = (props) => {
     
-    const [state, setState] = useState({
-        current: null,
-        finish: null,
-    });
-    
-    // Update timer
-    const updateState = () => {
-        setState((previousState) => update(previousState, {
-            current: {$set: new Date().getTime()}
-        }));
-    }
+    const [finish, setFinish] = useState(null);
 
     // Set up reference point, interval
     useEffect(() => {
         if (!props.running) return;
-        setState((previousState) => update(previousState, {
-            finish: {$set: new Date().getTime() + 2880000}
-        }));
-        let interval = setInterval(updateState, 1000);
+        setFinish(new Date().getTime() + 2880000);
         return () => {
-            clearInterval(interval);
-            setState((previousState) => update(previousState, {
-                current: {$set: null},
-                finish: {$set: null},
-            }));
+            setFinish(null);
         }
     }, [props.running]);
 
     let sessionString;
     if (props.running) {
-        // Workaround for first render after running change
-        let current = state.current;
-        if (current == null) {
-            current = new Date().getTime();
-        }
-        let finish = state.finish;
+        let current = new Date().getTime();
+        let realFinish = finish;
         if (finish == null) {
-            finish = new Date().getTime() + 2880000;
+            // Workaround for first render after running change
+            realFinish = new Date().getTime() + 2880000;
         }
-        let remainingMs = mod(finish - current, 2881000);
+        let remainingMs = mod(realFinish - current, 2881000);
         sessionString = formatTimeString(remainingMs);
     }
     else {

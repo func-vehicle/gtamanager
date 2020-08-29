@@ -7,12 +7,18 @@ import Map from './Map';
 import InfoTabContainer from './InfoTabContainer';
 import { useWindowDimensions } from './Utility';
 import Popup from './Popup';
-import { runTick } from './redux/userInfoSlice.js';
+import {
+  runTick,
+} from './redux/userInfoSlice';
+import {
+  toggleUpdateState,
+} from './redux/sessionSlice';
 
 const mapStateToProps = (state) => {
   let newProps = {
     appStyle: state.userInfo.settings.app_style,
     running: state.session.running,
+    updateState: state.session.running && state.session.updateState,
   }
   return newProps;
 }
@@ -21,16 +27,18 @@ const App = (props) => {
 
   const dispatch = useDispatch();
 
+  // Global update interval
+  useEffect(() => {
+    setInterval(() => {
+      dispatch(toggleUpdateState());
+    }, 1000);
+  }, [dispatch]);
+
   // Run tick while running
   useEffect(() => {
     if (!props.running) return;
-    let interval = setInterval(() => {
-      dispatch(runTick());
-    }, 1000);
-    return () => {
-      clearInterval(interval);
-    }
-  }, [dispatch, props.running]);
+    dispatch(runTick());
+  }, [dispatch, props.running, props.updateState]);
 
   // Use fullscreen popup
   const {width} = useWindowDimensions();

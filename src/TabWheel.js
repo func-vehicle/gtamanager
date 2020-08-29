@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useDispatch, connect } from 'react-redux';
 import {
     setWheelTimestamp,
@@ -14,30 +14,23 @@ import { staticInfo } from './InfoContext';
 import { formatTimeString } from './Utility';
 import blank from "./img/blank.png";
 
-
 const mapStateToProps = (state) => {
     let newProps = {
         owned: state.userInfo.wheel.owned,
         timestamp: state.userInfo.wheel.timestamp,
-        upgrades: state.userInfo.bunker.upgrades,
         disableSetup: state.session.banner[0] === "BannerSelectLocation" || state.session.banner[0] === "BannerCustomLocation",
+        updateState: false,
+    }
+    if (newProps.owned && new Date().getTime() - newProps.timestamp <= 86400000) {
+        // This forces an update every second
+        newProps.updateState = state.session.updateState;
     }
     return newProps;
 }
 
-export const TabWheel = (props) => {
+const TabWheel = (props) => {
 
     const dispatch = useDispatch();
-    const [, setState] = useState(Date.now());
-
-    // Set up timer
-    useEffect(() => {
-        if (!props.owned || new Date().getTime() - props.timestamp > 86400000) return;
-        let interval = setInterval(() => setState(Date.now()), 1000);
-        return () => {
-            clearInterval(interval);
-         }
-    }, [props.timestamp, props.owned]);
 
     function showSetupWheel(e) {
         dispatch(clearStack());
@@ -49,18 +42,18 @@ export const TabWheel = (props) => {
         dispatch(setWheelTimestamp(timestamp));
     }
 
-    const disableSpin = (new Date().getTime() - props.timestamp <= 86400000);
-    let spinString;
-    if (disableSpin) {
-        let remainingMs = 86400000 - (new Date().getTime() - props.timestamp)
-        spinString = formatTimeString(remainingMs);
-    }
-    else {
-        spinString = "Spin";
-    }
-
     let content = null;
     if (props.owned) {
+        const disableSpin = (new Date().getTime() - props.timestamp <= 86400000);
+        let spinString;
+        if (disableSpin) {
+            let remainingMs = 86400000 - (new Date().getTime() - props.timestamp)
+            spinString = formatTimeString(remainingMs);
+        }
+        else {
+            spinString = "Spin";
+        }
+
         content = (
             <div className="content">
                 <button onClick={spinWheel} disabled={disableSpin} className="button purple">{spinString}</button>

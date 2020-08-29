@@ -28,7 +28,7 @@ const store = configureStore({
   },
   middleware: getDefaultMiddleware().concat(
     save
-  )
+  ),
 });
 
 // Load userInfo, set initial popups

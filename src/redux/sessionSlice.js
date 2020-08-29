@@ -5,6 +5,7 @@ export const slice = createSlice({
   initialState: {
     running: false,
     banner: ["BannerPaused", {}],
+    updateState: false,
   },
   reducers: {
     // Redux Toolkit allows us to write "mutating" logic in reducers. It
@@ -20,11 +21,14 @@ export const slice = createSlice({
         action.payload = [action.payload, {}];
       }
       state.banner = action.payload;
-    }
+    },
+    toggleUpdateState: (state) => {
+      state.updateState = !state.updateState;
+    },
   },
 });
 
-export const { toggleRunning, setBanner } = slice.actions;
+export const { toggleRunning, setBanner, toggleUpdateState } = slice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This

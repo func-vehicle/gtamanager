@@ -6,7 +6,7 @@ import {
 
 import blank from './img/blank.png';
 import { staticInfo } from './InfoContext';
-import { capitalize, useGlobalUpdateInterval } from './Utility';
+import { capitalize } from './Utility';
 
 const mapStateToProps = (state, ownProps) => {
   let businessInfo = state.userInfo[ownProps.business];
@@ -21,7 +21,7 @@ const mapStateToProps = (state, ownProps) => {
   // TODO: only works if redraws at right time
   if (ownProps.business === "wheel" && (state.session.running || businessInfo.notify_while_paused)) {
     if (new Date().getTime() - businessInfo.timestamp > 5000) {
-      newProps.notify = true;
+      newProps.notify = state.session.updateState;
       return newProps;
     }
   }
@@ -35,12 +35,12 @@ const mapStateToProps = (state, ownProps) => {
     for (let resource of staticInfo[ownProps.business].resources) {
       if (resource === "supplies") {
         if (businessInfo[resource] <= 0) {
-          newProps.notify = true;
+          newProps.notify = state.session.updateState;
           return newProps;
         }
       }
       else if (businessInfo[resource] >= staticInfo[ownProps.business]["max"+capitalize(resource)][upgradeIndex]) {
-        newProps.notify = true;
+        newProps.notify = state.session.updateState;
         return newProps;
       }
     }
@@ -49,7 +49,7 @@ const mapStateToProps = (state, ownProps) => {
     let storageFloors = state.userInfo.nightclub.storage_floors;
     for (let product of staticInfo.nightclub.products) {
       if (businessInfo[product] > staticInfo[ownProps.business]["max"+capitalize(product)][storageFloors]) {
-        newProps.notify = true;
+        newProps.notify = state.session.updateState;
         return newProps;
       }
     }
@@ -58,27 +58,13 @@ const mapStateToProps = (state, ownProps) => {
   return newProps;
 }
 
-export const MapIcon = (props) => {
+const MapIcon = (props) => {
 
   const dispatch = useDispatch();
   
   function muteBusiness() {
     dispatch(toggleBusinessMuted(props.business));
   }
-  
-  //const state = useGlobalUpdateInterval();
-  const state = false;
-
-  // const state = useState(false);
-  // useEffect(() => {
-  //   if (!props.notify) return;
-  //   let interval = setInterval(() => {
-
-  //   }, 1000);
-  //   return () => {
-  //     clearInterval(interval);
-  //   }
-  // }, [props.notify, setState]);
   
   let mapIcon = null;
   let muteIcon = null;
@@ -87,7 +73,7 @@ export const MapIcon = (props) => {
       <img
         id={props.business + "_map"}
         src={blank}
-        className={"icons icons-map icons-" + props.business + (props.muted != null ? " clickable" : "") + (props.notify && state ? " flash" : "")}
+        className={"icons icons-map icons-" + props.business + (props.muted != null ? " clickable" : "") + (props.notify ? " flash" : "")}
         alt={props.full_name + " icon"}
         style={{
           top: props.position.y + "%",

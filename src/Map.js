@@ -69,7 +69,6 @@ export const MapSetLocation = connect((state) => {
       // Unset position, user wants to place again
       const togglePlacing = (e) => {
         dispatch(setCoordinates([null, null]));
-        setState([null, null]);
         setPlacing(!placing);
       }
       const placeIcon = document.getElementById("icon-placing");
