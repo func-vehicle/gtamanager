@@ -164,9 +164,9 @@ const stringElementMap = {
     BannerCustomLocation,
 }
 
-function createBanner(object) {
-    // Value is an array with string name and object properties
-    return React.createElement(stringElementMap[object[0]], object[1]);
+function createBanner(arr) {
+    // Array has string name and object properties
+    return React.createElement(stringElementMap[arr[0]], arr[1]);
 }
 
 const mapStateToProps = (state) => {

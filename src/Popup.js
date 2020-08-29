@@ -1316,9 +1316,9 @@ const stringElementMap = {
   PopupSetupWheel,
 }
 
-function createPopup(object) {
-  // Value is an array with string name and object properties
-  return React.createElement(stringElementMap[object[0]], object[1]);
+function createPopup(arr) {
+  // Array has string name and object properties
+  return React.createElement(stringElementMap[arr[0]], arr[1]);
 }
 
 const mapStateToProps = (state) => {

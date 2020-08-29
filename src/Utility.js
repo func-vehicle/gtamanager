@@ -8,6 +8,20 @@ export const mod = function(a, n) {
   return ((a % n) + n) % n; 
 }
 
+export function useGlobalUpdateInterval() {
+  const [state, setState] = useState(false);
+
+  useEffect(() => {
+    let value = false;
+    setInterval(() => {
+      value = !value;
+      setState(value)
+    }, 1000);
+  }, [setState]);
+
+  return state;
+}
+
 function getWindowDimensions() {
   const { innerWidth: width, innerHeight: height } = window;
   return {
