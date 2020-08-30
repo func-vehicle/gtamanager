@@ -33,7 +33,7 @@ export const notify = {
     show: function(title, body, business) {
         if (notify.compatible()) {
             if (!navigator.serviceWorker) {
-                notify.log("serviceWorker API unavailable");
+                notify.log("serviceWorker API unavailable in this browser");
                 return;
             }
             navigator.serviceWorker.ready.then(function(registration) {
@@ -63,14 +63,19 @@ export function useNotifyBusiness(business) {
 
     const businessInfo = useSelector(state => state.userInfo[business]);
     const running = useSelector(state => state.session.running);
+    const audioEnabled = useSelector(state => state.userInfo.settings.audio.enabled);
     const volume = useSelector(state => state.userInfo.settings.audio.volume);
     const interval = useSelector(state => state.userInfo.settings.audio.interval);
+    const pushEnabled = useSelector(state => state.userInfo.settings.push_notifications);
     const updateState = useSelector(state => state.session.updateState);
 
     const [state, setState] = useState(false);
     const lastPlayed = useSelector(state => state.session.lastNotified);
 
     function playAudioIfNecessary() {
+        if (!audioEnabled || businessInfo.muted) {
+            return;
+        }
         let timestamp = new Date().getTime();
         if (timestamp - lastPlayed.general > (1000*60) * interval) {
             let payload = {
@@ -86,6 +91,9 @@ export function useNotifyBusiness(business) {
     }
 
     function pushNotifyIfNecessary(business, title, body) {
+        if (!audioEnabled || !pushEnabled || businessInfo.muted) {
+            return;
+        }
         let timestamp = new Date().getTime();
         if (timestamp - lastPlayed[business] > (1000*60) * interval) {
             let payload = {
@@ -100,7 +108,7 @@ export function useNotifyBusiness(business) {
     function shouldNotify() {
         // Wheel
         if (business === "wheel") {
-            if ((running || businessInfo.notify_while_paused) && !businessInfo.muted && new Date().getTime() - businessInfo.timestamp > 5000) {
+            if ((running || businessInfo.notify_while_paused) && new Date().getTime() - businessInfo.timestamp > (1000*60)*60*24) {
                 setState(true);
                 playAudioIfNecessary();
                 pushNotifyIfNecessary("wheel", "GTA V Business Manager", "The Lucky Wheel is ready to be spun.");
@@ -111,7 +119,7 @@ export function useNotifyBusiness(business) {
         }
 
         // General pruning
-        if (!businessInfo.owned || !running || businessInfo.muted) {
+        if (!businessInfo.owned || !running) {
             setState(false);
             return;
         }
@@ -171,7 +179,7 @@ export function useNotifyBusiness(business) {
         }
     }
 
-    useEffect(shouldNotify, [updateState, running, businessInfo.owned, businessInfo.muted]);
+    useEffect(shouldNotify, [updateState, running, businessInfo.owned, businessInfo.muted, audioEnabled, pushEnabled]);
 
     return state;
 }

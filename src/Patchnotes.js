@@ -266,12 +266,13 @@ export const patchArray = [
         <div className="indent">
             <h2>Improvements</h2>
             <ul>
-                <li>The business manager now runs on React instead of custom JavaScript. This should improve performance, as well as fix some bugs and make future updates easier to create.</li>
+                <li>The business manager now runs on React + Redux instead of custom JavaScript. This should improve performance, as well as fix some bugs and make future updates easier to create.</li>
                 <ul>
                     <li>If you notice any differences, this is likely the reason. Please post any new bugs as a GitHub issue.</li>
                 </ul>
                 <li>New users will now have all upgrades for businesses automatically enabled, and 5 storage floors for the nightclub.</li>
                 <li>The custom location selector now has a confirmation screen, and allows you to swap back to preplaced location selector.</li>
+                <li>Added link to view weekly bonuses in the main setup.</li>
             </ul>
             <h2>Information</h2>
             <ul>
@@ -280,6 +281,7 @@ export const patchArray = [
             <h2>Fixes</h2>
             <ul>
                 <li>Numeric inputs will display invalid values better now.</li>
+                <li>Fixed a bug where the maximum value for inputs on the Nightclub modify screen wouldn't take storage floors into consideration.</li>
                 <li>There is no longer a delay when swapping patch notes pages for the first time.</li>
             </ul>
         </div>
@@ -287,7 +289,7 @@ export const patchArray = [
 ];
 
 
-export const Patchnotes = (props) => {
+const Patchnotes = (props) => {
     return patchArray[props.page];
 }
 

@@ -343,7 +343,7 @@ input[type=range]::-ms-thumb {
 #mini_notif .button {
   margin-top: 0;
   margin-right: 3px;
-  padding: 1px;
+  padding: 0px 2px 1px 0px;
   height: 24px;
   width: 24px;
 }
