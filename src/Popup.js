@@ -403,7 +403,8 @@ export const PopupSetupMain = connect((state) => {
               <td>About:</td>
               <td className="fsz">
                 <button onClick={showPatchnotes} className="button orange" data-value="0">Patch notes</button>
-                <a target="_blank" rel="noopener noreferrer" href="https://github.com/func-vehicle/gtamanager"><button className="button orange">GitHub</button></a>
+                <a target="_blank" rel="noopener noreferrer" href="https://github.com/func-vehicle/gtamanager" style={{marginRight: "5px"}}><button className="button orange">GitHub</button></a>
+                <a target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/gtaonline/search?q=%22weekly+gta+online+bonuses%22&restrict_sr=on&sort=new&t=week"><button className="button orange">Weekly Bonuses</button></a>
               </td>
             </tr>
           </tbody>

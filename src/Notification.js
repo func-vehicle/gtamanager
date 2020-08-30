@@ -97,7 +97,7 @@ export function useNotifyBusiness(business) {
         }
     }
 
-    function handleShit() {
+    function shouldNotify() {
         // Wheel
         if (business === "wheel") {
             if ((running || businessInfo.notify_while_paused) && !businessInfo.muted && new Date().getTime() - businessInfo.timestamp > 5000) {
@@ -171,7 +171,7 @@ export function useNotifyBusiness(business) {
         }
     }
 
-    useEffect(handleShit, [updateState, running, businessInfo.owned, businessInfo.muted]);
+    useEffect(shouldNotify, [updateState, running, businessInfo.owned, businessInfo.muted]);
 
     return state;
 }
