@@ -25,6 +25,7 @@ import { faArrowLeft, faArrowRight, faMinus, faPlus } from '@fortawesome/free-so
 import Patchnotes, { patchArray } from './Patchnotes';
 import { defaultUserInfo, shouldUpdate, updateUserInfo, staticInfo } from './InfoContext';
 import { inRange, isInteger, capitalize } from './Utility';
+import { notify } from './Notification';
 
 export const PopupPushDenied = (props) => {
 
@@ -238,6 +239,25 @@ export const PopupSetupMain = connect((state) => {
     }));
   }
 
+  async function togglePushNotifications(e) {
+    let permission = await notify.authorize();
+    if (permission === "granted") {
+      let pushAllowed = !state.push_notifications;
+      setState((previousState) => update(previousState, {
+        push_notifications: {$set: pushAllowed}
+      }));
+      if (pushAllowed) {
+        notify.show("Testing Push Notifications", "If you can see this, you're good to go.", "forgery");
+      }
+    }
+    else if (permission === "denied" || permission === "default") {
+      setState((previousState) => update(previousState, {
+        push_notifications: {$set: false}
+      }));
+      dispatch(pushPopup("PopupPushDenied"));
+    }
+  }
+
   function setProgressStyle(e) {
     let newValue = parseInt(e.target.dataset.value);
     setState((previousState) => update(previousState, {
@@ -335,7 +355,7 @@ export const PopupSetupMain = connect((state) => {
             <tr>
               <td>Notifications:</td>
               <td className="fsz">
-                  <button className="button blue off" data-value="push">Push notifications</button>
+                  <button onClick={togglePushNotifications} className={"button blue" + (state.push_notifications ? "" : " off")} data-value="push">Push notifications</button>
               </td>
             </tr>
             <tr>

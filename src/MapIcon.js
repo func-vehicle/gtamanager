@@ -5,8 +5,7 @@ import {
 } from './redux/userInfoSlice';
 
 import blank from './img/blank.png';
-import { staticInfo } from './InfoContext';
-import { capitalize } from './Utility';
+import { useNotifyBusiness } from './Notification';
 
 const mapStateToProps = (state, ownProps) => {
   let businessInfo = state.userInfo[ownProps.business];
@@ -14,45 +13,9 @@ const mapStateToProps = (state, ownProps) => {
   let newProps = {
     owned: businessInfo.owned,
     muted: businessInfo.muted,
+    audioEnabled: state.userInfo.settings.audio.enabled,
     position: businessInfo.map_position,
-    notify: false,
-  }
-
-  // TODO: only works if redraws at right time
-  if (ownProps.business === "wheel" && (state.session.running || businessInfo.notify_while_paused)) {
-    if (new Date().getTime() - businessInfo.timestamp > 5000) {
-      newProps.notify = state.session.updateState;
-      return newProps;
-    }
-  }
-
-  if (!newProps.owned || !state.session.running) {
-    return newProps;
-  }
-
-  else if (["bunker", "coke", "meth", "cash", "weed", "forgery"].includes(ownProps.business)) {
-    let upgradeIndex = (businessInfo.upgrades.equipment ? 1 : 0) + (businessInfo.upgrades.staff ? 1 : 0);
-    for (let resource of staticInfo[ownProps.business].resources) {
-      if (resource === "supplies") {
-        if (businessInfo[resource] <= 0) {
-          newProps.notify = state.session.updateState;
-          return newProps;
-        }
-      }
-      else if (businessInfo[resource] >= staticInfo[ownProps.business]["max"+capitalize(resource)][upgradeIndex]) {
-        newProps.notify = state.session.updateState;
-        return newProps;
-      }
-    }
-  }
-  else if (ownProps.business === "nightclub") {
-    let storageFloors = state.userInfo.nightclub.storage_floors;
-    for (let product of staticInfo.nightclub.products) {
-      if (businessInfo[product] > staticInfo[ownProps.business]["max"+capitalize(product)][storageFloors]) {
-        newProps.notify = state.session.updateState;
-        return newProps;
-      }
-    }
+    updateState: state.session.updateState,
   }
   
   return newProps;
@@ -65,6 +28,8 @@ const MapIcon = (props) => {
   function muteBusiness() {
     dispatch(toggleBusinessMuted(props.business));
   }
+
+  let flashState = useNotifyBusiness(props.business) && props.updateState;
   
   let mapIcon = null;
   let muteIcon = null;
@@ -73,7 +38,7 @@ const MapIcon = (props) => {
       <img
         id={props.business + "_map"}
         src={blank}
-        className={"icons icons-map icons-" + props.business + (props.muted != null ? " clickable" : "") + (props.notify ? " flash" : "")}
+        className={"icons icons-map icons-" + props.business + (props.muted != null ? " clickable" : "") + (flashState ? " flash" : "")}
         alt={props.full_name + " icon"}
         style={{
           top: props.position.y + "%",

@@ -63,7 +63,7 @@ const InfoTabContainer = (props) => {
   });
 
   return (
-    <div id="infotab" className="col" ref={ref}>
+    <div id="infotab" ref={ref}>
       <div id="activeBusinesses" className="business-section">
         {Object.keys(business_objects).map((key) => (
           <React.Fragment key={key}>

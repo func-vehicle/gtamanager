@@ -5,6 +5,18 @@ export const slice = createSlice({
   initialState: {
     running: false,
     banner: ["BannerPaused", {}],
+    lastNotified: {
+      general: 0,
+      bunker: 0,
+      coke: 0,
+      meth: 0,
+      cash: 0,
+      weed: 0,
+      forgery: 0,
+      nightclub: 0,
+      importExport: 0,
+      wheel: 0,
+    },
     updateState: false,
   },
   reducers: {
@@ -22,13 +34,16 @@ export const slice = createSlice({
       }
       state.banner = action.payload;
     },
+    setLastNotified: (state, action) => {
+      state.lastNotified[action.payload.type] = action.payload.timestamp;
+    },
     toggleUpdateState: (state) => {
       state.updateState = !state.updateState;
     },
   },
 });
 
-export const { toggleRunning, setBanner, toggleUpdateState } = slice.actions;
+export const { toggleRunning, setBanner, setLastNotified, toggleUpdateState } = slice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This

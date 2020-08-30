@@ -11,8 +11,8 @@ export let defaultUserInfo = {
 			volume: 1,
 			interval: 3,
 		},
-		progress_bar_style: 2,
-		app_style: 1,
+		progress_bar_style: 1,
+		app_style: 0,
 	},
 	bunker: {
 		owned: false,
@@ -22,9 +22,9 @@ export let defaultUserInfo = {
 		supplies: 0,
 		mode: 0,
 		upgrades: {
-			equipment: false,
-			staff: false,
-			security: false
+			equipment: true,
+			staff: true,
+			security: true,
 		},
 		hide_research: false,
 		map_position: {
@@ -35,12 +35,12 @@ export let defaultUserInfo = {
 	coke: {
 		owned: false,
 		muted: true,
-		product: 50,
-		supplies: 20,
+		product: 0,
+		supplies: 0,
 		upgrades: {
-			equipment: false,
-			staff: false,
-			security: false
+			equipment: true,
+			staff: true,
+			security: true,
 		},
 		map_position: {
 			x: 48.94,
@@ -53,9 +53,9 @@ export let defaultUserInfo = {
 		product: 0,
 		supplies: 0,
 		upgrades: {
-			equipment: false,
-			staff: false,
-			security: false
+			equipment: true,
+			staff: true,
+			security: true,
 		},
 		map_position: {
 			x: 47.40,
@@ -68,9 +68,9 @@ export let defaultUserInfo = {
 		product: 0,
 		supplies: 0,
 		upgrades: {
-			equipment: false,
-			staff: false,
-			security: false
+			equipment: true,
+			staff: true,
+			security: true,
 		},
 		map_position: {
 			x: 50.92,
@@ -83,9 +83,9 @@ export let defaultUserInfo = {
 		product: 0,
 		supplies: 0,
 		upgrades: {
-			equipment: false,
-			staff: false,
-			security: false
+			equipment: true,
+			staff: true,
+			security: true,
 		},
 		map_position: {
 			x: 68.87,
@@ -98,9 +98,9 @@ export let defaultUserInfo = {
 		product: 0,
 		supplies: 0,
 		upgrades: {
-			equipment: false,
-			staff: false,
-			security: false
+			equipment: true,
+			staff: true,
+			security: true,
 		},
 		map_position: {
 			x: 59.28,
@@ -128,11 +128,11 @@ export let defaultUserInfo = {
 			copying: false,
 		},
 		upgrades: {
-			equipment: false,
-			staff: false,
-			security: false
+			equipment: true,
+			staff: true,
+			security: true,
 		},
-		storage_floors: 1,
+		storage_floors: 5,
 		map_position: {
 			x: 36.30,
 			y: 76.79,
