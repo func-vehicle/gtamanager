@@ -2,11 +2,14 @@ import React from 'react';
 import { useDispatch, connect } from 'react-redux';
 import {
     setWheelTimestamp,
-} from './redux/userInfoSlice.js';
+} from './redux/userInfoSlice';
 import {
     pushPopup,
     clearStack,
-} from './redux/popupSlice.js';
+} from './redux/popupSlice';
+import {
+    setWheelOnCooldown,
+} from './redux/sessionSlice';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -23,6 +26,10 @@ const mapStateToProps = (state) => {
     }
     if (newProps.owned && new Date().getTime() - newProps.timestamp <= 86400000) {
         // This forces an update every second
+        newProps.updateState = state.session.updateState;
+    }
+    else if (state.session.wheel.onCooldown) {
+        // Force one last update to change button to 'Spin'
         newProps.updateState = state.session.updateState;
     }
     return newProps;
@@ -47,11 +54,13 @@ const TabWheel = (props) => {
         const disableSpin = (new Date().getTime() - props.timestamp <= 86400000);
         let spinString;
         if (disableSpin) {
-            let remainingMs = 86400000 - (new Date().getTime() - props.timestamp)
+            let remainingMs = 86400000 - (new Date().getTime() - props.timestamp);
             spinString = formatTimeString(remainingMs);
+            dispatch(setWheelOnCooldown(true));
         }
         else {
             spinString = "Spin";
+            dispatch(setWheelOnCooldown(false));
         }
 
         content = (
