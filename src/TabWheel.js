@@ -7,9 +7,6 @@ import {
     pushPopup,
     clearStack,
 } from './redux/popupSlice';
-import {
-    setWheelOnCooldown,
-} from './redux/sessionSlice';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -22,16 +19,13 @@ const mapStateToProps = (state) => {
         owned: state.userInfo.wheel.owned,
         timestamp: state.userInfo.wheel.timestamp,
         disableSetup: state.session.banner[0] === "BannerSelectLocation" || state.session.banner[0] === "BannerCustomLocation",
-        updateState: false,
+        updateState: null,
     }
     if (newProps.owned && new Date().getTime() - newProps.timestamp <= 86400000) {
         // This forces an update every second
         newProps.updateState = state.session.updateState;
     }
-    else if (state.session.wheel.onCooldown) {
-        // Force one last update to change button to 'Spin'
-        newProps.updateState = state.session.updateState;
-    }
+
     return newProps;
 }
 
@@ -56,11 +50,9 @@ const TabWheel = (props) => {
         if (disableSpin) {
             let remainingMs = 86400000 - (new Date().getTime() - props.timestamp);
             spinString = formatTimeString(remainingMs);
-            dispatch(setWheelOnCooldown(true));
         }
         else {
             spinString = "Spin";
-            dispatch(setWheelOnCooldown(false));
         }
 
         content = (

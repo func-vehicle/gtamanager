@@ -18,9 +18,6 @@ export const slice = createSlice({
       wheel: 0,
     },
     updateState: false,
-    wheel: {
-      onCooldown: true,
-    },
   },
   reducers: {
     // Redux Toolkit allows us to write "mutating" logic in reducers. It
@@ -43,13 +40,10 @@ export const slice = createSlice({
     toggleUpdateState: (state) => {
       state.updateState = !state.updateState;
     },
-    setWheelOnCooldown: (state, action) => {
-      state.wheel.onCooldown = action.payload;
-    },
   },
 });
 
-export const { toggleRunning, setBanner, setLastNotified, toggleUpdateState, setWheelOnCooldown } = slice.actions;
+export const { toggleRunning, setBanner, setLastNotified, toggleUpdateState } = slice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
