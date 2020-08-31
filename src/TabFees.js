@@ -48,7 +48,9 @@ const TabFees = (props) => {
                 </div>
                 <h1>Daily Fees</h1>
             </div>
-            <button className="button purple" disabled={true}>{sessionString}</button>
+            <div className="content">
+                <button className="button purple" disabled={true}>{sessionString}</button>
+            </div>
         </div>
     );
 }
