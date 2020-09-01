@@ -1,7 +1,7 @@
 import React from 'react';
 
 export let defaultUserInfo = {
-	version: "1.10.2",
+	version: "2.0.0",
 	recentFriday: 0,
 	settings: {
 		hide_unowned: false,
@@ -625,7 +625,7 @@ export function updateUserInfo(userInfo) {
 		userInfo.version = "1.10.2";
   }
   if (userInfo.version === "1.10.2") {
-    if (typeof userInfo.app_style !== undefined) {
+    if (typeof userInfo.app_style !== "undefined") {
       userInfo.settings.app_style = 0;
       delete userInfo.app_style;
     }
