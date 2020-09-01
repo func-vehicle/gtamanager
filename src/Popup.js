@@ -73,8 +73,8 @@ export const PopupNewUser = (props) => {
         the bars to their in game values.</p>
         <p>Whenever you are in a session where businesses run (such as free roam and contact missions), start the manager
         with the button below the map. Pause it when you are no longer in session.</p>
-        <p>Your information will persist between browsing sessions. We recommend you bookmark this page if you are
-        considering using this manager long term.</p>
+        <p>Your information will persist between browsing sessions. You can download this web application for easier use by
+        opening your browser's drop-down menu and pressing 'Add to Home Screen' or 'Install'.</p>
       </div>
       <div className="buttons fsz">
         <button onClick={() => dispatch(popPopup())} className="button red">OK</button>
