@@ -266,9 +266,12 @@ export const patchArray = [
         <div className="indent">
             <h2>Improvements</h2>
             <ul>
-                <li>The business manager now runs on React + Redux instead of custom JavaScript. This should improve performance, as well as fix some bugs and make future updates easier to create.</li>
+                <li>The business manager now runs on React + Redux instead of custom JavaScript. What does this mean for you?</li>
                 <ul>
-                    <li>If you notice any differences, this is likely the reason. Please post any new bugs as a GitHub issue.</li>
+                    <li>This should improve performance, as well as fix some rare bugs.</li>
+                    <li>The application will now run offline, and some browsers will allow you to 'install' this web application for this purpose.</li>
+                    <li>Future updates will be easier to create.</li>
+                    <li>If you notice any new bugs, please post them as a GitHub issue.</li>
                 </ul>
                 <li>New users will now have all upgrades for businesses automatically enabled, and 5 storage floors for the nightclub.</li>
                 <li>The custom location selector now has a confirmation screen, and allows you to swap back to preplaced location selector.</li>
@@ -276,7 +279,7 @@ export const patchArray = [
             </ul>
             <h2>Information</h2>
             <ul>
-                <li>Modifying settings will no longer display the changes live. You now need to press apply to see the changes.</li>
+                <li>Modifying settings will no longer display the changes live in the background. You now need to press apply to see the changes.</li>
             </ul>
             <h2>Fixes</h2>
             <ul>
