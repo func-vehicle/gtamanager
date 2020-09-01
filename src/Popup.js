@@ -83,6 +83,25 @@ export const PopupNewUser = (props) => {
   );
 }
 
+export const PopupUpdateAvailable = (props) => {
+
+  const dispatch = useDispatch();
+
+  return (
+    <div id="updateAvailable">
+      <div className="heading">
+        <h1>Update</h1>
+      </div>
+      <div className="main">
+        <p>An update is available to the business manager.</p>
+      </div>
+      <div className="buttons fsz">
+        <button onClick={() => dispatch(popPopup())} className="button red">OK</button>
+      </div>
+  </div>
+  );
+}
+
 export const PopupPatchnotes = (props) => {
 
   const dispatch = useDispatch();
@@ -1324,6 +1343,7 @@ export const PopupSetupWheel = connect((state) => {
 const stringElementMap = {
   PopupPushDenied,
   PopupNewUser,
+  PopupUpdateAvailable,
   PopupPatchnotes,
   PopupNewWeek,
   PopupPaused,
