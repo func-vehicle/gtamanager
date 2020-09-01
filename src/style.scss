@@ -239,6 +239,7 @@ input {
 }
 #map {
     position: relative;
+    overflow: hidden;
 
     & #bg {
         max-height: 100vh;

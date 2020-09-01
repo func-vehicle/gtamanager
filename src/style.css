@@ -219,6 +219,7 @@ input[type=range]::-ms-thumb {
 
 #map {
   position: relative;
+  overflow: hidden;
 }
 #map #bg {
   max-height: 100vh;
