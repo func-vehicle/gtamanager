@@ -273,7 +273,7 @@ export const patchArray = [
                     <li>Future updates will be easier to create.</li>
                     <li>If you notice any new bugs, please post them as a GitHub issue.</li>
                 </ul>
-                <li>New users will now have all upgrades for businesses automatically enabled, and 5 storage floors for the nightclub.</li>
+                <li>New users will now have all upgrades for businesses automatically enabled, and 5 storage floors for the Nightclub.</li>
                 <li>The custom location selector now has a confirmation screen, and allows you to swap back to preplaced location selector.</li>
                 <li>Added link to view weekly bonuses in the main setup.</li>
             </ul>

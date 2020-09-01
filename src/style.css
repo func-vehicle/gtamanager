@@ -22,8 +22,6 @@ body {
   scrollbar-color: #7f7f7f white;
   /* thumb and track color */
   scrollbar-width: thin;
-  -ms-overflow-style: none;
-  /* IE 10+ */
 }
 body.desktop {
   overflow-x: hidden;

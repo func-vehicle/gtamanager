@@ -4,7 +4,7 @@
 $default-font-size: 16px;
 
 * {
-	box-sizing: border-box;
+    box-sizing: border-box;
 }
 html {
 	height: 100%;
@@ -23,7 +23,6 @@ body {
     overflow-y: scroll;
     scrollbar-color: #7f7f7f white; /* thumb and track color */
     scrollbar-width: thin;
-    -ms-overflow-style: none; /* IE 10+ */
 
     &.desktop {
         overflow-x: hidden;
