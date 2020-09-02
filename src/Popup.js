@@ -87,16 +87,22 @@ export const PopupUpdateAvailable = (props) => {
 
   const dispatch = useDispatch();
 
+  function applyUpdate() {
+    window.location.reload();
+  }
+
   return (
     <div id="updateAvailable">
       <div className="heading">
         <h1>Update</h1>
       </div>
       <div className="main">
-        <p>An update is available to the business manager.</p>
+        <p>An update is available to the business manager. Click 'Yes' to apply to update now, or 'No' to apply the update
+        the next time you load the manager.</p>
       </div>
       <div className="buttons fsz">
-        <button onClick={() => dispatch(popPopup())} className="button red">OK</button>
+        <button onClick={applyUpdate} className="button red">Yes</button>
+        <button onClick={() => dispatch(popPopup())} className="button red">No</button>
       </div>
   </div>
   );
