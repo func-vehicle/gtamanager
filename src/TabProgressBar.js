@@ -16,6 +16,9 @@ const mapStateToProps = (state, ownProps) => {
     if (ownProps.business === "nightclub") {
         newProps.storageFloors = state.userInfo.nightclub.storage_floors;
     }
+    else if (ownProps.business === "bunker") {
+        newProps.mode = state.userInfo.bunker.mode;
+    }
     return newProps;
 }
 
@@ -48,7 +51,22 @@ const TabProgressBarElement = (props) => {
         }
         else {
             const upgradeIndex = (props.upgrades.equipment ? 1 : 0) + (props.upgrades.staff ? 1 : 0);
-            return portion * staticInfo[props.business]["max"+capitalize(props.type)][upgradeIndex] * (60*1000);
+            // TODO: truly awful
+            let factor = 1;
+            if (props.business === "bunker") {
+                if (props.mode === 1 && props.type !== "supplies") {
+                    factor = 2;
+                }
+                else if (props.mode > 0 && props.type === "supplies") {
+                    if (props.mode === 1) {
+                        factor = (staticInfo["bunker"]["maxResearchSupplies"][upgradeIndex]/staticInfo["bunker"]["maxSupplies"][upgradeIndex] + 1)/2;
+                    }
+                    else {
+                        factor = staticInfo["bunker"]["maxResearchSupplies"][upgradeIndex]/staticInfo["bunker"]["maxSupplies"][upgradeIndex];
+                    }
+                }
+            }
+            return portion * staticInfo[props.business]["max"+capitalize(props.type)][upgradeIndex] * (60*1000) * factor;
         }
     }
 
