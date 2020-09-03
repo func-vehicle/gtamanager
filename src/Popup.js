@@ -193,6 +193,7 @@ export const PopupSetupMain = connect((state) => {
 
   let workingInfo = props.userInfo.settings;
   const [state, setState] = useState(workingInfo);
+  const [lastPlayed, setLastPlayed] = useState(0);
 
   function validateIndividual(e) {
     e.persist();
@@ -280,6 +281,18 @@ export const PopupSetupMain = connect((state) => {
         push_notifications: {$set: false}
       }));
       dispatch(pushPopup("PopupPushDenied"));
+    }
+  }
+
+  function setAudioVolume(e) {
+    validateIndividual(e);
+    let now = new Date().getTime();
+    if (now - lastPlayed > 1000) {
+      setLastPlayed(now);
+      const audio = new Audio(process.env.PUBLIC_URL + "/sfx/chime.mp3");
+      let volume = parseFloat(e.target.value);
+      audio.volume = volume;
+      audio.play();
     }
   }
 
@@ -395,7 +408,7 @@ export const PopupSetupMain = connect((state) => {
             <tr>
               <td>Audio volume:</td>
               <td className="onechoice">
-                  <input type="range" name="volume" onChange={validateIndividual} value={state.audio.volume} min="0" max="1" step="0.01" />
+                  <input type="range" name="volume" onChange={setAudioVolume} value={state.audio.volume} min="0" max="1" step="0.01" />
                   <span>{Math.round(state.audio.volume*100)}%</span>
               </td>
             </tr>
