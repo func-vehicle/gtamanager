@@ -1056,7 +1056,6 @@ $(document).ready(function() {
 		let input = $(event.target);
 		if (input.attr("type") == "number") {
 			let current = parseInt(input.val(), 10);
-			console.log(current);
 			if (isNaN(current)) {
 				input.parent().addClass("invalid-value");
 				return false
