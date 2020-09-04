@@ -533,6 +533,9 @@ input[type=range]::-ms-thumb {
   padding: 0 5px 0 0;
   color: #FFF;
 }
+#notification td {
+  vertical-align: middle;
+}
 #notification td:first-child {
   vertical-align: top;
   padding-top: 10px;
