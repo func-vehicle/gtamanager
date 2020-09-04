@@ -1,7 +1,7 @@
 {
   "name": "gtamanager",
   "version": "2.0.0",
-  "homepage": "http://func-vehicle.github.io/gtamanager-react",
+  "homepage": "http://func-vehicle.github.io/gtamanager",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
