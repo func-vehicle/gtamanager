@@ -8,6 +8,19 @@ import {
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 
+// Multiple instance check
+localStorage.openPages = Date.now();
+var onLocalStorageEvent = function(e) {
+  if (e.key === "openPages") {
+    // Listen if anybody else opening the same page!
+    localStorage.pageAvailable = Date.now();
+  }
+  if (e.key === "pageAvailable") {
+    alert("Warning: you have multiple tabs of the business manager open. Ensure you only have one open at a time.");
+  }
+};
+window.addEventListener('storage', onLocalStorageEvent, false);
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
