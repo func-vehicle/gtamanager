@@ -1,0 +1,36 @@
+{
+  "files": {
+    "main.css": "/gtamanager/static/css/main.744b776d.chunk.css",
+    "main.js": "/gtamanager/static/js/main.1e85e45e.chunk.js",
+    "main.js.map": "/gtamanager/static/js/main.1e85e45e.chunk.js.map",
+    "runtime-main.js": "/gtamanager/static/js/runtime-main.26897959.js",
+    "runtime-main.js.map": "/gtamanager/static/js/runtime-main.26897959.js.map",
+    "static/js/2.47c5a8c1.chunk.js": "/gtamanager/static/js/2.47c5a8c1.chunk.js",
+    "static/js/2.47c5a8c1.chunk.js.map": "/gtamanager/static/js/2.47c5a8c1.chunk.js.map",
+    "index.html": "/gtamanager/index.html",
+    "precache-manifest.399984d5f145a4e938c5e4af4c2797da.js": "/gtamanager/precache-manifest.399984d5f145a4e938c5e4af4c2797da.js",
+    "service-worker.js": "/gtamanager/service-worker.js",
+    "static/css/main.744b776d.chunk.css.map": "/gtamanager/static/css/main.744b776d.chunk.css.map",
+    "static/js/2.47c5a8c1.chunk.js.LICENSE.txt": "/gtamanager/static/js/2.47c5a8c1.chunk.js.LICENSE.txt",
+    "static/media/bg-1024.jpg": "/gtamanager/static/media/bg-1024.bbcf4c12.jpg",
+    "static/media/bg-2048.jpg": "/gtamanager/static/media/bg-2048.95559e28.jpg",
+    "static/media/bg-512.jpg": "/gtamanager/static/media/bg-512.20970123.jpg",
+    "static/media/blank.png": "/gtamanager/static/media/blank.cc6c3b1a.png",
+    "static/media/bunker.png": "/gtamanager/static/media/bunker.33c1b682.png",
+    "static/media/cash.png": "/gtamanager/static/media/cash.f614bc8a.png",
+    "static/media/coke.png": "/gtamanager/static/media/coke.4c62c747.png",
+    "static/media/forgery.png": "/gtamanager/static/media/forgery.b96d36fd.png",
+    "static/media/import.png": "/gtamanager/static/media/import.a68515e9.png",
+    "static/media/meth.png": "/gtamanager/static/media/meth.c6ae9d8a.png",
+    "static/media/nightclub.png": "/gtamanager/static/media/nightclub.87425e7e.png",
+    "static/media/style.css": "/gtamanager/static/media/spritesheet.d910e92b.png",
+    "static/media/weed.png": "/gtamanager/static/media/weed.9d54898c.png",
+    "static/media/wheel.png": "/gtamanager/static/media/wheel.fbdff46b.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.26897959.js",
+    "static/js/2.47c5a8c1.chunk.js",
+    "static/css/main.744b776d.chunk.css",
+    "static/js/main.1e85e45e.chunk.js"
+  ]
+}
