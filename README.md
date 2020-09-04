@@ -7,8 +7,8 @@ levels in GTA Online. It simulates the businesses and notifies you when one need
 
 ### Using the Business Manager
 
-To begin, click the cog of a business on the right to set it up. Product and supply bars can be set by dragging
-the bars to their in game values. Then, whenever you are in a session where businesses run (such as free roam
+To begin, click the cog of a business tab to set it up. Product and supply bars can be set by dragging the
+bars to their in game values. Then, whenever you are in a session where businesses run (such as free roam
 and contact missions), start the manager using the button near the map. Pause it when you are no longer in a
 session. Your information will persist between browsing sessions.
 
