@@ -150,3 +150,19 @@ export function formatTimeString(ms, maxFigures) {
   s = s.slice(0, s.length - 1);
   return s;
 }
+
+export function findRecentWeekly() {
+  // The weekly bonuses update at Thursday 10AM UTC
+  var recentWeekly = new Date();
+  // Use last week if Thursday today but before 10AM UTC
+  if (recentWeekly.getUTCDay() === 4 && recentWeekly.getUTCHours() < 10) {
+    recentWeekly.setUTCDate(recentWeekly.getUTCDate() - 7);
+  }
+  // Find recent Thursday
+  while (recentWeekly.getUTCDay() !== 4) {
+    recentWeekly.setUTCDate(recentWeekly.getUTCDate() - 1);
+  }
+  // Set time to 10AM UTC
+  recentWeekly.setUTCHours(10, 0, 0, 0);
+  return recentWeekly;
+}
