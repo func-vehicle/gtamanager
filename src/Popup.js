@@ -47,6 +47,27 @@ export const PopupPushDenied = (props) => {
   );
 }
 
+export const PopupMultipleTabs = (props) => {
+
+  const dispatch = useDispatch();
+
+  return (
+    <div id="pushDeniedNotice">
+      <div className="heading">
+        <h1>Warning</h1>
+      </div>
+      <div className="main">
+        <p>You have multiple tabs of the business manager open. Ensure you only have one open at a time.</p>
+        <p>If you are receiving this message after installing the Business Manager as a PWA, close the tab
+        in your browser.</p>
+      </div>
+      <div className="buttons fsz">
+        <button onClick={() => dispatch(popPopup())} className="button red">OK</button>
+      </div>
+    </div>
+  );
+}
+
 export const PopupNewUser = (props) => {
 
   const dispatch = useDispatch();
@@ -1361,6 +1382,7 @@ export const PopupSetupWheel = connect((state) => {
 
 const stringElementMap = {
   PopupPushDenied,
+  PopupMultipleTabs,
   PopupNewUser,
   PopupUpdateAvailable,
   PopupPatchnotes,
