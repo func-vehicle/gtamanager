@@ -1122,7 +1122,7 @@ export const PopupSetupNightclub = connect((state, ownProps) => {
             <tr>
               <td>Map location:</td>
               <td className="fsz">
-                <button onClick={setLocation} className="button blue">Set Location</button>
+                <button onClick={setLocation} disabled={!state.owned} className="button blue">Set Location</button>
               </td>
             </tr>
             <tr>
@@ -1247,6 +1247,11 @@ export const PopupSetupImportExport = connect((state) => {
     }));
   }
 
+  function setLocation(e) {
+    dispatch(configureLocationSetter("importExport"));
+    dispatch(setBanner("BannerSelectLocation"));
+  }
+
   function resetCooldown(e) {
     setState((previousState) => update(previousState, {
       cooldown: {$set: 0}
@@ -1276,7 +1281,7 @@ export const PopupSetupImportExport = connect((state) => {
             <tr>
               <td>Map location:</td>
               <td className="fsz">
-                <button className="button blue">Set Location</button>
+                <button  onClick={setLocation} disabled={!state.owned} className="button blue">Set Location</button>
               </td>
             </tr>
             <tr>

@@ -37,7 +37,7 @@ let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 let recentWeekly = findRecentWeekly();
 if (userInfo == null) {
   userInfo = {...defaultUserInfo};
-  userInfo.recentFriday = recentWeekly.toUTCString();
+  userInfo.recentWeekly = recentWeekly.toUTCString();
   store.dispatch(pushPopup("PopupNewUser"));
 }
 else {
@@ -45,8 +45,8 @@ else {
     userInfo = updateUserInfo(userInfo);
     store.dispatch(unshiftPopup("PopupPatchnotes"));
   }
-  if (recentWeekly.toUTCString() !== userInfo.recentFriday) {
-    userInfo.recentFriday = recentWeekly.toUTCString();
+  if (recentWeekly.toUTCString() !== userInfo.recentWeekly) {
+    userInfo.recentWeekly = recentWeekly.toUTCString();
     store.dispatch(unshiftPopup("PopupNewWeek"));
   }
   store.dispatch(unshiftPopup("PopupPaused"));

@@ -1,8 +1,8 @@
 import React from 'react';
 
 export let defaultUserInfo = {
-	version: "2.0.0",
-	recentFriday: 0,
+	version: "2.0.1",
+	recentWeekly: 0,
 	settings: {
 		hide_unowned: false,
 		push_notifications: false,
@@ -630,6 +630,11 @@ export function updateUserInfo(userInfo) {
       delete userInfo.app_style;
     }
     userInfo.version = "2.0.0";
+  }
+  if (userInfo.version === "2.0.0") {
+	userInfo.recentWeekly = userInfo.recentFriday;
+	delete userInfo.recentFriday;
+	userInfo.version = "2.0.1";
   }
   return userInfo;
 }
