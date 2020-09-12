@@ -21,12 +21,12 @@ export let defaultUserInfo = {
 		research: 0,
 		supplies: 0,
 		mode: 0,
+		show_all: true,
 		upgrades: {
 			equipment: true,
 			staff: true,
 			security: true,
 		},
-		hide_research: false,
 		map_position: {
 			x: 58.47,
 			y: 49.49,
@@ -110,7 +110,7 @@ export let defaultUserInfo = {
 	nightclub: {
 		owned: false,
 		muted: false,
-		sidebar: true,
+		show_all: true,
 		cargo: 0,
 		sporting: 0,
 		imports: 0,
@@ -634,6 +634,16 @@ export function updateUserInfo(userInfo) {
   if (userInfo.version === "2.0.0") {
 	userInfo.recentWeekly = userInfo.recentFriday;
 	delete userInfo.recentFriday;
+	userInfo.bunker.show_all = !userInfo.bunker.hide_research;
+	delete userInfo.bunker.hide_research;
+	if (userInfo.bunker.mode === 1) {
+		userInfo.bunker.mode = 0;
+	}
+	else if (userInfo.bunker.mode === 2) {
+		userInfo.bunker.mode = 1;
+	}
+	userInfo.nightclub.show_all = !userInfo.nightclub.sidebar;
+	delete userInfo.nightclub.sidebar;
 	userInfo.version = "2.0.1";
   }
   return userInfo;

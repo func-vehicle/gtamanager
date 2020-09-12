@@ -144,15 +144,11 @@ export function useNotifyBusiness(business) {
                     setState(true);
                     playAudioIfNecessary();
                     let business_name = staticInfo[business].fullName;
-                    if (business === "bunker" && resource === "research") {
-                        pushNotifyIfNecessary(business, "GTA V Business Manager", "Your Bunker has finished researching an item.");
+                    if (business !== "bunker") {
+                        business_name += " business";
                     }
-                    else {
-                        if (business !== "bunker") {
-                            business_name += " business";
-                        }
-                        pushNotifyIfNecessary(business, "GTA V Business Manager", "Your "+business_name+" has reached maximum product and is ready to sell.");
-                    }
+                    // Bunker research cannot notify as will immediately empty upon filling
+                    pushNotifyIfNecessary(business, "GTA V Business Manager", "Your "+business_name+" has reached maximum product and is ready to sell.");
                     return;
                 }
             }

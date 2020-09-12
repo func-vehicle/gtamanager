@@ -768,18 +768,17 @@ export const PopupSetupBunker = connect((state) => {
     }));
   }
 
-  function toggleHideResearch(e) {
-    let newValue = !state.hide_research;
-    setState((previousState) => update(previousState, {
-      hide_research: {$set: newValue},
-      mode: {$set: 0},
-    }));
-  }
-
   function setMode(e) {
     let newValue = parseInt(e.target.dataset.value, 10);
     setState((previousState) => update(previousState, {
       mode: {$set: newValue}
+    }));
+  }
+
+  function toggleShowing(e) {
+    let newValue = !state.show_all;
+    setState((previousState) => update(previousState, {
+      show_all: {$set: newValue},
     }));
   }
 
@@ -807,20 +806,6 @@ export const PopupSetupBunker = connect((state) => {
     }
     dispatch(setRootObject({ key: "bunker", value: newState }));
     dispatch(popPopup());
-  }
-
-  let modeElement = null;
-  if (!state.hide_research) {
-    modeElement = (
-      <tr>
-        <td>Bunker mode:</td>
-        <td className="onechoice fsz">
-          <button onClick={setMode} disabled={state.mode === 0} className="button orange" data-value="0">Manufacturing</button>
-          <button onClick={setMode} disabled={state.mode === 1} className="button blue" data-value="1">Both</button>
-          <button onClick={setMode} disabled={state.mode === 2} className="button green" data-value="2">Researching</button><br/>
-        </td>
-      </tr>
-    )
   }
 
   return (
@@ -853,13 +838,19 @@ export const PopupSetupBunker = connect((state) => {
               </td>
             </tr>
             <tr>
-              <td>Hide research:</td>
+              <td>Bunker mode:</td>
               <td className="onechoice fsz">
-                <button onClick={toggleHideResearch} disabled={state.hide_research} className="button green">Yes</button>
-                <button onClick={toggleHideResearch} disabled={!state.hide_research} className="button red">No</button>
+                <button onClick={setMode} disabled={state.mode === 0} className="button blue" data-value="0">Manufacturing</button>
+                <button onClick={setMode} disabled={state.mode === 1} className="button green" data-value="1">Researching</button><br/>
               </td>
             </tr>
-            {modeElement}
+            <tr>
+              <td>Display:</td>
+              <td className="onechoice fsz">
+                <button onClick={toggleShowing} disabled={state.show_all} className="button green">Show both</button>
+                <button onClick={toggleShowing} disabled={!state.show_all} className="button orange">Show produced</button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -1070,10 +1061,10 @@ export const PopupSetupNightclub = connect((state, ownProps) => {
     }));
   }
 
-  function toggleShowUnproduced(e) {
-    let newValue = !state.sidebar;
+  function toggleShowing(e) {
+    let newValue = !state.show_all;
     setState((previousState) => update(previousState, {
-      sidebar: {$set: newValue}
+      show_all: {$set: newValue}
     }));
   }
 
@@ -1134,10 +1125,10 @@ export const PopupSetupNightclub = connect((state, ownProps) => {
               </td>
             </tr>
             <tr>
-              <td>Sidebar:</td>
+              <td>Display:</td>
               <td className="onechoice fsz">
-                <button onClick={toggleShowUnproduced} disabled={!state.sidebar} className="button green" data-value="1">Show all</button>
-                <button onClick={toggleShowUnproduced} disabled={state.sidebar} className="button orange" data-value="0">Show produced</button>
+                <button onClick={toggleShowing} disabled={!state.show_all} className="button green" data-value="1">Show all</button>
+                <button onClick={toggleShowing} disabled={state.show_all} className="button orange" data-value="0">Show produced</button>
               </td>
             </tr>
             <tr>
