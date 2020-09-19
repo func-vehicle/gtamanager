@@ -29,28 +29,13 @@ function tick(userInfo) {
       }
     }
     // Research
-    else if (userInfo["bunker"]["mode"] === 2) {
-      maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxResearch"][upgrades] - userInfo["bunker"]["research"]) * 60;
-      secondsRun = Math.min(deltaSec, maxSeconds);
-      if (secondsRun > 0) {
-        userInfo["bunker"]["research"] += secondsRun/60;
-        userInfo["bunker"]["supplies"] -= secondsRun/60 * staticInfo["bunker"]["maxSupplies"][upgrades]/staticInfo["bunker"]["maxResearchSupplies"][upgrades];
-      }
-    }
-    // Both
     else {
-      // TODO: How does the both option even work?
-      maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxProduct"][upgrades] - userInfo["bunker"]["product"]) * 60;
+      maxSeconds = userInfo["bunker"]["supplies"] * staticInfo["bunker"]["maxResearchSupplies"][upgrades]/staticInfo["bunker"]["maxSupplies"][upgrades] * 60;
       secondsRun = Math.min(deltaSec, maxSeconds);
       if (secondsRun > 0) {
-        userInfo["bunker"]["product"] += secondsRun/120;
-        userInfo["bunker"]["supplies"] -= secondsRun/120;
-      }
-      maxSeconds = Math.min(userInfo["bunker"]["supplies"] - 0, staticInfo["bunker"]["maxResearch"][upgrades] - userInfo["bunker"]["research"]) * 60;
-      secondsRun = Math.min(deltaSec, maxSeconds);
-      if (secondsRun > 0) {
-        userInfo["bunker"]["research"] += secondsRun/120;
-        userInfo["bunker"]["supplies"] -= secondsRun/120 * staticInfo["bunker"]["maxSupplies"][upgrades]/staticInfo["bunker"]["maxResearchSupplies"][upgrades];
+        userInfo["bunker"]["research"] += (secondsRun/60);
+        userInfo["bunker"]["research"] %= staticInfo["bunker"]["maxResearch"][upgrades];
+        userInfo["bunker"]["supplies"] -= secondsRun/60 * staticInfo["bunker"]["maxSupplies"][upgrades]/staticInfo["bunker"]["maxResearchSupplies"][upgrades];
       }
     }
   }

@@ -9,6 +9,7 @@ import {
   pushPopup,
   unshiftPopup,
 } from '../redux/popupSlice';
+import { findRecentWeekly } from '../Utility';
 
 const save = store => next => action => {
   let result = next(action);
@@ -33,8 +34,10 @@ const store = configureStore({
 
 // Load userInfo, set initial popups
 let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+let recentWeekly = findRecentWeekly();
 if (userInfo == null) {
   userInfo = {...defaultUserInfo};
+  userInfo.recentWeekly = recentWeekly.toUTCString();
   store.dispatch(pushPopup("PopupNewUser"));
 }
 else {
@@ -42,21 +45,8 @@ else {
     userInfo = updateUserInfo(userInfo);
     store.dispatch(unshiftPopup("PopupPatchnotes"));
   }
-  // Check if new week
-  // This is called "Friday" but actually it's Thursday in UTC
-  var recentFriday = new Date();
-  // Use last Friday if Friday today but before 10AM UTC
-  if (recentFriday.getUTCDay() === 4 && recentFriday.getUTCHours() < 10) {
-    recentFriday.setUTCDate(recentFriday.getUTCDate() - 7);
-  }
-  // Find recent Friday
-  while (recentFriday.getUTCDay() !== 4) {
-    recentFriday.setUTCDate(recentFriday.getUTCDate() - 1);
-  }
-  // Set time to 10AM UTC
-  recentFriday.setUTCHours(10, 0, 0, 0);
-  if (recentFriday.toUTCString() !== userInfo.recentFriday) {
-    userInfo.recentFriday = recentFriday.toUTCString();
+  if (recentWeekly.toUTCString() !== userInfo.recentWeekly) {
+    userInfo.recentWeekly = recentWeekly.toUTCString();
     store.dispatch(unshiftPopup("PopupNewWeek"));
   }
   store.dispatch(unshiftPopup("PopupPaused"));

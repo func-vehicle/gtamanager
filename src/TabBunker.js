@@ -17,7 +17,8 @@ import blank from "./img/blank.png";
 const mapStateToProps = (state) => {
     let newProps = {
         owned: state.userInfo.bunker.owned,
-        hideResearch: state.userInfo.bunker.hide_research,
+        mode: state.userInfo.bunker.mode,
+        showAll: state.userInfo.bunker.show_all,
         upgrades: state.userInfo.bunker.upgrades,
         disableSetup: state.session.banner[0] === "BannerSelectLocation" || state.session.banner[0] === "BannerCustomLocation",
     }
@@ -56,17 +57,27 @@ export const TabBunker = (props) => {
     
     let content = null;
     if (props.owned) {
-        let researchBar = null;
-        if (!props.hideResearch) {
-            researchBar = <TabProgressBar business="bunker" type="research" label="Research" />;
+        let bars = null;
+        if (props.showAll) {
+            bars = (
+                <React.Fragment>
+                    <TabProgressBar business="bunker" type="product" label="Product" />
+                    <TabProgressBar business="bunker" type="research" label="Research" />
+                </React.Fragment>
+            );
+        }
+        else if (props.mode === 0) {
+            bars = <TabProgressBar business="bunker" type="product" label="Product" />;
+        }
+        else {
+            bars = <TabProgressBar business="bunker" type="research" label="Research" />;
         }
 
         content = (
             <div className="content">
                 <table>
                     <tbody>
-                        <TabProgressBar business="bunker" type="product" label="Product" />
-                        {researchBar}
+                        {bars}
                         <TabProgressBar business="bunker" type="supplies" label="Supplies" />
                     </tbody>
                 </table>

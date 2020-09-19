@@ -288,6 +288,34 @@ export const patchArray = [
                 <li>There is no longer a delay when swapping patch notes pages for the first time.</li>
             </ul>
         </div>
+    </div>,
+    <div className="main">
+        <h1>Version 2.0.1</h1>
+        <div className="indent">
+            <h2>Improvements</h2>
+            <ul>
+                <li>Bunker research will now auto-empty and begin researching again like it does in-game, so you don't have to manually empty the bar.</li>
+                <li>The 'Hide research' Bunker option has changed to 'Show produced / Show both', similar to the Nightclub option.</li>
+            </ul>
+            <h2>Information</h2>
+            <ul>
+                <li>The 'Both' Bunker mode has been removed as it was buggy, and was likely incorrect.</li>
+                <ul>
+                    <li>Users on this mode have been moved to Manufacturing.</li>
+                    <li>The most efficient method of researching is to fast-track every item and use your supplies manufacturing instead.</li>
+                </ul>
+                <li>The Bunker will no longer give a notification when a research item is complete, as you will receive a text in-game anyway.</li>
+            </ul>
+            <h2>Fixes</h2>
+            <ul>
+                <li>Fixed the set location buttons for the Nightclub and Import/Export.</li>
+                <li>New users will no longer receive the Weekly Bonus notification on their second visit if they haven't changed since their first visit.</li>
+                <li>Changed the 'Multiple Tabs Open' warning message to be a popup instead, which works better on Firefox Mobile PWA.</li>
+                <ul>
+                    <li>The message also now explains why it pops up after installing the Business Manager as a PWA.</li>
+                </ul>
+            </ul>
+        </div>
     </div>
 ];
 

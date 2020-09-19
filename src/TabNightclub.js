@@ -14,7 +14,7 @@ import blank from "./img/blank.png";
 const mapStateToProps = (state) => {
     let newProps = {
         owned: state.userInfo.nightclub.owned,
-        showUnproduced: state.userInfo.nightclub.sidebar,
+        showAll: state.userInfo.nightclub.show_all,
         producing: state.userInfo.nightclub.producing,
         disableSetup: state.session.banner[0] === "BannerSelectLocation" || state.session.banner[0] === "BannerCustomLocation",
     }
@@ -53,7 +53,7 @@ export const TabNightclub = React.memo((props) => {
                     <tbody>
                         {Object.keys(product_objects).map((key) => (
                             <React.Fragment key={key}>
-                                {(!props.showUnproduced || props.producing[key]) && product_objects[key]}
+                                {(props.showAll || props.producing[key]) && product_objects[key]}
                             </React.Fragment>
                         ))}
                     </tbody>

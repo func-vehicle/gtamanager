@@ -47,6 +47,27 @@ export const PopupPushDenied = (props) => {
   );
 }
 
+export const PopupMultipleTabs = (props) => {
+
+  const dispatch = useDispatch();
+
+  return (
+    <div id="pushDeniedNotice">
+      <div className="heading">
+        <h1>Warning</h1>
+      </div>
+      <div className="main">
+        <p>You have multiple tabs of the business manager open. Ensure you only have one open at a time.</p>
+        <p>If you are receiving this message after installing the Business Manager as a PWA, close the tab
+        in your browser.</p>
+      </div>
+      <div className="buttons fsz">
+        <button onClick={() => dispatch(popPopup())} className="button red">OK</button>
+      </div>
+    </div>
+  );
+}
+
 export const PopupNewUser = (props) => {
 
   const dispatch = useDispatch();
@@ -747,18 +768,17 @@ export const PopupSetupBunker = connect((state) => {
     }));
   }
 
-  function toggleHideResearch(e) {
-    let newValue = !state.hide_research;
-    setState((previousState) => update(previousState, {
-      hide_research: {$set: newValue},
-      mode: {$set: 0},
-    }));
-  }
-
   function setMode(e) {
     let newValue = parseInt(e.target.dataset.value, 10);
     setState((previousState) => update(previousState, {
       mode: {$set: newValue}
+    }));
+  }
+
+  function toggleShowing(e) {
+    let newValue = !state.show_all;
+    setState((previousState) => update(previousState, {
+      show_all: {$set: newValue},
     }));
   }
 
@@ -786,20 +806,6 @@ export const PopupSetupBunker = connect((state) => {
     }
     dispatch(setRootObject({ key: "bunker", value: newState }));
     dispatch(popPopup());
-  }
-
-  let modeElement = null;
-  if (!state.hide_research) {
-    modeElement = (
-      <tr>
-        <td>Bunker mode:</td>
-        <td className="onechoice fsz">
-          <button onClick={setMode} disabled={state.mode === 0} className="button orange" data-value="0">Manufacturing</button>
-          <button onClick={setMode} disabled={state.mode === 1} className="button blue" data-value="1">Both</button>
-          <button onClick={setMode} disabled={state.mode === 2} className="button green" data-value="2">Researching</button><br/>
-        </td>
-      </tr>
-    )
   }
 
   return (
@@ -832,13 +838,19 @@ export const PopupSetupBunker = connect((state) => {
               </td>
             </tr>
             <tr>
-              <td>Hide research:</td>
+              <td>Bunker mode:</td>
               <td className="onechoice fsz">
-                <button onClick={toggleHideResearch} disabled={state.hide_research} className="button green">Yes</button>
-                <button onClick={toggleHideResearch} disabled={!state.hide_research} className="button red">No</button>
+                <button onClick={setMode} disabled={state.mode === 0} className="button blue" data-value="0">Manufacturing</button>
+                <button onClick={setMode} disabled={state.mode === 1} className="button green" data-value="1">Researching</button><br/>
               </td>
             </tr>
-            {modeElement}
+            <tr>
+              <td>Display:</td>
+              <td className="onechoice fsz">
+                <button onClick={toggleShowing} disabled={state.show_all} className="button green">Show both</button>
+                <button onClick={toggleShowing} disabled={!state.show_all} className="button orange">Show produced</button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -1049,10 +1061,10 @@ export const PopupSetupNightclub = connect((state, ownProps) => {
     }));
   }
 
-  function toggleShowUnproduced(e) {
-    let newValue = !state.sidebar;
+  function toggleShowing(e) {
+    let newValue = !state.show_all;
     setState((previousState) => update(previousState, {
-      sidebar: {$set: newValue}
+      show_all: {$set: newValue}
     }));
   }
 
@@ -1101,7 +1113,7 @@ export const PopupSetupNightclub = connect((state, ownProps) => {
             <tr>
               <td>Map location:</td>
               <td className="fsz">
-                <button onClick={setLocation} className="button blue">Set Location</button>
+                <button onClick={setLocation} disabled={!state.owned} className="button blue">Set Location</button>
               </td>
             </tr>
             <tr>
@@ -1113,10 +1125,10 @@ export const PopupSetupNightclub = connect((state, ownProps) => {
               </td>
             </tr>
             <tr>
-              <td>Sidebar:</td>
+              <td>Display:</td>
               <td className="onechoice fsz">
-                <button onClick={toggleShowUnproduced} disabled={!state.sidebar} className="button green" data-value="1">Show all</button>
-                <button onClick={toggleShowUnproduced} disabled={state.sidebar} className="button orange" data-value="0">Show produced</button>
+                <button onClick={toggleShowing} disabled={!state.show_all} className="button green" data-value="1">Show all</button>
+                <button onClick={toggleShowing} disabled={state.show_all} className="button orange" data-value="0">Show produced</button>
               </td>
             </tr>
             <tr>
@@ -1226,6 +1238,11 @@ export const PopupSetupImportExport = connect((state) => {
     }));
   }
 
+  function setLocation(e) {
+    dispatch(configureLocationSetter("importExport"));
+    dispatch(setBanner("BannerSelectLocation"));
+  }
+
   function resetCooldown(e) {
     setState((previousState) => update(previousState, {
       cooldown: {$set: 0}
@@ -1255,7 +1272,7 @@ export const PopupSetupImportExport = connect((state) => {
             <tr>
               <td>Map location:</td>
               <td className="fsz">
-                <button className="button blue">Set Location</button>
+                <button  onClick={setLocation} disabled={!state.owned} className="button blue">Set Location</button>
               </td>
             </tr>
             <tr>
@@ -1361,6 +1378,7 @@ export const PopupSetupWheel = connect((state) => {
 
 const stringElementMap = {
   PopupPushDenied,
+  PopupMultipleTabs,
   PopupNewUser,
   PopupUpdateAvailable,
   PopupPatchnotes,

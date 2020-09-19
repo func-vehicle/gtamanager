@@ -13,6 +13,7 @@ import {
 import {
   toggleUpdateState,
 } from './redux/sessionSlice';
+import { pushPopup } from './redux/popupSlice';
 
 const mapStateToProps = (state) => {
   let newProps = {
@@ -32,6 +33,21 @@ const App = (props) => {
     setInterval(() => {
       dispatch(toggleUpdateState());
     }, 1000);
+  }, [dispatch]);
+
+  // Multiple instance check
+  useEffect(() => {
+    localStorage.openPages = Date.now();
+    var onLocalStorageEvent = function(e) {
+      if (e.key === "openPages") {
+        // Listen if anybody else opening the same page!
+        localStorage.pageAvailable = Date.now();
+      }
+      if (e.key === "pageAvailable") {
+        dispatch(pushPopup("PopupMultipleTabs"));
+      }
+    };
+    window.addEventListener('storage', onLocalStorageEvent, false);
   }, [dispatch]);
 
   // Run tick while running
