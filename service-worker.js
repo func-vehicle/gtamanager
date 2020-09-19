@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/gtamanager/precache-manifest.399984d5f145a4e938c5e4af4c2797da.js"
+  "/gtamanager/precache-manifest.8f90cfdd48484b6f76abc3f9039f91fc.js"
 );
 
 self.addEventListener('message', (event) => {

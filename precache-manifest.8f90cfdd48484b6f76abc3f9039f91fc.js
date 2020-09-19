@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "23b611839f70978a2239f0f096cc3611",
+    "revision": "b5767007da6cbac7e26ca48bfc3846fd",
     "url": "/gtamanager/index.html"
   },
   {
-    "revision": "b044a4b3053fd1f137f4",
+    "revision": "356c75c258c8108def30",
     "url": "/gtamanager/static/css/main.744b776d.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/gtamanager/static/js/2.47c5a8c1.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "b044a4b3053fd1f137f4",
-    "url": "/gtamanager/static/js/main.1e85e45e.chunk.js"
+    "revision": "356c75c258c8108def30",
+    "url": "/gtamanager/static/js/main.5b7aa548.chunk.js"
   },
   {
     "revision": "2ca609044ab3c910c0f3",
