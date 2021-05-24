@@ -8,83 +8,83 @@ import InfoTabContainer from './InfoTabContainer';
 import { useWindowDimensions } from './Utility';
 import Popup from './Popup';
 import {
-  runTick,
+    runTick,
 } from './redux/userInfoSlice';
 import {
-  toggleUpdateState,
+    toggleUpdateState,
 } from './redux/sessionSlice';
 import { pushPopup } from './redux/popupSlice';
 
 const mapStateToProps = (state) => {
-  let newProps = {
-    appStyle: state.userInfo.settings.app_style,
-    running: state.session.running,
-    updateState: state.session.running && state.session.updateState,
-  }
-  return newProps;
+    let newProps = {
+        appStyle: state.userInfo.settings.app_style,
+        running: state.session.running,
+        updateState: state.session.running && state.session.updateState,
+    }
+    return newProps;
 }
 
 const App = (props) => {
 
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-  // Global update interval
-  useEffect(() => {
-    setInterval(() => {
-      dispatch(toggleUpdateState());
-    }, 1000);
-  }, [dispatch]);
+    // Global update interval
+    useEffect(() => {
+        setInterval(() => {
+            dispatch(toggleUpdateState());
+        }, 1000);
+    }, [dispatch]);
 
-  // Multiple instance check
-  useEffect(() => {
-    localStorage.openPages = Date.now();
-    var onLocalStorageEvent = function(e) {
-      if (e.key === "openPages") {
-        // Listen if anybody else opening the same page!
-        localStorage.pageAvailable = Date.now();
-      }
-      if (e.key === "pageAvailable") {
-        dispatch(pushPopup("PopupMultipleTabs"));
-      }
-    };
-    window.addEventListener('storage', onLocalStorageEvent, false);
-  }, [dispatch]);
+    // Multiple instance check
+    useEffect(() => {
+        localStorage.openPages = Date.now();
+        var onLocalStorageEvent = function(e) {
+            if (e.key === "openPages") {
+                // Listen if anybody else opening the same page!
+                localStorage.pageAvailable = Date.now();
+            }
+            if (e.key === "pageAvailable") {
+                dispatch(pushPopup("PopupMultipleTabs"));
+            }
+        };
+        window.addEventListener('storage', onLocalStorageEvent, false);
+    }, [dispatch]);
 
-  // Run tick while running
-  useEffect(() => {
-    if (!props.running) return;
-    dispatch(runTick());
-  }, [dispatch, props.running, props.updateState]);
+    // Run tick while running
+    useEffect(() => {
+        if (!props.running) return;
+        dispatch(runTick());
+    }, [dispatch, props.running, props.updateState]);
 
-  // Use fullscreen popup
-  const {width} = useWindowDimensions();
-  let popupElement = null;
-  let bodyElement = document.body;
-  if (width > 600) {
-    bodyElement.classList.add("desktop");
-    bodyElement.classList.remove("mobile");
-  }
-  else {
-    bodyElement.classList.add("mobile");
-    bodyElement.classList.remove("desktop");
-    popupElement = <Popup width="100%" height="100%" />;
-  }
+    // Use fullscreen popup
+    const {width} = useWindowDimensions();
+    let popupElement = null;
+    let bodyElement = document.body;
+    if (width > 600) {
+        bodyElement.classList.add("desktop");
+        bodyElement.classList.remove("mobile");
+    }
+    else {
+        bodyElement.classList.add("mobile");
+        bodyElement.classList.remove("desktop");
+        popupElement = <Popup width="100%" height="100%" />;
+    }
 
-  // Apply dark mode
-  if (props.appStyle === 1) {
-    bodyElement.classList.add("darkMode");
-  }
-  else {
-    bodyElement.classList.remove("darkMode");
-  }
+    // Apply dark mode
+    if (props.appStyle === 1) {
+        bodyElement.classList.add("darkMode");
+    }
+    else {
+        bodyElement.classList.remove("darkMode");
+    }
 
-  return (
-    <React.Fragment>
-      <Map />
-      <InfoTabContainer />
-      {popupElement}
-    </React.Fragment>
-  );
+    return (
+        <React.Fragment>
+            <Map />
+            <InfoTabContainer />
+            {popupElement}
+        </React.Fragment>
+    );
 }
 
 export default connect(mapStateToProps)(App);

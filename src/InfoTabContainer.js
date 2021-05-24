@@ -10,71 +10,71 @@ import TabFees from './TabFees';
 import { useWindowDimensions, calculateScrollbarWidth, useWidthDetector } from './Utility';
 
 const business_objects = {
-  bunker: <TabBunker />,
-  coke: <TabMCBusiness business="coke" />,
-  meth: <TabMCBusiness business="meth" />,
-  cash: <TabMCBusiness business="cash" />,
-  weed: <TabMCBusiness business="weed" />,
-  forgery: <TabMCBusiness business="forgery" />,
-  nightclub: <TabNightclub />,
-  importExport: <TabImportExport />,
-  wheel: <TabWheel />,
+    bunker: <TabBunker />,
+    coke: <TabMCBusiness business="coke" />,
+    meth: <TabMCBusiness business="meth" />,
+    cash: <TabMCBusiness business="cash" />,
+    weed: <TabMCBusiness business="weed" />,
+    forgery: <TabMCBusiness business="forgery" />,
+    nightclub: <TabNightclub />,
+    importExport: <TabImportExport />,
+    wheel: <TabWheel />,
 }
 
 const mapStateToProps = (state) => {
-  let newProps = {
-    hideUnowned: state.userInfo.settings.hide_unowned,
-  }
-  for (let business of Object.keys(business_objects)) {
-    newProps[business] = state.userInfo[business].owned;
-  }
-  return newProps;
+    let newProps = {
+        hideUnowned: state.userInfo.settings.hide_unowned,
+    }
+    for (let business of Object.keys(business_objects)) {
+        newProps[business] = state.userInfo[business].owned;
+    }
+    return newProps;
 }
 
 const InfoTabContainer = (props) => {
  
-  let inactiveDiv = (
-    <div id="inactiveBusinesses" className="business-section">
-      {Object.keys(business_objects).map((key) => (
-        <React.Fragment key={key}>
-          {!props[key] && business_objects[key]}
-        </React.Fragment>
-      ))}
-    </div>
-  )
+    let inactiveDiv = (
+        <div id="inactiveBusinesses" className="business-section">
+            {Object.keys(business_objects).map((key) => (
+                <React.Fragment key={key}>
+                    {!props[key] && business_objects[key]}
+                </React.Fragment>
+            ))}
+        </div>
+    )
 
-  const ref = React.createRef();
-  const {width} = useWindowDimensions();
+    const ref = React.createRef();
+    const {width} = useWindowDimensions();
 
-  const accomodateScrollbar = () => {
-    if (ref.current == null) {
-      return;
+    const accomodateScrollbar = () => {
+        if (ref.current == null) {
+            return;
+        }
+        if (width <= 600) {
+            ref.current.style.width = null;
+            return;
+        }
+        let scrollWidth = calculateScrollbarWidth(ref.current);
+        ref.current.style.width = 220 + scrollWidth + "px";
     }
-    if (width <= 600) {
-      ref.current.style.width = null;
-      return;
-    }
-    let scrollWidth = calculateScrollbarWidth(ref.current);
-    ref.current.style.width = 220 + scrollWidth + "px";
-  }
 
-  useWidthDetector(ref, () => {
-    accomodateScrollbar();
-  });
+    useWidthDetector(ref, () => {
+        accomodateScrollbar();
+    });
 
-  return (
-    <div id="infotab" ref={ref}>
-      <div id="activeBusinesses" className="business-section">
-        {Object.keys(business_objects).map((key) => (
-          <React.Fragment key={key}>
-            {props[key] && business_objects[key]}
-          </React.Fragment>
-        ))}
-        <TabFees />
-      </div>
-      {!props.hideUnowned && inactiveDiv}
-    </div>
-  );
+    return (
+        <div id="infotab" ref={ref}>
+            <div id="activeBusinesses" className="business-section">
+                {Object.keys(business_objects).map((key) => (
+                    <React.Fragment key={key}>
+                        {props[key] && business_objects[key]}
+                    </React.Fragment>
+                ))}
+                <TabFees />
+            </div>
+            {!props.hideUnowned && inactiveDiv}
+        </div>
+    );
 }
 
 export default connect(mapStateToProps)(InfoTabContainer);

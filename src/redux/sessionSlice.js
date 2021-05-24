@@ -1,46 +1,46 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const slice = createSlice({
-  name: 'session',
-  initialState: {
-    running: false,
-    banner: ["BannerPaused", {}],
-    lastNotified: {
-      general: 0,
-      bunker: 0,
-      coke: 0,
-      meth: 0,
-      cash: 0,
-      weed: 0,
-      forgery: 0,
-      nightclub: 0,
-      importExport: 0,
-      wheel: 0,
+    name: 'session',
+    initialState: {
+        running: false,
+        banner: ["BannerPaused", {}],
+        lastNotified: {
+            general: 0,
+            bunker: 0,
+            coke: 0,
+            meth: 0,
+            cash: 0,
+            weed: 0,
+            forgery: 0,
+            nightclub: 0,
+            importExport: 0,
+            wheel: 0,
+        },
+        updateState: false,
     },
-    updateState: false,
-  },
-  reducers: {
-    // Redux Toolkit allows us to write "mutating" logic in reducers. It
-    // doesn't actually mutate the state because it uses the immer library,
-    // which detects changes to a "draft state" and produces a brand new
-    // immutable state based off those changes
-    // func_vehicle: Can reassign state by returning new state
-    toggleRunning: (state) => {
-      state.running = !state.running;
+    reducers: {
+        // Redux Toolkit allows us to write "mutating" logic in reducers. It
+        // doesn't actually mutate the state because it uses the immer library,
+        // which detects changes to a "draft state" and produces a brand new
+        // immutable state based off those changes
+        // func_vehicle: Can reassign state by returning new state
+        toggleRunning: (state) => {
+            state.running = !state.running;
+        },
+        setBanner: (state, action) => {
+            if (!Array.isArray(action.payload)) {
+                action.payload = [action.payload, {}];
+            }
+            state.banner = action.payload;
+        },
+        setLastNotified: (state, action) => {
+            state.lastNotified[action.payload.type] = action.payload.timestamp;
+        },
+        toggleUpdateState: (state) => {
+            state.updateState = !state.updateState;
+        },
     },
-    setBanner: (state, action) => {
-      if (!Array.isArray(action.payload)) {
-        action.payload = [action.payload, {}];
-      }
-      state.banner = action.payload;
-    },
-    setLastNotified: (state, action) => {
-      state.lastNotified[action.payload.type] = action.payload.timestamp;
-    },
-    toggleUpdateState: (state) => {
-      state.updateState = !state.updateState;
-    },
-  },
 });
 
 export const { toggleRunning, setBanner, setLastNotified, toggleUpdateState } = slice.actions;
