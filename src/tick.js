@@ -46,11 +46,23 @@ function tick(userInfo) {
             let business = mcbusinesses[i];
             let upgrades = (userInfo[business].upgrades.equipment ? 1 : 0) + (userInfo[business].upgrades.staff ? 1 : 0);
             if (userInfo[business]["owned"]) {
+                    let boosted = userInfo[business]["boost"] > 0;
+                    let timeMultiplier = 1;
+
+                    if (boosted) {
+                        timeMultiplier = staticInfo[business]["boostMultiplier"];
+                    }
+                    
                     maxSeconds = Math.min(userInfo[business]["supplies"] - 0, staticInfo[business]["maxProduct"][upgrades] - userInfo[business]["product"]) * 60;
-                    secondsRun = Math.min(deltaSec, maxSeconds);
+                    secondsRun = Math.min(deltaSec * timeMultiplier, maxSeconds);
+                    
                     if (secondsRun > 0) {
                             userInfo[business]["product"] += secondsRun/60;
                             userInfo[business]["supplies"] -= secondsRun/60;
+                            
+                            if (boosted) {
+                                userInfo[business]["boost"] = Math.max(userInfo[business]["boost"] - secondsRun/60, 0);
+                            }
                     }
             }
     }

@@ -7,7 +7,7 @@ $default-font-size: 16px;
     box-sizing: border-box;
 }
 html {
-	height: 100%;
+    height: 100%;
 }
 body {
     line-height: 1.15;
@@ -48,35 +48,35 @@ body {
     }
 }
 .desktop .mobile-only, .mobile .desktop-only {
-	display: none !important;
+    display: none !important;
 }
 .button {
-	margin-right: 5px;
-	border: none;
-	color: white;
-	padding: 5px 15px;
-	text-align: center;
-	text-decoration: none;
-	display: inline-block;
-	font-size: 16px;
-	cursor: pointer;
-	outline: none;
+    margin-right: 5px;
+    border: none;
+    color: white;
+    padding: 5px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
 
     &:last-child {
         margin-right: 0;
     }
 
     &:hover {
-	    opacity: 0.90;
+        opacity: 0.90;
     }
 
     &:active {
-	    opacity: 0.70;
+        opacity: 0.70;
     }
 
     &:disabled {
         opacity: 0.60;
-	    cursor: unset;
+        cursor: unset;
     }
 
     &.green {
@@ -88,15 +88,15 @@ body {
     }
 
     &.red {
-	    background-color: #CC212C;
+        background-color: #CC212C;
     }
 
     &.orange {
-	    background-color: #FF6421;
+        background-color: #FF6421;
     }
 
     &.purple {
-	    background-color: #9B32A8;
+        background-color: #9B32A8;
     }
 
     &.white {
@@ -114,13 +114,13 @@ body {
 }
 /* Input */
 input {
-	border: 1px solid #FFF;
-	color: #FFF;
-	background-color: #000;
+    border: 1px solid #FFF;
+    color: #FFF;
+    background-color: #000;
     font-size: $default-font-size;
-	padding: 5px 10px;
-	width: 100px;
-	outline: none;
+    padding: 5px 10px;
+    width: 100px;
+    outline: none;
 
     .invalid-value &, .incDecButtons.invalid-value & {
         border-color: #CC212C;
@@ -140,13 +140,13 @@ input {
     /* Slider input */
     &[type=range] {
         /* Generic */
-        -webkit-appearance: none;	/* Hides the slider so that custom slider can be made */
-	    width: 110px;				/* Specific width is required for Firefox */
-	    height: 30px;
-	    background: transparent;	/* Otherwise white in Chrome */
-	    border: 0;
-	    margin: 0;
-	    padding: 5px 0;
+        -webkit-appearance: none;   /* Hides the slider so that custom slider can be made */
+        width: 110px;               /* Specific width is required for Firefox */
+        height: 30px;
+        background: transparent;    /* Otherwise white in Chrome */
+        border: 0;
+        margin: 0;
+        padding: 5px 0;
 
         &:focus {
             outline: none;
@@ -160,9 +160,9 @@ input {
             width: 100%;
             cursor: pointer;
             box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-	        background: #222;
-	        border-radius: 1.3px;
-	        border: 1px solid #FFF;
+            background: #222;
+            border-radius: 1.3px;
+            border: 1px solid #FFF;
         }
 
         @mixin slider-thumb {
@@ -183,7 +183,7 @@ input {
             &thumb {
                 -webkit-appearance: none;
                 @include slider-thumb;
-	            margin-top: -($input-height - $track-height)/2 - 1px; /* Must specify for Webkit */
+                margin-top: -($input-height - $track-height)/2 - 1px; /* Must specify for Webkit */
             }
         }
 
@@ -221,10 +221,10 @@ input {
 
 /* WRAPPER */
 #root {
-	display: flex;
+    display: flex;
 
     .desktop & {
-	    flex-direction: row;
+        flex-direction: row;
     }
 
     .mobile & {
@@ -256,22 +256,27 @@ input {
     }
 }
 .icons {
-	background-image: url(img/spritesheet.png);
-	background-repeat: no-repeat;
-	display: block;
+    background-image: url(img/spritesheet.png);
+    background-repeat: no-repeat;
+    display: block;
 }
 .icons-map {
-	/* 32x32 */
-	width: 64px;
-	height: 64px;
-	margin-top: -32px;
-	margin-left: -32px;
-	transform: scale(0.5);
-	position: absolute;
+    /* 32x32 */
+    width: 64px;
+    height: 64px;
+    margin-top: -32px;
+    margin-left: -32px;
+    transform: scale(0.5);
+    position: absolute;
 
-    &.flash {
+    &.flashRed {
         -webkit-filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8);
-	    filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8);
+        filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8);
+    }
+    
+    &.flashGreen {
+        -webkit-filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(50deg) saturate(600%) contrast(0.8);
+        filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(50deg) saturate(600%) contrast(0.8);
     }
 
     &.clickable {
@@ -279,61 +284,64 @@ input {
     }
 }
 .icons-mute {
-	transform: scale(0.375);
-	position: absolute;
-	pointer-events: none;
-	background-position: -67px -133px;
+    transform: scale(0.375);
+    position: absolute;
+    pointer-events: none;
+    background-position: -67px -133px;
 }
 .icons-placing {
     pointer-events: none;
 }
 .icons-bunker {
-	background-position: -1px -1px;
+    background-position: -1px -1px;
 }
 .icons-cash {
-	background-position: -67px -1px;
+    background-position: -67px -1px;
 }
 .icons-coke {
-	background-position: -133px -1px;
+    background-position: -133px -1px;
 }
 .icons-fees {
-	background-position: -1px -67px;
+    background-position: -1px -67px;
 }
 .icons-forgery {
-	background-position: -67px -67px;
+    background-position: -67px -67px;
+}
+.icons-acid {
+    background-position: -199px -133px;
 }
 .icons-importExport {
-	background-position: -133px -67px;
+    background-position: -133px -67px;
 }
 .icons-meth {
-	background-position: -1px -133px;
+    background-position: -1px -133px;
 }
 .icons-nightclub {
-	width: 60px;
-	height: 60px;
-	background-position: -133px -133px;
+    width: 60px;
+    height: 60px;
+    background-position: -133px -133px;
 }
 .icons-weed {
-	background-position: -199px -1px;
+    background-position: -199px -1px;
 }
 .icons-wheel {
-	background-position: -199px -67px;
+    background-position: -199px -67px;
 }
 .faded {
     opacity: 0.6;
 }
 #mini_notif {
-	background-color: #000;
-	border: 1px solid #CC212C;
-	position: absolute;
-	color: white;
-	padding: 5px;
-	margin: 5px;
-	width: 400px;
-	max-width: calc(100% - 10px);
-	top: 15px;
-	left: 50%;
-	transform: translate(calc(-50% - 5px), 0);
+    background-color: #000;
+    border: 1px solid #CC212C;
+    position: absolute;
+    color: white;
+    padding: 5px;
+    margin: 5px;
+    width: 400px;
+    max-width: calc(100% - 10px);
+    top: 15px;
+    left: 50%;
+    transform: translate(calc(-50% - 5px), 0);
     text-align: center;
 
     .has-buttons {
@@ -399,14 +407,14 @@ input {
     .desktop & {
         $width: 150px;
         $height: 75px;
-	    background-color: #000;
-	    border: 1px solid #CC212C;
-	    position: absolute;
-	    color: white;
-	    padding: 5px;
-	    width: $width;
-	    height: $height;
-	    top: calc(100% - #{$height + 25px});
+        background-color: #000;
+        border: 1px solid #CC212C;
+        position: absolute;
+        color: white;
+        padding: 5px;
+        width: $width;
+        height: $height;
+        top: calc(100% - #{$height + 25px});
         left: calc(100% - #{$width + 25px});
         
         @media only screen and (max-width: 750px) {
@@ -416,11 +424,11 @@ input {
 
         button {
             height: 29px;
-	        padding: 5px 3px 5px 3px;
+            padding: 5px 3px 5px 3px;
 
             &.toggle {
                 width: 100%;
-	            margin-bottom: 5px;
+                margin-bottom: 5px;
             }
 
             &.audio, &.setup {
@@ -431,9 +439,9 @@ input {
 
     .mobile & {
         margin: 5px 5px 0 5px;
-	    background-color: rgba(0, 0, 0, 0);
-	    padding: 5px;
-	    border: 1px solid #000;
+        background-color: rgba(0, 0, 0, 0);
+        padding: 5px;
+        border: 1px solid #000;
         display: flex;
 
         button {
@@ -447,11 +455,11 @@ input {
 #overlay {
     width: 100%;
     height: 100%;
-	background-color: #000;
-	opacity: 0.75;
+    background-color: #000;
+    opacity: 0.75;
     position: absolute;
     z-index: 1;
-	top: 0;
+    top: 0;
     left: 0;
     
     #root > & {
@@ -459,10 +467,10 @@ input {
     }
 }
 #notification {
-	margin: 5px;
-	background-color: #000;
-	border: 1px solid #CC212C;
-	position: absolute;
+    margin: 5px;
+    background-color: #000;
+    border: 1px solid #CC212C;
+    position: absolute;
     min-height: 200px;
     max-height: calc(100% - 10px);
     z-index: 2;
@@ -470,10 +478,10 @@ input {
     flex-flow: column;
 
     width: 600px;
-	max-width: calc(100% - 10px);
-	/* Center a div of unknown width */
-	top: 50%;
-	left: 50%;
+    max-width: calc(100% - 10px);
+    /* Center a div of unknown width */
+    top: 50%;
+    left: 50%;
     transform: translate(calc(-50% - 5px), calc(-50% - 5px));
     
     #root > & {
@@ -482,26 +490,26 @@ input {
 
     & > div {
         height: 100%;
-	    min-height: 200px;
-	    display: flex;
-	    flex-flow: column;
+        min-height: 200px;
+        display: flex;
+        flex-flow: column;
     }
 
     .heading {
         flex: 0 0 auto;
         width: 100%;
-	    height: 30px;
-	    background-color: #1B1B1B;
-	    padding-left: 5px;
+        height: 30px;
+        background-color: #1B1B1B;
+        padding-left: 5px;
 
         h1 {
             font-size: 1.5em;
-	        color: #FFF;
+            color: #FFF;
         }
 
         * {
             float: left;
-	        display: block;
+            display: block;
         }
     }
 
@@ -510,25 +518,25 @@ input {
 
         .button {
             margin-top: 3px;
-	        margin-right: 3px;
-	        padding: 1px 2px 1px 4px;
-	        height: 24px;
-	        width: 24px;
+            margin-right: 3px;
+            padding: 1px 2px 1px 4px;
+            height: 24px;
+            width: 24px;
         }
     }
 
     .main {
         flex: 1 1 auto;
-	    padding-left: 5px;
-	    padding-right: 5px;
-	    overflow-y: auto;
-	    max-height: 75vh;
-	    padding-bottom: 2px;  /* This fixes scrollbar on Chrome in paragraph dialog */
+        padding-left: 5px;
+        padding-right: 5px;
+        overflow-y: auto;
+        max-height: 75vh;
+        padding-bottom: 2px;  /* This fixes scrollbar on Chrome in paragraph dialog */
 
         h1 {
             padding-top: 3px;
-	        font-size: 1.3em;
-	        color: #FFF;
+            font-size: 1.3em;
+            color: #FFF;
         }
 
         button, input {
@@ -542,36 +550,36 @@ input {
 
     h2 {
         font-size: 1.2em;
-	    padding-top: 5px;
-	    color: #FFF;
+        padding-top: 5px;
+        color: #FFF;
     }
     
     p {
         padding-top: 5px;
-	    color: #FFF;
-	    font-size: 1em;
+        color: #FFF;
+        font-size: 1em;
     }
 
     a {
         color: #FFF;
-	    text-decoration: none;
-	    font-weight: bold;
+        text-decoration: none;
+        font-weight: bold;
     }
 
     ul {
         margin-left: 30px;
-	    color: #FFF;
+        color: #FFF;
     }
 
     li {
         padding: 5px 0 0 0;
-	    color: #FFF;
-	    font-size: 1em;
+        color: #FFF;
+        font-size: 1em;
     }
 
     th, td {
         padding: 0 5px 0 0;
-	    color: #FFF;
+        color: #FFF;
     }
 
     td {
@@ -580,35 +588,35 @@ input {
 
     td:first-child {
         vertical-align: top;
-	    padding-top: 10px;
+        padding-top: 10px;
     }
 
     .buttons {
         padding-bottom: 5px;
         flex: 0 0 auto;
-	    display: flex;
-	    flex-flow: row;
-	    flex-wrap: wrap;
-	    justify-content: center;
+        display: flex;
+        flex-flow: row;
+        flex-wrap: wrap;
+        justify-content: center;
 
         button {
-	        margin-top: 5px;
-	        min-width: 100px;
+            margin-top: 5px;
+            min-width: 100px;
         }
     }
 }
 .incDecButtons {
     input, button {
         border: 1px solid #FFF;
-	    background-color: #000;
-	    color: #FFF;
-	    display: inline-block;
-	    padding: 5px 5px;
-	    border-radius: 0;
-	    height: 30px;
-	    -webkit-appearance: none;
-	    vertical-align: bottom;
-	    margin: 0;
+        background-color: #000;
+        color: #FFF;
+        display: inline-block;
+        padding: 5px 5px;
+        border-radius: 0;
+        height: 30px;
+        -webkit-appearance: none;
+        vertical-align: bottom;
+        margin: 0;
         transition: color 0.2s, border-color 0.2s;
     }
 
@@ -629,15 +637,15 @@ input {
     input {
         -moz-appearance: textfield;
         border-left: 0;
-	    border-right: 0;
-	    width: 60px;
-	    text-align: center;
+        border-right: 0;
+        width: 60px;
+        text-align: center;
     }
 }
 #mainSetup tr span {
-	vertical-align: top;
-	margin: 10px 0 0 8px;
-	display: inline-block;
+    vertical-align: top;
+    margin: 10px 0 0 8px;
+    display: inline-block;
 }
 #nightclubGUI {
     table {
@@ -646,17 +654,17 @@ input {
 
     th, td, td:first-child {
         text-align: left;
-	    height: 25px;  /* Height is actually min-height for tables */
-	    vertical-align: middle;
-	    padding: 2px 0;
+        height: 25px;  /* Height is actually min-height for tables */
+        vertical-align: middle;
+        padding: 2px 0;
     }
 
     td:first-child {
         max-width: 0;
-	    padding-right: 5px;
-	    overflow: hidden;
-	    text-overflow: ellipsis;
-	    white-space: nowrap;
+        padding-right: 5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     td:nth-child(2) {
@@ -673,35 +681,35 @@ input {
     }
 }
 .setupGUI label {
-	color: #FFF;
+    color: #FFF;
 }
 .setupGUI tr td:first-child {
-	text-align: right;
-	min-width: 100px;
+    text-align: right;
+    min-width: 100px;
 }
 .onechoice .button {
-	opacity: 0.60;
+    opacity: 0.60;
 }
 .onechoice .button:disabled {
-	opacity: 1;
+    opacity: 1;
 }
 #nightclubSetupGUI td:first-child {
-	width: 112px;
+    width: 112px;
 }
 .button.off {
-	opacity: 0.60;
+    opacity: 0.60;
 }
 
 /* INFO */
 #infotab {
-	padding: 5px;
+    padding: 5px;
     overflow-y: auto;
     
     flex: 0 0 auto;
 
     .desktop & {
         max-height: 100vh;
-	    width: 220px;
+        width: 220px;
     }
 
     .mobile & {
@@ -711,10 +719,10 @@ input {
 }
 
 .information {
-	border: 1px solid black;
-	padding: 5px;
-	width: 100%;
-	margin-bottom: 5px;
+    border: 1px solid black;
+    padding: 5px;
+    width: 100%;
+    margin-bottom: 5px;
 
     &:last-child {
         margin-bottom: 0;
@@ -723,25 +731,25 @@ input {
     .darkMode & {
         background-color: #222;
         color: #FFF;
-	    border-color: #777;
+        border-color: #777;
     }
 }
 @-moz-document url-prefix() {
-	.desktop .information:last-child {
-		margin-bottom: 5px;
-	}
+    .desktop .information:last-child {
+        margin-bottom: 5px;
+    }
 }
 .business-section {
-	width: 100%;
+    width: 100%;
 }
 #inactiveBusinesses {
-	margin-top: 5px;
-	overflow: hidden;
+    margin-top: 5px;
+    overflow: hidden;
 }
 .business_heading {
     * {
         float: left;
-	    display: block;
+        display: block;
     }
 
     h1 {
@@ -752,30 +760,30 @@ input {
     margin-top: 3px;
 }
 .clearfix::after {
-	content: "";
-	clear: both;
-	display: table;
+    content: "";
+    clear: both;
+    display: table;
 }
 .icon_wrap {
-	width: 25px;
-	height: 25px;
-	margin-right: 5px;
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
 }
 .icons-info {
-	/* 25x25 */
-	width: 64px;
-	height: 64px;
-	transform-origin: top left;
-	transform: scale(0.390625);
+    /* 25x25 */
+    width: 64px;
+    height: 64px;
+    transform-origin: top left;
+    transform: scale(0.390625);
 }
 #infotab {
     button.setup {
-	    background-color: rgba(0, 0, 0, 0);
-	    color: #000;
-	    height: 25px;
-	    border-radius: 3px;
-	    padding: 2px 6px 3px 6px;
-	    float: right;
+        background-color: rgba(0, 0, 0, 0);
+        color: #000;
+        height: 25px;
+        border-radius: 3px;
+        padding: 2px 6px 3px 6px;
+        float: right;
 
         .darkMode & {
             color: #FFF;
@@ -784,7 +792,7 @@ input {
 
     td {
         padding-bottom: 5px;
-	    vertical-align: top;
+        vertical-align: top;
 
         &:first-child {
             width: 60px;
@@ -792,30 +800,30 @@ input {
 
         > span {
             display: block;
-	        line-height: 1em;
-	        font-size: 0.8em;
+            line-height: 1em;
+            font-size: 0.8em;
         }
     }
 }
 .progress_bar {
-	border: 1px solid black;
-	width: 125px;
-	height: 12px;
-	position: relative;
+    border: 1px solid black;
+    width: 125px;
+    height: 12px;
+    position: relative;
     line-height: 1em;
     overflow: hidden;
 
     .fivetick {
-	    position: absolute;
-	    width: 100%;
+        position: absolute;
+        width: 100%;
         height: 100%;
         line-height: 0;
 
         div {
             display: inline-block;
-	        width: 20%;
-	        height: 100%;
-	        border-right: 1px solid #000;
+            width: 20%;
+            height: 100%;
+            border-right: 1px solid #000;
 
             .darkMode & {
                 border-color: #FFF;
@@ -824,45 +832,45 @@ input {
     }
 
     input[type=range].slider {
-	    -webkit-appearance: none;  /* Override default CSS styles */
-	    appearance: none;
-	    width: calc(100% + 12px);
-	    height: 12px;
-	    outline: none;
-	    opacity: 0.0; /* Set transparency (for mouse-over effects on hover) */
-	    -webkit-transition: .2s;
-	    transition: opacity .2s;
-	    position: absolute;
-	    top: -1px;
-	    left: -6px;
-	    padding: 0;
-	    cursor: pointer;
-	    margin-left: 0;
+        -webkit-appearance: none;  /* Override default CSS styles */
+        appearance: none;
+        width: calc(100% + 12px);
+        height: 12px;
+        outline: none;
+        opacity: 0.0; /* Set transparency (for mouse-over effects on hover) */
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+        position: absolute;
+        top: -1px;
+        left: -6px;
+        padding: 0;
+        cursor: pointer;
+        margin-left: 0;
 
         &:hover {
-	        opacity: 0.0; /* 1.0 for debug */
+            opacity: 0.0; /* 1.0 for debug */
         }
 
         &::-webkit-slider-thumb {
-	        -webkit-appearance: none; /* Override default look */
-	        appearance: none;
-	        width: 12px;
-	        height: 12px;
-	        background: #4CAF50;
-	        cursor: pointer;
+            -webkit-appearance: none; /* Override default look */
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            background: #4CAF50;
+            cursor: pointer;
         }
 
         &::-moz-range-thumb {
-	        width: 12px;
-	        height: 12px;
-	        background: #4CAF50;
-	        cursor: pointer;
+            width: 12px;
+            height: 12px;
+            background: #4CAF50;
+            cursor: pointer;
         }
     }
 
     .bar {
         width: 0%;
-	    height: 100%;
+        height: 100%;
 
         .product & {
             background-color: #5BB3E1;
@@ -883,21 +891,21 @@ input {
 
     span {
         line-height: 1em;
-	    font-size: 0.9em;
-	    pointer-events: none;
-	    color: #FFF;
-	    width: auto;
-	    height: 14px;
-	    position: absolute;
-	    top: 1px;
-	    left: 50%;
-	    border-radius: 2px;
-	    transform: translate(-50%, 0);
-	    white-space: nowrap;
-	    text-align: center;
-	    padding: 0 4px;
-	    background-color: rgba(0, 0, 0, 0.5);
-	    text-shadow: -0.1em 0 black, 0 -0.1em black, 0.1em 0 black, 0 0.1em black;
+        font-size: 0.9em;
+        pointer-events: none;
+        color: #FFF;
+        width: auto;
+        height: 14px;
+        position: absolute;
+        top: 1px;
+        left: 50%;
+        border-radius: 2px;
+        transform: translate(-50%, 0);
+        white-space: nowrap;
+        text-align: center;
+        padding: 0 4px;
+        background-color: rgba(0, 0, 0, 0.5);
+        text-shadow: -0.1em 0 black, 0 -0.1em black, 0.1em 0 black, 0 0.1em black;
     }
 
     .darkMode & {
@@ -914,26 +922,26 @@ input {
     }
 }
 #importExport .content div:last-child {
-	margin-top: 5px;
-	display: inline-flex;
+    margin-top: 5px;
+    display: inline-flex;
 }
 select {
-	margin:0;
-	margin-right: 5px;
-	padding: 4px 5px;
-	text-align: center;
-	text-decoration: none;
-	display: inline-block;
-	font-size: 16px;
-	cursor: pointer;
+    margin:0;
+    margin-right: 5px;
+    padding: 4px 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
 
     .darkMode #infotab & {
         color: #FFF;
-	    background-color: #333;
-	    border-color: #999;
-	    border-width: 1px;
+        background-color: #333;
+        border-color: #999;
+        border-width: 1px;
     }
 }
 .fsz {
-	font-size: 0;
+    font-size: 0;
 }

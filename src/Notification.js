@@ -84,7 +84,7 @@ export function useNotifyBusiness(business) {
             }
             dispatch(setLastNotified(payload));
             audio.pause();
-		    audio.currentTime = 0;
+            audio.currentTime = 0;
             audio.volume = volume;
             audio.play();
         }
@@ -125,7 +125,7 @@ export function useNotifyBusiness(business) {
         }
 
         // Bunker, MC Businesses
-        if (["bunker", "coke", "meth", "cash", "weed", "forgery"].includes(business)) {
+        if (["bunker", "coke", "meth", "cash", "weed", "forgery", "acid"].includes(business)) {
             let upgradeIndex = (businessInfo.upgrades.equipment ? 1 : 0) + (businessInfo.upgrades.staff ? 1 : 0);
             for (let resource of staticInfo[business].resources) {
                 if (resource === "supplies") {

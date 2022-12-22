@@ -1,7 +1,7 @@
 import React from 'react';
 
 export let defaultUserInfo = {
-    version: "2.0.1",
+    version: "2.0.2",
     recentWeekly: 0,
     settings: {
         hide_unowned: false,
@@ -107,6 +107,21 @@ export let defaultUserInfo = {
             y: 28.46,
         },
     },
+    acid: {
+        owned: false,
+        muted: false,
+        product: 0,
+        supplies: 0,
+        boost: 0,
+        boostResetTime: 0,
+        upgrades: {
+            equipment: true,
+        },
+        map_position: {
+            x: 21.81,
+            y: 80.12,
+        },
+    },
     nightclub: {
         owned: false,
         muted: false,
@@ -164,7 +179,7 @@ export const InfoContext = React.createContext({
 });
 
 export const staticInfo = {
-    mcbusinesses: ["coke", "meth", "cash", "weed", "forgery"],
+    mcbusinesses: ["coke", "meth", "cash", "weed", "forgery", "acid"],
     bunker: {
         fullName: "Bunker",
         shortName: "Bunker",
@@ -379,6 +394,23 @@ export const staticInfo = {
                 name: "Grapeseed",
                 x: 59.28,
                 y: 28.46,
+            },
+        ],
+    },
+    acid: {
+        fullName: "Acid",
+        shortName: "Acid",
+        upgrades: ["equipment"],
+        resources: ["product", "supplies", "boost"],
+        maxProduct: [360, 240],
+        maxSupplies: [112.5, 150],
+        maxBoost: [180, 120],
+        boostMultiplier: 2,
+        locations: [
+            {
+                name: "Acid Lab",
+                x: 21.81,
+                y: 80.12,
             },
         ],
     },
@@ -645,6 +677,14 @@ export function updateUserInfo(userInfo) {
         userInfo.nightclub.show_all = !userInfo.nightclub.sidebar;
         delete userInfo.nightclub.sidebar;
         userInfo.version = "2.0.1";
+    }
+    if (userInfo.version === "2.0.1") {
+        userInfo.acid = Object.assign({}, defaultUserInfo.acid);
+        userInfo.acid.muted = false;
+        userInfo["acid"].upgrades = {
+            equipment: true
+        };
+        userInfo.version = "2.0.2";
     }
     return userInfo;
 }

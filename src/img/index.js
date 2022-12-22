@@ -7,6 +7,7 @@ import iconForgery from "./forgery.png";
 import iconNightclub from "./nightclub.png";
 import iconImportExport from "./import.png";
 import iconWheel from "./wheel.png";
+import iconAcid from "./acid.png";
 
 export const business_icons = {
     bunker: iconBunker,
@@ -18,4 +19,5 @@ export const business_icons = {
     nightclub: iconNightclub,
     importExport: iconImportExport,
     wheel: iconWheel,
+    acid: iconAcid,
 }

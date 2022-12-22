@@ -11,6 +11,8 @@ const mapStateToProps = (state, ownProps) => {
     let newProps = {
         currentResource: state.userInfo[ownProps.business][ownProps.type],
         upgrades: state.userInfo[ownProps.business].upgrades,
+        boost: state.userInfo[ownProps.business].boost,
+        boostMultiplier: staticInfo[ownProps.business].boostMultiplier,
         barStyle: state.userInfo.settings.progress_bar_style,
     }
     if (ownProps.business === "nightclub") {
@@ -55,7 +57,15 @@ const TabProgressBarElement = (props) => {
             if (props.business === "bunker" && props.mode === 1 && props.type === "supplies") {
                 factor = staticInfo["bunker"]["maxResearchSupplies"][upgradeIndex]/staticInfo["bunker"]["maxSupplies"][upgradeIndex];
             }
-            return portion * staticInfo[props.business]["max"+capitalize(props.type)][upgradeIndex] * (60*1000) * factor;
+            let remainingNormal = portion * staticInfo[props.business]["max"+capitalize(props.type)][upgradeIndex] * (60*1000) * factor;
+            let remainingTotal = remainingNormal;
+            if (props.boost > 0) {
+                remainingNormal = Math.max(0, remainingTotal - (props.boost*60*1000));
+                let remainingBoosted = remainingTotal - remainingNormal;
+                remainingBoosted /= props.boostMultiplier;
+                remainingTotal = remainingNormal + remainingBoosted;
+            }
+            return remainingTotal;
         }
     }
 

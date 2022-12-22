@@ -16,6 +16,7 @@ const business_objects = {
     cash: <TabMCBusiness business="cash" />,
     weed: <TabMCBusiness business="weed" />,
     forgery: <TabMCBusiness business="forgery" />,
+    acid: <TabMCBusiness business="acid" />,
     nightclub: <TabNightclub />,
     importExport: <TabImportExport />,
     wheel: <TabWheel />,

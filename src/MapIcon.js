@@ -16,6 +16,7 @@ const mapStateToProps = (state, ownProps) => {
         audioEnabled: state.userInfo.settings.audio.enabled,
         position: businessInfo.map_position,
         updateState: state.session.updateState,
+        boost: businessInfo.boost,
     }
     
     return newProps;
@@ -29,7 +30,11 @@ const MapIcon = (props) => {
         dispatch(toggleBusinessMuted(props.business));
     }
 
+    let boosted = props.boost > 0;
     let flashState = useNotifyBusiness(props.business) && props.updateState;
+    let activeHighlight = " flashRed";
+    let inactiveHighlight = (boosted ? " flashGreen" : "");
+    let highlightState = (flashState ? activeHighlight : inactiveHighlight);
     
     let mapIcon = null;
     let muteIcon = null;
@@ -38,7 +43,7 @@ const MapIcon = (props) => {
             <img
                 id={props.business + "_map"}
                 src={blank}
-                className={"icons icons-map icons-" + props.business + (props.muted != null ? " clickable" : "") + (flashState ? " flash" : "")}
+                className={"icons icons-map icons-" + props.business + (props.muted != null ? " clickable" : "") + highlightState}
                 alt={props.full_name + " icon"}
                 style={{
                     top: props.position.y + "%",

@@ -12,14 +12,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { staticInfo } from './InfoContext';
 import { TabProgressBar } from './TabProgressBar';
+import { formatTimeString } from './Utility';
 import blank from "./img/blank.png";
 
 const mapStateToProps = (state, ownProps) => {
     let newProps = {
         owned: state.userInfo[ownProps.business].owned,
         upgrades: state.userInfo[ownProps.business].upgrades,
+        boost: state.userInfo[ownProps.business].boost,
+        boostResetTime: state.userInfo[ownProps.business].boostResetTime,
         disableSetup: state.session.banner[0] === "BannerSelectLocation" || state.session.banner[0] === "BannerCustomLocation",
+        updateState: null,
     }
+    if (newProps.owned && new Date().getTime() < newProps.boostResetTime) {
+        // This forces an update every second
+        newProps.updateState = state.session.updateState;
+    }
+
     return newProps;
 }
 
@@ -52,8 +61,53 @@ const TabMCBusiness = (props) => {
         dispatch(setResourceValue(payload));
     }
 
+    function startBoost() {
+        let nextReset = new Date();
+        
+        if (nextReset.getUTCHours() >= 7) {
+            nextReset.setUTCDate(nextReset.getUTCDate() + 1);
+        }
+        
+        nextReset.setUTCHours(7, 0, 0, 0);
+        
+        let resetPayload = {
+            business: props.business,
+            resource: "boostResetTime",
+            value: nextReset.getTime(),
+        };
+        dispatch(setResourceValue(resetPayload));
+        
+        let upgradeIndex = (props.upgrades.equipment ? 1 : 0) + (props.upgrades.staff ? 1 : 0);
+        let maxBoost = staticInfo[props.business].maxBoost[upgradeIndex];
+        let boostPayload = {
+            business: props.business,
+            resource: "boost",
+            value: maxBoost,
+        };
+        dispatch(setResourceValue(boostPayload));
+    }
+
     let content = null;
+    
     if (props.owned) {
+        let boostButton = null;
+        
+        // TODO: Probably better to have a "boostable" flag but I'm lazy right now.
+        if (props.business === "acid") {
+            let resetTime = props.boostResetTime;
+            let nowTime = new Date().getTime();
+            const disableBoost = nowTime < resetTime;
+            let boostString;
+            if (disableBoost) {
+                let remainingMs = resetTime - nowTime;
+                boostString = formatTimeString(remainingMs);
+            }
+            else {
+                boostString = "Boost";
+            }
+            boostButton = <button onClick={startBoost} disabled={disableBoost} className="button purple">{boostString}</button>;
+        }
+        
         content = (
             <div className="content">
                 <table>
@@ -65,6 +119,7 @@ const TabMCBusiness = (props) => {
                 <div className="fsz">
                     <button onClick={buyFullSupplies} className="button green">Resupply</button>
                     <button onClick={sellAllProduct} className="button blue">Sell</button>
+                    { boostButton }
                 </div>
             </div>
         );

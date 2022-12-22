@@ -927,6 +927,10 @@ export const PopupSetupMCBusiness = connect((state, ownProps) => {
         dispatch(popPopup());
     }
 
+    let equipmentButton = staticInfo[props.business].upgrades.includes("equipment") ? ( <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.equipment ? "" : " off")} data-value="equipment">Equipment</button> ) : ( null );
+    let staffButton = staticInfo[props.business].upgrades.includes("staff") ? ( <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.staff ? "" : " off")} data-value="staff">Staff</button> ) : ( null );
+    let securityButton = staticInfo[props.business].upgrades.includes("security") ? ( <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.security ? "" : " off")} data-value="security">Security</button> ) : ( null );
+
     return (
         <div id="mcbusinessSetupGUI" className="setupGUI">
             <div className="heading">
@@ -951,9 +955,9 @@ export const PopupSetupMCBusiness = connect((state, ownProps) => {
                         <tr>
                             <td>Upgrades:</td>
                             <td className="indivchoice fsz">
-                                <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.equipment ? "" : " off")} data-value="equipment">Equipment</button>
-                                <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.staff ? "" : " off")} data-value="staff">Staff</button>
-                                <button onClick={toggleUpgrade} className={"button blue" + (state.upgrades.security ? "" : " off")} data-value="security">Security</button>
+                                { equipmentButton }
+                                { staffButton }
+                                { securityButton }
                             </td>
                         </tr>
                     </tbody>
