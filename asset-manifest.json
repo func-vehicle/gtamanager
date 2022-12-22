@@ -1,11 +1,12 @@
 {
   "files": {
-    "main.css": "/gtamanager/static/css/main.9f9cafff.css",
-    "main.js": "/gtamanager/static/js/main.8a0ec9b3.js",
+    "main.css": "/gtamanager/static/css/main.ee30d45d.css",
+    "main.js": "/gtamanager/static/js/main.4901a308.js",
     "static/media/bg-2048.jpg": "/gtamanager/static/media/bg-2048.c30bfda6864a505de9f8.jpg",
     "static/media/bg-1024.jpg": "/gtamanager/static/media/bg-1024.102134957944537a11fe.jpg",
     "static/media/bg-512.jpg": "/gtamanager/static/media/bg-512.e36a17991c39a9174871.jpg",
-    "static/media/spritesheet.png": "/gtamanager/static/media/spritesheet.9f2503e366e1ccec9cc8.png",
+    "static/media/spritesheet.png": "/gtamanager/static/media/spritesheet.d32c6e68b81b78331853.png",
+    "static/media/acid.png": "/gtamanager/static/media/acid.049e39597e6430ad9742.png",
     "static/media/nightclub.png": "/gtamanager/static/media/nightclub.6de1f911acccda54788f.png",
     "static/media/wheel.png": "/gtamanager/static/media/wheel.dc8a1c9a85626523bdb1.png",
     "static/media/weed.png": "/gtamanager/static/media/weed.6900093e74ac563da7c0.png",
@@ -17,11 +18,11 @@
     "static/media/bunker.png": "/gtamanager/static/media/bunker.4fd31c0c74a0cf774359.png",
     "index.html": "/gtamanager/index.html",
     "static/media/blank.png": "/gtamanager/static/media/blank.f9bc4eb159991a54d809.png",
-    "main.9f9cafff.css.map": "/gtamanager/static/css/main.9f9cafff.css.map",
-    "main.8a0ec9b3.js.map": "/gtamanager/static/js/main.8a0ec9b3.js.map"
+    "main.ee30d45d.css.map": "/gtamanager/static/css/main.ee30d45d.css.map",
+    "main.4901a308.js.map": "/gtamanager/static/js/main.4901a308.js.map"
   },
   "entrypoints": [
-    "static/css/main.9f9cafff.css",
-    "static/js/main.8a0ec9b3.js"
+    "static/css/main.ee30d45d.css",
+    "static/js/main.4901a308.js"
   ]
 }
