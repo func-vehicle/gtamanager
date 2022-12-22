@@ -316,6 +316,16 @@ export const patchArray = [
                 </ul>
             </ul>
         </div>
+    </div>,
+    <div className="main">
+        <h1>Version 2.0.2</h1>
+        <div className="indent">
+            <h2>Improvements</h2>
+            <ul>
+                <li>Added support for the Acid Lab introduced in Los Santos Drug Wars.</li>
+                <li>Added support for the once per day "boost" that the Acid Lab can do.</li>
+            </ul>
+        </div>
     </div>
 ];
 
