@@ -401,7 +401,7 @@ export const staticInfo = {
         fullName: "Acid",
         shortName: "Acid",
         upgrades: ["equipment"],
-        resources: ["product", "supplies", "boost"],
+        resources: ["product", "supplies"],
         maxProduct: [360, 240],
         maxSupplies: [112.5, 150],
         maxBoost: [180, 120],
