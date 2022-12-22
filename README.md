@@ -33,4 +33,5 @@ Version history is documented in the patch notes section of the web application.
 **Flopster** - Mobile layout fixes  
 **sol3uk** - Dark mode  
 **benaw** - Nightclub vehicle requirement, favicon, device sleeping fixes  
-**juanminm** - Toggleable business upgrades, Nightclub storage floors
+**juanminm** - Toggleable business upgrades, Nightclub storage floors  
+**Arsonide** - Acid lab
