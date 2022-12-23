@@ -106,6 +106,12 @@ export function useNotifyBusiness(business) {
     }
 
     function shouldNotify() {
+        // General pruning
+        if (!businessInfo.owned) {
+            setState(false);
+            return;
+        }
+
         // Wheel
         if (business === "wheel") {
             if ((running || businessInfo.notify_while_paused) && new Date().getTime() - businessInfo.timestamp > (1000*60)*60*24) {
@@ -117,9 +123,8 @@ export function useNotifyBusiness(business) {
             setState(false);
             return;
         }
-
-        // General pruning
-        if (!businessInfo.owned || !running) {
+        
+        if (!running) {
             setState(false);
             return;
         }
@@ -128,6 +133,10 @@ export function useNotifyBusiness(business) {
         if (["bunker", "coke", "meth", "cash", "weed", "forgery", "acid"].includes(business)) {
             let upgradeIndex = (businessInfo.upgrades.equipment ? 1 : 0) + (businessInfo.upgrades.staff ? 1 : 0);
             for (let resource of staticInfo[business].resources) {
+                if (resource === "boost") {
+                    continue;
+                }
+
                 if (resource === "supplies") {
                     if (businessInfo.supplies <= 0) {
                         setState(true);
