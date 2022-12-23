@@ -27,6 +27,11 @@ import { defaultUserInfo, shouldUpdate, updateUserInfo, staticInfo } from './Inf
 import { inRange, isInteger, capitalize } from './Utility';
 import { notify } from './Notification';
 
+
+const gtamanagerRepoUrl = "https://github.com/func-vehicle/gtamanager";
+const weeklyBonusesUrl = "https://www.reddit.com/r/gtaonline/search?q=%22weekly+discounts+and+bonuses%22&restrict_sr=on&sort=new&t=week";
+
+
 export const PopupPushDenied = (props) => {
 
     const dispatch = useDispatch();
@@ -173,7 +178,7 @@ export const PopupNewWeek = (props) => {
             </div>
             <div className="main">
                 <p>The weekly bonuses for GTA Online have changed.
-                <br/><a target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/gtaonline/search?q=%22weekly+gta+online+bonuses%22&restrict_sr=on&sort=new&t=week">Click here</a> to see what's new.</p>
+                <br/><a target="_blank" rel="noopener noreferrer" href={weeklyBonusesUrl}>Click here</a> to see what's new.</p>
             </div>
             <div className="buttons fsz">
                 <button onClick={() => dispatch(popPopup())} className="button red">OK</button>
@@ -462,8 +467,8 @@ export const PopupSetupMain = connect((state) => {
                             <td>About:</td>
                             <td className="fsz">
                                 <button onClick={showPatchnotes} className="button orange" data-value="0">Patch notes</button>
-                                <a target="_blank" rel="noopener noreferrer" href="https://github.com/func-vehicle/gtamanager" style={{marginRight: "5px"}}><button className="button orange">GitHub</button></a>
-                                <a target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/gtaonline/search?q=%22weekly+gta+online+bonuses%22&restrict_sr=on&sort=new&t=week"><button className="button orange">Weekly Bonuses</button></a>
+                                <a target="_blank" rel="noopener noreferrer" href={gtamanagerRepoUrl} style={{marginRight: "5px"}}><button className="button orange">GitHub</button></a>
+                                <a target="_blank" rel="noopener noreferrer" href={weeklyBonusesUrl}><button className="button orange">Weekly Bonuses</button></a>
                             </td>
                         </tr>
                     </tbody>
