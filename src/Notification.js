@@ -128,6 +128,10 @@ export function useNotifyBusiness(business) {
         if (["bunker", "coke", "meth", "cash", "weed", "forgery", "acid"].includes(business)) {
             let upgradeIndex = (businessInfo.upgrades.equipment ? 1 : 0) + (businessInfo.upgrades.staff ? 1 : 0);
             for (let resource of staticInfo[business].resources) {
+                if (resource === "boost") {
+                    continue;
+                }
+
                 if (resource === "supplies") {
                     if (businessInfo.supplies <= 0) {
                         setState(true);
