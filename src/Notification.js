@@ -106,6 +106,12 @@ export function useNotifyBusiness(business) {
     }
 
     function shouldNotify() {
+        // General pruning
+        if (!businessInfo.owned) {
+            setState(false);
+            return;
+        }
+
         // Wheel
         if (business === "wheel") {
             if ((running || businessInfo.notify_while_paused) && new Date().getTime() - businessInfo.timestamp > (1000*60)*60*24) {
@@ -117,9 +123,8 @@ export function useNotifyBusiness(business) {
             setState(false);
             return;
         }
-
-        // General pruning
-        if (!businessInfo.owned || !running) {
+        
+        if (!running) {
             setState(false);
             return;
         }
